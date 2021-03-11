@@ -54,6 +54,7 @@ test('invalidRoute', () => {
   expect(() => {
     let route = new Route([connection1, connection2]);
   }).toThrow();
+});
 
 test('route', () => {
   const from = new City('from');
