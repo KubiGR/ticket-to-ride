@@ -1,14 +1,6 @@
 import { Connection } from './connection';
 
 export class Route {
-  trainLength(): number {
-    return this.connections
-      .map((c: Connection) => c.length)
-      .reduce((acc, cur) => acc + cur);
-  }
-  actionLength(): number {
-    return this.connections.length;
-  }
   connections: Connection[];
 
   constructor(connections: Connection[]) {
@@ -18,13 +10,24 @@ export class Route {
 
   checkConnections(): void {
     for (let i = 0; i < this.connections.length - 1; i++) {
-      if (this.connections[i].to.name != this.connections[i + 1].from.name)
+      if (this.connections[i].isAdjacentTo(this.connections[i + 1])) continue;
+      else
         throw new Error(
           'Line is not continuous:' +
-            this.connections[i].to.name +
+            this.connections[i] +
             ' neq ' +
-            this.connections[i + 1].from.name,
+            this.connections[i + 1],
         );
     }
+  }
+
+  trainLength(): number {
+    return this.connections
+      .map((c: Connection) => c.length)
+      .reduce((acc, cur) => acc + cur);
+  }
+
+  actionLength(): number {
+    return this.connections.length;
   }
 }

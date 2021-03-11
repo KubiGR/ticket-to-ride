@@ -52,8 +52,30 @@ test('invalidRoute', () => {
   const connection2 = new Connection(to2, final, 4, TrackColor.Black);
 
   expect(() => {
-    const route = new Route([connection1, connection2]);
+    new Route([connection1, connection2]);
   }).toThrow();
+});
+
+test('validRoute', () => {
+  const from = new City('from');
+  const to = new City('to');
+  const final = new City('final');
+  const connection1 = new Connection(from, to, 3, TrackColor.Red);
+  const connection2 = new Connection(to, final, 4, TrackColor.Black);
+  const route = new Route([connection1, connection2]);
+
+  expect(route).toBeTruthy();
+});
+
+test('validRouteRever', () => {
+  const from = new City('from');
+  const to = new City('to');
+  const final = new City('final');
+  const connection1 = new Connection(from, to, 3, TrackColor.Red);
+  const connection2 = new Connection(to, final, 4, TrackColor.Black);
+  const route = new Route([connection2, connection1]);
+
+  expect(route).toBeTruthy();
 });
 
 test('route', () => {

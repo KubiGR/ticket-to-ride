@@ -14,4 +14,16 @@ export class Connection {
     this.length = length;
     this.color1 = color1;
   }
+
+  contains(city: City): boolean {
+    return this.from.name == city.name || this.to.name == city.name;
+  }
+  isAdjacentTo(connection: Connection): boolean {
+    return (
+      this.to.name == connection.from.name ||
+      this.to.name == connection.to.name ||
+      this.from.name == connection.to.name ||
+      this.from.name == connection.from.name
+    );
+  }
 }
