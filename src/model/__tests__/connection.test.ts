@@ -3,9 +3,9 @@ import { Connection } from 'model/connection';
 import { TrackColor } from 'model/trackColor';
 
 test('connection', () => {
-  let from = new City('from');
-  let to = new City('to');
-  let connection = new Connection(from, to, 3, TrackColor.Red);
+  const from = new City('from');
+  const to = new City('to');
+  const connection = new Connection(from, to, 3, TrackColor.Red);
   expect(connection.from.name).toBe('from');
   expect(connection.to.name).toBe('to');
   expect(connection.length).toBe(3);

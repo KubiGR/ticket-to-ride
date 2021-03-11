@@ -4,10 +4,10 @@ import { Route } from 'model/route';
 import { TrackColor } from 'model/trackColor';
 
 test('route1', () => {
-  let from = new City('from');
-  let to = new City('to');
-  let connection = new Connection(from, to, 3, TrackColor.Red);
-  let route = new Route([connection]);
+  const from = new City('from');
+  const to = new City('to');
+  const connection = new Connection(from, to, 3, TrackColor.Red);
+  const route = new Route([connection]);
 
   expect(route.actionLength()).toBe(1);
 });
@@ -56,10 +56,10 @@ test('invalidRoute', () => {
   }).toThrow();
 
 test('route', () => {
-  let from = new City('from');
-  let to = new City('to');
-  let connection = new Connection(from, to, 3, TrackColor.Red);
-  let route = new Route([connection]);
+  const from = new City('from');
+  const to = new City('to');
+  const connection = new Connection(from, to, 3, TrackColor.Red);
+  const route = new Route([connection]);
 
   expect(route.trainLength()).toBe(3);
 });
