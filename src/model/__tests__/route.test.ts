@@ -21,7 +21,6 @@ test('singleRouteTrainLength', () => {
     expect(route.trainLength()).toBe(3);
   });
 
-
 test('doubleRouteLength', () => {
   let from = new City("from");
   let to = new City("to");
@@ -33,7 +32,6 @@ test('doubleRouteLength', () => {
   expect(route.actionLength()).toBe(2);
 });
 
-
 test('doubleRouteTrainLength', () => {
   let from = new City("from");
   let to = new City("to");
@@ -43,4 +41,17 @@ test('doubleRouteTrainLength', () => {
   let route = new Route([connection1, connection2]);
 
   expect(route.trainLength()).toBe(7);
+});
+
+test('invalidRoute', () => {
+  let from = new City("from");
+  let to1 = new City("to1");
+  let to2 = new City("to2");
+  let final = new City("final");
+  let connection1 = new Connection(from, to1, 3, TrackColor.Red);    
+  let connection2 = new Connection(to2, final, 4, TrackColor.Black);    
+  
+  expect(() => {
+    let route = new Route([connection1, connection2]);
+  }).toThrow();
 });
