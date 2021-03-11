@@ -1,5 +1,5 @@
-import { City } from "./city";
-import { TrackColor } from "./trackColor";
+import { City } from './city';
+import { TrackColor } from './trackColor';
 
 export class Connection {
     from: City;

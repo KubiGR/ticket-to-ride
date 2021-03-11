@@ -7,4 +7,4 @@ export enum TrackColor {
     White,
     Purple,
     Gray,
-  }
+}

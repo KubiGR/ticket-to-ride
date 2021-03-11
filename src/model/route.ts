@@ -1,4 +1,4 @@
-import { Connection } from "./connection";
+import { Connection } from './connection';
 
 export class Route {
     trainLength(): number {
@@ -12,5 +12,4 @@ export class Route {
     constructor(connections: Connection[]) {
         this.connections = connections;
     }
-
 }
