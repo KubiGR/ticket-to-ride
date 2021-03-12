@@ -3,9 +3,6 @@ import type { Config } from '@jest/types';
 const config: Config.InitialOptions = {
   verbose: true,
   roots: ['<rootDir>/src'],
-  collectCoverage: true,
-  coverageDirectory: '<rootDir>/coverage',
-  coverageReporters: ['json', 'lcov', 'text', 'clover'],
   collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}', '!src/**/*.d.ts'],
   setupFiles: ['react-app-polyfill/jsdom'],
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
@@ -45,15 +42,6 @@ const config: Config.InitialOptions = {
     'jest-watch-typeahead/testname',
   ],
   resetMocks: true,
-  reporters: [
-    'default',
-    [
-      '<rootDir>/node_modules/jest-html-reporter',
-      {
-        pageTitle: 'Test Report',
-      },
-    ],
-  ],
 };
 
 export default config;
