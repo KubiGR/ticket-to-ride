@@ -1,7 +1,7 @@
 import { City } from './city';
 import { Route } from './route';
 
-export class Mission {
+export class Ticket {
   from: City;
   to: City;
   points: number;
