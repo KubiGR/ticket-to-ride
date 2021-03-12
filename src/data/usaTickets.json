@@ -1,0 +1,152 @@
+[
+  {
+    "from": "Boston",
+    "to": "Miami",
+    "points": 12
+  },
+  {
+    "from": "Calgary",
+    "to": "Salt Lake City",
+    "points": 7
+  },
+  {
+    "from": "Calgary",
+    "to": "Phoenix",
+    "points": 13
+  },
+  {
+    "from": "Chicago",
+    "to": "New Orleans",
+    "points": 7
+  },
+  {
+    "from": "Chicago",
+    "to": "Santa Fe",
+    "points": 9
+  },
+  {
+    "from": "Dallas",
+    "to": "New York",
+    "points": 11
+  },
+  {
+    "from": "Denver",
+    "to": "El Paso",
+    "points": 4
+  },
+  {
+    "from": "Denver",
+    "to": "Pittsburgh",
+    "points": 11
+  },
+  {
+    "from": "Duluth",
+    "to": "Houston",
+    "points": 8
+  },
+  {
+    "from": "Duluth",
+    "to": "El Paso",
+    "points": 10
+  },
+  {
+    "from": "Helena",
+    "to": "Los Angeles",
+    "points": 8
+  },
+  {
+    "from": "Kansas City",
+    "to": "Houston",
+    "points": 5
+  },
+  {
+    "from": "Los Angeles",
+    "to": "Chicago",
+    "points": 16
+  },
+  {
+    "from": "Los Angeles",
+    "to": "Miami",
+    "points": 20
+  },
+  {
+    "from": "Los Angeles",
+    "to": "New York",
+    "points": 21
+  },
+  {
+    "from": "Montreal",
+    "to": "Atlanta",
+    "points": 9
+  },
+  {
+    "from": "Montreal",
+    "to": "New Orleans",
+    "points": 13
+  },
+  {
+    "from": "New York",
+    "to": "Atlanta",
+    "points": 6
+  },
+  {
+    "from": "Portland",
+    "to": "Phoenix",
+    "points": 11
+  },
+  {
+    "from": "Portland",
+    "to": "Nashville",
+    "points": 17
+  },
+  {
+    "from": "San Francisco",
+    "to": "Atlanta",
+    "points": 17
+  },
+  {
+    "from": "Sault St. Marie",
+    "to": "Nashville",
+    "points": 8
+  },
+  {
+    "from": "Sault St. Marie",
+    "to": "Oklahoma City",
+    "points": 9
+  },
+  {
+    "from": "Seattle",
+    "to": "Los Angeles",
+    "points": 9
+  },
+  {
+    "from": "Seattle",
+    "to": "New York",
+    "points": 22
+  },
+  {
+    "from": "Toronto",
+    "to": "Miami",
+    "points": 10
+  },
+  {
+    "from": "Vancouver",
+    "to": "Santa Fe",
+    "points": 13
+  },
+  {
+    "from": "Vancouver",
+    "to": "Montreal",
+    "points": 20
+  },
+  {
+    "from": "Winnipeg",
+    "to": "Little Rock",
+    "points": 11
+  },
+  {
+    "from": "Winnipeg",
+    "to": "Houston",
+    "points": 12
+  }
+]

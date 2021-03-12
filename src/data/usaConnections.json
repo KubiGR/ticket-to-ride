@@ -1,0 +1,492 @@
+[
+  {
+    "from": "Atlanta",
+    "to": "Raleigh",
+    "length": 2,
+    "color1": "Gray",
+    "color2": "Gray"
+  },
+  {
+    "from": "Atlanta",
+    "to": "Miami",
+    "length": 5,
+    "color1": "Blue"
+  },
+  {
+    "from": "Atlanta",
+    "to": "Nashville",
+    "length": 1,
+    "color1": "Gray"
+  },
+  {
+    "from": "Boston",
+    "to": "New York",
+    "length": 2,
+    "color1": "Yellow",
+    "color2": "Red"
+  },
+  {
+    "from": "Calgary",
+    "to": "Winnipeg",
+    "length": 6,
+    "color1": "White"
+  },
+  {
+    "from": "Calgary",
+    "to": "Helena",
+    "length": 4,
+    "color1": "Gray"
+  },
+  {
+    "from": "Charleston",
+    "to": "Raleigh",
+    "length": 2,
+    "color1": "Gray"
+  },
+  {
+    "from": "Charleston",
+    "to": "Atlanta",
+    "length": 2,
+    "color1": "Gray"
+  },
+  {
+    "from": "Charleston",
+    "to": "Miami",
+    "length": 4,
+    "color1": "Purple"
+  },
+  {
+    "from": "Chicago",
+    "to": "Duluth",
+    "length": 3,
+    "color1": "Red"
+  },
+  {
+    "from": "Chicago",
+    "to": "Toronto",
+    "length": 4,
+    "color1": "White"
+  },
+  {
+    "from": "Dallas",
+    "to": "Houston",
+    "length": 1,
+    "color1": "Gray",
+    "color2": "Gray"
+  },
+  {
+    "from": "Dallas",
+    "to": "Little Rock",
+    "length": 2,
+    "color1": "Gray"
+  },
+  {
+    "from": "Denver",
+    "to": "Salt Lake City",
+    "length": 3,
+    "color1": "Red",
+    "color2": "Yellow"
+  },
+  {
+    "from": "El Paso",
+    "to": "Houston",
+    "length": 6,
+    "color1": "Green"
+  },
+  {
+    "from": "El Paso",
+    "to": "Dallas",
+    "length": 4,
+    "color1": "Red"
+  },
+  {
+    "from": "El Paso",
+    "to": "Oklahoma City",
+    "length": 5,
+    "color1": "Yellow"
+  },
+  {
+    "from": "El Paso",
+    "to": "Santa Fe",
+    "length": 2,
+    "color1": "Gray"
+  },
+  {
+    "from": "El Paso",
+    "to": "Phoenix",
+    "length": 3,
+    "color1": "Gray"
+  },
+  {
+    "from": "El Paso",
+    "to": "Los Angeles",
+    "length": 6,
+    "color1": "Black"
+  },
+  {
+    "from": "Helena",
+    "to": "Duluth",
+    "length": 6,
+    "color1": "Orange"
+  },
+  {
+    "from": "Helena",
+    "to": "Omaha",
+    "length": 5,
+    "color1": "Red"
+  },
+  {
+    "from": "Helena",
+    "to": "Denver",
+    "length": 4,
+    "color1": "Green"
+  },
+  {
+    "from": "Kansas City",
+    "to": "Denver",
+    "length": 4,
+    "color1": "Black",
+    "color2": "Orange"
+  },
+  {
+    "from": "Las Vegas",
+    "to": "Salt Lake City",
+    "length": 3,
+    "color1": "Orange"
+  },
+  {
+    "from": "Las Vegas",
+    "to": "Los Angeles",
+    "length": 2,
+    "color1": "Gray"
+  },
+  {
+    "from": "Little Rock",
+    "to": "Oklahoma City",
+    "length": 2,
+    "color1": "Gray"
+  },
+  {
+    "from": "Montreal",
+    "to": "Boston",
+    "length": 2,
+    "color1": "Gray",
+    "color2": "Gray"
+  },
+  {
+    "from": "Montreal",
+    "to": "Toronto",
+    "length": 3,
+    "color1": "Gray"
+  },
+  {
+    "from": "Montreal",
+    "to": "New York",
+    "length": 3,
+    "color1": "Blue"
+  },
+  {
+    "from": "Nashville",
+    "to": "Little Rock",
+    "length": 3,
+    "color1": "White"
+  },
+  {
+    "from": "New Orleans",
+    "to": "Miami",
+    "length": 6,
+    "color1": "Red"
+  },
+  {
+    "from": "New Orleans",
+    "to": "Atlanta",
+    "length": 4,
+    "color1": "Yellow",
+    "color2": "Orange"
+  },
+  {
+    "from": "New Orleans",
+    "to": "Little Rock",
+    "length": 3,
+    "color1": "Green"
+  },
+  {
+    "from": "New Orleans",
+    "to": "Houston",
+    "length": 2,
+    "color1": "Gray"
+  },
+  {
+    "from": "Oklahoma City",
+    "to": "Denver",
+    "length": 4,
+    "color1": "Red"
+  },
+  {
+    "from": "Oklahoma City",
+    "to": "Santa Fe",
+    "length": 3,
+    "color1": "Blue"
+  },
+  {
+    "from": "Oklahoma City",
+    "to": "Dallas",
+    "length": 2,
+    "color1": "Gray",
+    "color2": "Gray"
+  },
+  {
+    "from": "Oklahoma City",
+    "to": "Kansas City",
+    "length": 2,
+    "color1": "Gray",
+    "color2": "Gray"
+  },
+  {
+    "from": "Omaha",
+    "to": "Denver",
+    "length": 4,
+    "color1": "Purple"
+  },
+  {
+    "from": "Omaha",
+    "to": "Kansas City",
+    "length": 2,
+    "color1": "Gray",
+    "color2": "Gray"
+  },
+  {
+    "from": "Omaha",
+    "to": "Chicago",
+    "length": 4,
+    "color1": "Blue"
+  },
+  {
+    "from": "Omaha",
+    "to": "Duluth",
+    "length": 2,
+    "color1": "Gray",
+    "color2": "Gray"
+  },
+  {
+    "from": "Phoenix",
+    "to": "Santa Fe",
+    "length": 3,
+    "color1": "Gray"
+  },
+  {
+    "from": "Phoenix",
+    "to": "Los Angeles",
+    "length": 3,
+    "color1": "Gray"
+  },
+  {
+    "from": "Phoenix",
+    "to": "Denver",
+    "length": 5,
+    "color1": "White"
+  },
+  {
+    "from": "Pittsburgh",
+    "to": "New York",
+    "length": 2,
+    "color1": "White",
+    "color2": "Green"
+  },
+  {
+    "from": "Pittsburgh",
+    "to": "Toronto",
+    "length": 2,
+    "color1": "Gray"
+  },
+  {
+    "from": "Pittsburgh",
+    "to": "Chicago",
+    "length": 3,
+    "color1": "Orange",
+    "color2": "Black"
+  },
+  {
+    "from": "Pittsburgh",
+    "to": "Washington",
+    "length": 2,
+    "color1": "Gray"
+  },
+  {
+    "from": "Pittsburgh",
+    "to": "Raleigh",
+    "length": 2,
+    "color1": "Gray"
+  },
+  {
+    "from": "Pittsburgh",
+    "to": "Nashville",
+    "length": 4,
+    "color1": "Yellow"
+  },
+  {
+    "from": "Raleigh",
+    "to": "Nashville",
+    "length": 3,
+    "color1": "Black"
+  },
+  {
+    "from": "Saint Louis",
+    "to": "Kansas City",
+    "length": 2,
+    "color1": "Blue",
+    "color2": "Purple"
+  },
+  {
+    "from": "Saint Louis",
+    "to": "Little Rock",
+    "length": 2,
+    "color1": "Gray"
+  },
+  {
+    "from": "Saint Louis",
+    "to": "Nashville",
+    "length": 2,
+    "color1": "Gray"
+  },
+  {
+    "from": "Saint Louis",
+    "to": "Pittsburgh",
+    "length": 5,
+    "color1": "Green"
+  },
+  {
+    "from": "Saint Louis",
+    "to": "Chicago",
+    "length": 2,
+    "color1": "White",
+    "color2": "Green"
+  },
+  {
+    "from": "Salt Lake City",
+    "to": "Portland",
+    "length": 6,
+    "color1": "Blue"
+  },
+  {
+    "from": "Salt Lake City",
+    "to": "Helena",
+    "length": 3,
+    "color1": "Purple"
+  },
+  {
+    "from": "San Francisco",
+    "to": "Los Angeles",
+    "length": 3,
+    "color1": "Yellow",
+    "color2": "Purple"
+  },
+  {
+    "from": "San Francisco",
+    "to": "Portland",
+    "length": 5,
+    "color1": "Green",
+    "color2": "Purple"
+  },
+  {
+    "from": "San Francisco",
+    "to": "Salt Lake City",
+    "length": 5,
+    "color1": "Orange",
+    "color2": "White"
+  },
+  {
+    "from": "Santa Fe",
+    "to": "Denver",
+    "length": 2,
+    "color1": "Gray"
+  },
+  {
+    "from": "Sault St. Marie",
+    "to": "Montreal",
+    "length": 5,
+    "color1": "Black"
+  },
+  {
+    "from": "Sault St. Marie",
+    "to": "Duluth",
+    "length": 3,
+    "color1": "Gray"
+  },
+  {
+    "from": "Sault St. Marie",
+    "to": "Toronto",
+    "length": 2,
+    "color1": "Gray"
+  },
+  {
+    "from": "Seattle",
+    "to": "Calgary",
+    "length": 4,
+    "color1": "Gray"
+  },
+  {
+    "from": "Seattle",
+    "to": "Portland",
+    "length": 1,
+    "color1": "Gray",
+    "color2": "Gray"
+  },
+  {
+    "from": "Seattle",
+    "to": "Helena",
+    "length": 6,
+    "color1": "Yellow"
+  },
+  {
+    "from": "Toronto",
+    "to": "Duluth",
+    "length": 6,
+    "color1": "Purple"
+  },
+  {
+    "from": "Vancouver",
+    "to": "Seattle",
+    "length": 1,
+    "color1": "Gray",
+    "color2": "Gray"
+  },
+  {
+    "from": "Vancouver",
+    "to": "Calgary",
+    "length": 3,
+    "color1": "Gray"
+  },
+  {
+    "from": "Washington",
+    "to": "New York",
+    "length": 2,
+    "color1": "Orange",
+    "color2": "Black"
+  },
+  {
+    "from": "Washington",
+    "to": "Raleigh",
+    "length": 2,
+    "color1": "Gray",
+    "color2": "Gray"
+  },
+  {
+    "from": "Winnipeg",
+    "to": "Sault St. Marie",
+    "length": 6,
+    "color1": "Gray"
+  },
+  {
+    "from": "Winnipeg",
+    "to": "Helena",
+    "length": 4,
+    "color1": "Blue"
+  },
+  {
+    "from": "Winnipeg",
+    "to": "Duluth",
+    "length": 4,
+    "color1": "Black"
+  }
+]
