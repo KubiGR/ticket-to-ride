@@ -1,4 +1,5 @@
 import { permutator } from './permute';
+import { Graph as KruskalGraph } from './kruskal';
 
 export interface Edge {
   from: number;
@@ -89,5 +90,34 @@ export class Graph {
     }
 
     return path;
+  }
+
+  spanningTreeOfShortestPaths(
+    nodeArray: number[],
+  ): { from: number; to: number }[] {
+    const kruskalEdges: Edge[] = [];
+    for (let i = 0; i < nodeArray.length; i++) {
+      for (let j = i + 1; j < nodeArray.length; j++) {
+        kruskalEdges.push({
+          from: i,
+          to: j,
+          distance: this.distance[nodeArray[i]][nodeArray[j]],
+        });
+      }
+    }
+    const kruskalGraph = new KruskalGraph(nodeArray.length, kruskalEdges);
+    const solutionEdges = kruskalGraph.kruskal();
+    const connections: { from: number; to: number }[] = [];
+    solutionEdges.forEach((solutionEdge) => {
+      const shortestPath = this.path(
+        nodeArray[solutionEdge.from],
+        nodeArray[solutionEdge.to],
+      );
+      for (let i = 0; i < shortestPath.length - 1; i++) {
+        connections.push({ from: shortestPath[i], to: shortestPath[i + 1] });
+      }
+    });
+
+    return connections;
   }
 }

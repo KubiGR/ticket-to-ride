@@ -66,4 +66,24 @@ export class GameNetwork {
       return [];
     }
   }
+
+  getMinSpanningTreeOfShortestRoutes(
+    cities: string[],
+  ): { from: string; to: string }[] {
+    if (this.graph) {
+      const numberArray = cities.map((c) => this.cityIndex.get(c) || -1);
+      if (numberArray.includes(-1)) {
+        throw new Error('Unknown city');
+      }
+      const connections = this.graph.spanningTreeOfShortestPaths(numberArray);
+      return connections.map((p) => {
+        return {
+          from: this.indexToCity.get(p.from) || '',
+          to: this.indexToCity.get(p.to) || '',
+        };
+      });
+    } else {
+      return [];
+    }
+  }
 }

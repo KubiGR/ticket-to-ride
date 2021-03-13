@@ -45,30 +45,27 @@ test('Houston, Phoenix, Denver', () => {
   ).toEqual(['Houston', 'Dallas', 'Oklahoma City', 'Denver', 'Phoenix']);
 });
 
-test('SpanningTreeWouldBebetter!', () => {
+test('findSpanningTree', () => {
   const gameNetwork = new GameNetwork();
   gameNetwork.parseConnections();
-  expect(
-    gameNetwork.getShortestPathArray([
-      'Winnipeg',
-      'Duluth',
-      'Oklahoma City',
-      'El Paso',
-      'Toronto',
-      'New Orleans',
-    ]),
-  ).toEqual([
+  const solution = gameNetwork.getMinSpanningTreeOfShortestRoutes([
     'Winnipeg',
     'Duluth',
-    'Sault St. Marie',
-    'Toronto',
-    'Pittsburgh',
-    'Raleigh',
-    'Atlanta',
-    'New Orleans',
-    'Houston',
-    'Dallas',
     'Oklahoma City',
     'El Paso',
+    'Toronto',
+    'New Orleans',
+  ]);
+  expect(solution).toEqual([
+    { from: 'Winnipeg', to: 'Duluth' },
+    { from: 'Duluth', to: 'Sault St. Marie' },
+    { from: 'Sault St. Marie', to: 'Toronto' },
+    { from: 'Oklahoma City', to: 'El Paso' },
+    { from: 'Oklahoma City', to: 'Dallas' },
+    { from: 'Dallas', to: 'Houston' },
+    { from: 'Houston', to: 'New Orleans' },
+    { from: 'Duluth', to: 'Omaha' },
+    { from: 'Omaha', to: 'Kansas City' },
+    { from: 'Kansas City', to: 'Oklahoma City' },
   ]);
 });
