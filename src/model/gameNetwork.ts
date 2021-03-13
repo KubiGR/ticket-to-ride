@@ -53,4 +53,17 @@ export class GameNetwork {
       return [];
     }
   }
+
+  getShortestPathArray(cities: string[]): string[] {
+    if (this.graph) {
+      const numberArray = cities.map((c) => this.cityIndex.get(c) || -1);
+      if (numberArray.includes(-1)) {
+        throw new Error('Unknown city');
+      }
+      const path = this.graph.pathArray(numberArray);
+      return path.map((p) => this.indexToCity.get(p) || '');
+    } else {
+      return [];
+    }
+  }
 }
