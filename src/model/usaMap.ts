@@ -1,0 +1,22 @@
+import data from '../data/usaConnections.json';
+import { Connection } from './connection';
+import { TrackColor } from './trackColor';
+
+export function getUSAConnectionsFromJSON(): Connection[] {
+  const connections: Connection[] = [];
+
+  data.forEach((d) => {
+    const connection: Connection = new Connection(
+      { name: d.from },
+      { name: d.to },
+      d.length,
+      TrackColor[d.color1 as keyof typeof TrackColor],
+    );
+    if (d.color2) {
+      connection.color2 = TrackColor[d.color2 as keyof typeof TrackColor];
+    }
+    connections.push(connection);
+  });
+
+  return connections;
+}
