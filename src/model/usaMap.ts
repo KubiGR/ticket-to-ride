@@ -2,19 +2,10 @@ import data from '../data/usaConnections.json';
 import { Connection } from './connection';
 import { TrackColor } from './trackColor';
 
-export const { cities, connections } = getFromJSON();
-
-function getFromJSON(): { cities: string[]; connections: Connection[] } {
-  const cities: string[] = [];
+export function getUSAConnectionsFromJSON(): Connection[] {
   const connections: Connection[] = [];
 
   data.forEach((d) => {
-    if (!cities.includes(d.from)) {
-      cities.push(d.from);
-    }
-    if (!cities.includes(d.to)) {
-      cities.push(d.to);
-    }
     const connection: Connection = new Connection(
       { name: d.from },
       { name: d.to },
@@ -27,5 +18,5 @@ function getFromJSON(): { cities: string[]; connections: Connection[] } {
     connections.push(connection);
   });
 
-  return { cities: cities, connections: connections };
+  return connections;
 }

@@ -1,7 +1,5 @@
-import { connections } from 'model/usaMap';
+import { getUSAConnectionsFromJSON } from 'model/usaMap';
 import { Edge, Graph } from './alg/floydwarshall';
-
-const usaConnections = connections;
 
 export class GameNetwork {
   cityIndex: Map<string, number> = new Map();
@@ -9,6 +7,8 @@ export class GameNetwork {
   graph: Graph | undefined;
 
   parseConnections(): void {
+    const usaConnections = getUSAConnectionsFromJSON();
+
     const connections: Map<string, Map<string, number>> = new Map();
     const edges: Edge[] = [];
     let numNodes = 0;

@@ -1,6 +1,6 @@
-import { cities, connections } from 'model/usaMap';
+import { getUSAConnectionsFromJSON } from 'model/usaMap';
 
 test('readUsaConnections', () => {
-  expect(cities.length).toBe(36);
+  const connections = getUSAConnectionsFromJSON();
   expect(connections.length).toBe(78);
 });

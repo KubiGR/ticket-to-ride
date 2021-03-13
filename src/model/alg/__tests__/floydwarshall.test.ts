@@ -19,3 +19,17 @@ test('floyd', () => {
 
   expect(path).toEqual([0, 2, 4, 3]);
 });
+
+test('not connected', () => {
+  const numNodes = 4;
+  const edges: Edge[] = [
+    { from: 0, to: 1, distance: 4 },
+    { from: 2, to: 3, distance: 7 },
+  ];
+  const graph = new Graph(numNodes, edges);
+
+  graph.floydWarshall();
+  const path = graph.path(0, 3);
+
+  expect(path).toEqual([]);
+});
