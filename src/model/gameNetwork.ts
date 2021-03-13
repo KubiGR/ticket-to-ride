@@ -1,10 +1,11 @@
 import { getUSAConnectionsFromJSON } from 'model/usaMap';
-import { Edge, Graph } from './alg/floydwarshall';
+import { Edge } from './alg/edge';
+import { FloydWarshall } from './alg/floydwarshall';
 
 export class GameNetwork {
   cityIndex: Map<string, number> = new Map();
   indexToCity: Map<number, string> = new Map();
-  graph: Graph | undefined;
+  graph: FloydWarshall | undefined;
 
   parseConnections(): void {
     const usaConnections = getUSAConnectionsFromJSON();
@@ -37,14 +38,14 @@ export class GameNetwork {
         distance: d.length,
       });
     });
-    this.graph = new Graph(numNodes, edges);
+    this.graph = new FloydWarshall(numNodes, edges);
 
     this.graph.floydWarshall();
   }
 
   getShortestPath(from: string, to: string): string[] {
     if (this.graph && this.cityIndex.has(from) && this.cityIndex.has(to)) {
-      const path = this.graph.path(
+      const path = this.graph.shortestPath(
         this.cityIndex.get(from) || -1,
         this.cityIndex.get(to) || -1,
       );

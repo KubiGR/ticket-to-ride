@@ -1,4 +1,5 @@
-import { Edge, Graph } from '../kruskal';
+import { Edge } from '../edge';
+import { Kruskal } from '../kruskal';
 
 test('kruskal', () => {
   const numNodes = 6;
@@ -13,7 +14,7 @@ test('kruskal', () => {
     { from: 3, to: 5, distance: 4 },
     { from: 4, to: 5, distance: 5 },
   ];
-  const g = new Graph(numNodes, edges);
+  const g = new Kruskal(numNodes, edges);
   const spanningTree = g.kruskal();
 
   expect(spanningTree.length).toBe(5);

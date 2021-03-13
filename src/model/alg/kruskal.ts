@@ -1,18 +1,12 @@
 import { DisjointSet } from './disjointSet';
+import { Edge } from './edge';
+import { Graph } from './graph';
 
-export interface Edge {
-  from: number;
-  to: number;
-  distance: number;
-}
-
-export class Graph {
-  numNodes: number;
-  edges: Edge[];
+export class Kruskal {
+  graph: Graph;
 
   constructor(numNodes: number, edges: Edge[]) {
-    this.numNodes = numNodes;
-    this.edges = edges;
+    this.graph = new Graph(numNodes, edges);
   }
 
   /**
@@ -21,13 +15,13 @@ export class Graph {
    * @returns
    */
   kruskal(): Edge[] {
-    this.edges.sort(function (a, b) {
+    this.graph.edges.sort(function (a, b) {
       return a.distance - b.distance;
     });
     const f: Edge[] = [];
-    const ds = new DisjointSet(this.numNodes);
+    const ds = new DisjointSet(this.graph.numNodes);
 
-    this.edges.forEach((edge) => {
+    this.graph.edges.forEach((edge) => {
       const findFrom = ds.find(edge.from);
       const findTo = ds.find(edge.to);
       if (findFrom != findTo) {

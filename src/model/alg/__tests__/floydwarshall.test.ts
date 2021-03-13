@@ -1,4 +1,5 @@
-import { Edge, Graph } from '../floydwarshall';
+import { Edge } from '../edge';
+import { FloydWarshall } from '../floydwarshall';
 
 test('floyd', () => {
   const numNodes = 5;
@@ -12,10 +13,10 @@ test('floyd', () => {
     { from: 2, to: 4, distance: 1 },
     { from: 4, to: 3, distance: 4 },
   ];
-  const graph = new Graph(numNodes, edges);
+  const graph = new FloydWarshall(numNodes, edges);
 
   graph.floydWarshall();
-  const path = graph.path(0, 3);
+  const path = graph.shortestPath(0, 3);
 
   expect(path).toEqual([0, 2, 4, 3]);
 });
@@ -26,10 +27,10 @@ test('not connected', () => {
     { from: 0, to: 1, distance: 4 },
     { from: 2, to: 3, distance: 7 },
   ];
-  const graph = new Graph(numNodes, edges);
+  const graph = new FloydWarshall(numNodes, edges);
 
   graph.floydWarshall();
-  const path = graph.path(0, 3);
+  const path = graph.shortestPath(0, 3);
 
   expect(path).toEqual([]);
 });
@@ -46,7 +47,7 @@ test('floydArray', () => {
     { from: 2, to: 4, distance: 1 },
     { from: 4, to: 3, distance: 4 },
   ];
-  const graph = new Graph(numNodes, edges);
+  const graph = new FloydWarshall(numNodes, edges);
 
   graph.floydWarshall();
   const path = graph.pathArray([0, 3, 1]);
@@ -60,7 +61,7 @@ test('not connected array', () => {
     { from: 0, to: 1, distance: 4 },
     { from: 2, to: 3, distance: 7 },
   ];
-  const graph = new Graph(numNodes, edges);
+  const graph = new FloydWarshall(numNodes, edges);
 
   graph.floydWarshall();
   const path = graph.pathArray([0, 3, 1]);
