@@ -2,7 +2,7 @@ import { GameNetwork } from 'model/gameNetwork';
 
 test('city', () => {
   const gameNetwork = new GameNetwork();
-  gameNetwork.getDataFromJSON();
+  gameNetwork.parseConnections();
   expect(gameNetwork.getShortestPath('Los Angeles', 'Denver')).toEqual([
     'Los Angeles',
     'Phoenix',
