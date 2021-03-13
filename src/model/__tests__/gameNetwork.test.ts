@@ -1,4 +1,4 @@
-import { GameNetwork } from 'model/gameNetwork';
+import { GameNetwork } from '../gameNetwork';
 
 test('city', () => {
   const gameNetwork = new GameNetwork();

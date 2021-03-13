@@ -1,7 +1,7 @@
-import { City } from 'model/city';
-import { Connection } from 'model/connection';
-import { Route } from 'model/route';
-import { TrackColor } from 'model/trackColor';
+import { City } from '../city';
+import { Connection } from '../connection';
+import { Route } from '../route';
+import { TrackColor } from '../trackColor';
 
 test('route1', () => {
   const from = new City('from');

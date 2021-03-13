@@ -1,4 +1,4 @@
-import { getUSAConnectionsFromJSON } from 'model/usaMap';
+import { getUSAConnectionsFromJSON } from './usaMap';
 import { Edge } from './alg/edge';
 import { FloydWarshall } from './alg/floydwarshall';
 
