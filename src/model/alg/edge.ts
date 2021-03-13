@@ -1,5 +1,5 @@
-export interface Edge {
-  from: number;
-  to: number;
+export interface Edge<T> {
+  from: T;
+  to: T;
   distance: number;
 }

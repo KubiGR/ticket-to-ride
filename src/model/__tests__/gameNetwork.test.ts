@@ -64,16 +64,16 @@ test('findSpanningTree', () => {
     'New Orleans',
   ]);
   expect(solution).toEqual([
-    { from: 'Winnipeg', to: 'Duluth' },
-    { from: 'Duluth', to: 'Sault St. Marie' },
-    { from: 'Sault St. Marie', to: 'Toronto' },
-    { from: 'Oklahoma City', to: 'El Paso' },
-    { from: 'Oklahoma City', to: 'Dallas' },
-    { from: 'Dallas', to: 'Houston' },
-    { from: 'Houston', to: 'New Orleans' },
-    { from: 'Duluth', to: 'Omaha' },
-    { from: 'Omaha', to: 'Kansas City' },
-    { from: 'Kansas City', to: 'Oklahoma City' },
+    { from: 'Winnipeg', to: 'Duluth', distance: 4 },
+    { from: 'Duluth', to: 'Omaha', distance: 2 },
+    { from: 'Omaha', to: 'Kansas City', distance: 1 },
+    { from: 'Kansas City', to: 'Oklahoma City', distance: 2 },
+    { from: 'Duluth', to: 'Sault St. Marie', distance: 3 },
+    { from: 'Sault St. Marie', to: 'Toronto', distance: 2 },
+    { from: 'Oklahoma City', to: 'El Paso', distance: 5 },
+    { from: 'Oklahoma City', to: 'Dallas', distance: 2 },
+    { from: 'Dallas', to: 'Houston', distance: 1 },
+    { from: 'Houston', to: 'New Orleans', distance: 2 },
   ]);
 });
 

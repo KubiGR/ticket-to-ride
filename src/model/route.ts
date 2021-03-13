@@ -23,7 +23,7 @@ export class Route {
 
   trainLength(): number {
     return this.connections
-      .map((c: Connection) => c.length)
+      .map((c: Connection) => c.distance)
       .reduce((acc, cur) => acc + cur);
   }
 

@@ -3,7 +3,7 @@ import { Kruskal } from '../kruskal';
 
 test('kruskal', () => {
   const numNodes = 6;
-  const edges: Edge[] = [
+  const edges: Edge<number>[] = [
     { from: 0, to: 1, distance: 1 },
     { from: 0, to: 2, distance: 5 },
     { from: 0, to: 4, distance: 7 },

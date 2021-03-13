@@ -7,12 +7,12 @@ import { Graph } from './graph';
  * https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
  */
 export class FloydWarshall {
-  graph: Graph;
+  graph: Graph<number>;
 
   distance: number[][] = [];
   next: number[][] = [];
 
-  constructor(numNodes: number, edges: Edge[]) {
+  constructor(numNodes: number, edges: Edge<number>[]) {
     this.graph = new Graph(numNodes, edges);
     for (let i = 0; i < this.graph.numNodes; i++) {
       this.distance.push([]);
@@ -98,10 +98,8 @@ export class FloydWarshall {
    * @param nodeArray
    * @returns
    */
-  spanningTreeOfShortestPaths(
-    nodeArray: number[],
-  ): { from: number; to: number }[] {
-    const kruskalEdges: Edge[] = [];
+  spanningTreeOfShortestPaths(nodeArray: number[]): Edge<number>[] {
+    const kruskalEdges: Edge<number>[] = [];
     for (let i = 0; i < nodeArray.length; i++) {
       for (let j = i + 1; j < nodeArray.length; j++) {
         kruskalEdges.push({
@@ -113,14 +111,18 @@ export class FloydWarshall {
     }
     const kruskalGraph = new Kruskal(nodeArray.length, kruskalEdges);
     const solutionEdges = kruskalGraph.kruskal();
-    const connections: { from: number; to: number }[] = [];
+    const connections: Edge<number>[] = [];
     solutionEdges.forEach((solutionEdge) => {
       const shortestPath = this.shortestPath(
         nodeArray[solutionEdge.from],
         nodeArray[solutionEdge.to],
       );
       for (let i = 0; i < shortestPath.length - 1; i++) {
-        connections.push({ from: shortestPath[i], to: shortestPath[i + 1] });
+        connections.push({
+          from: shortestPath[i],
+          to: shortestPath[i + 1],
+          distance: this.distance[shortestPath[i]][shortestPath[i + 1]],
+        });
       }
     });
 

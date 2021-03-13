@@ -11,7 +11,7 @@ export class GameNetwork {
     const usaConnections = getUSAConnectionsFromJSON();
 
     const connections: Map<string, Map<string, number>> = new Map();
-    const edges: Edge[] = [];
+    const edges: Edge<number>[] = [];
     let numNodes = 0;
     usaConnections.forEach((d) => {
       if (!connections.has(d.from.name)) {
@@ -21,7 +21,7 @@ export class GameNetwork {
         numNodes++;
       }
       const fromMap = connections.get(d.from.name);
-      fromMap?.set(d.to.name, d.length);
+      fromMap?.set(d.to.name, d.distance);
 
       if (!connections.has(d.to.name)) {
         connections.set(d.to.name, new Map());
@@ -30,12 +30,12 @@ export class GameNetwork {
         numNodes++;
       }
       const toMap = connections.get(d.to.name);
-      toMap?.set(d.from.name, d.length);
+      toMap?.set(d.from.name, d.distance);
 
       edges.push({
         from: this.cityIndex.get(d.from.name) || 0,
         to: this.cityIndex.get(d.to.name) || 0,
-        distance: d.length,
+        distance: d.distance,
       });
     });
     this.graph = new FloydWarshall(numNodes, edges);
@@ -68,9 +68,7 @@ export class GameNetwork {
     }
   }
 
-  getMinSpanningTreeOfShortestRoutes(
-    cities: string[],
-  ): { from: string; to: string }[] {
+  getMinSpanningTreeOfShortestRoutes(cities: string[]): Edge<string>[] {
     if (this.graph) {
       const numberArray = cities.map((c) => this.cityIndex.get(c) || -1);
       if (numberArray.includes(-1)) {
@@ -81,6 +79,7 @@ export class GameNetwork {
         return {
           from: this.indexToCity.get(p.from) || '',
           to: this.indexToCity.get(p.to) || '',
+          distance: p.distance,
         };
       });
     } else {

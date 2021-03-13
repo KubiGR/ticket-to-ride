@@ -3,9 +3,9 @@ import { Edge } from './edge';
 import { Graph } from './graph';
 
 export class Kruskal {
-  graph: Graph;
+  graph: Graph<number>;
 
-  constructor(numNodes: number, edges: Edge[]) {
+  constructor(numNodes: number, edges: Edge<number>[]) {
     this.graph = new Graph(numNodes, edges);
   }
 
@@ -14,11 +14,11 @@ export class Kruskal {
    *
    * @returns
    */
-  kruskal(): Edge[] {
+  kruskal(): Edge<number>[] {
     this.graph.edges.sort(function (a, b) {
       return a.distance - b.distance;
     });
-    const f: Edge[] = [];
+    const f: Edge<number>[] = [];
     const ds = new DisjointSet(this.graph.numNodes);
 
     this.graph.edges.forEach((edge) => {

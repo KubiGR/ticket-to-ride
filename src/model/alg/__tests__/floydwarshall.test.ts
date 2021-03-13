@@ -3,7 +3,7 @@ import { FloydWarshall } from '../floydwarshall';
 
 test('floyd', () => {
   const numNodes = 5;
-  const edges: Edge[] = [
+  const edges: Edge<number>[] = [
     { from: 0, to: 1, distance: 4 },
     { from: 0, to: 2, distance: 7 },
     { from: 0, to: 3, distance: 14 },
@@ -23,7 +23,7 @@ test('floyd', () => {
 
 test('not connected', () => {
   const numNodes = 4;
-  const edges: Edge[] = [
+  const edges: Edge<number>[] = [
     { from: 0, to: 1, distance: 4 },
     { from: 2, to: 3, distance: 7 },
   ];
@@ -37,7 +37,7 @@ test('not connected', () => {
 
 test('floydArray', () => {
   const numNodes = 5;
-  const edges: Edge[] = [
+  const edges: Edge<number>[] = [
     { from: 0, to: 1, distance: 4 },
     { from: 0, to: 2, distance: 7 },
     { from: 0, to: 3, distance: 14 },
@@ -57,7 +57,7 @@ test('floydArray', () => {
 
 test('not connected array', () => {
   const numNodes = 4;
-  const edges: Edge[] = [
+  const edges: Edge<number>[] = [
     { from: 0, to: 1, distance: 4 },
     { from: 2, to: 3, distance: 7 },
   ];
