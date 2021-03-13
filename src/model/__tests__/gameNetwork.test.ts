@@ -44,3 +44,31 @@ test('Houston, Phoenix, Denver', () => {
     gameNetwork.getShortestPathArray(['Houston', 'Phoenix', 'Denver']),
   ).toEqual(['Houston', 'Dallas', 'Oklahoma City', 'Denver', 'Phoenix']);
 });
+
+test('SpanningTreeWouldBebetter!', () => {
+  const gameNetwork = new GameNetwork();
+  gameNetwork.parseConnections();
+  expect(
+    gameNetwork.getShortestPathArray([
+      'Winnipeg',
+      'Duluth',
+      'Oklahoma City',
+      'El Paso',
+      'Toronto',
+      'New Orleans',
+    ]),
+  ).toEqual([
+    'Winnipeg',
+    'Duluth',
+    'Sault St. Marie',
+    'Toronto',
+    'Pittsburgh',
+    'Raleigh',
+    'Atlanta',
+    'New Orleans',
+    'Houston',
+    'Dallas',
+    'Oklahoma City',
+    'El Paso',
+  ]);
+});
