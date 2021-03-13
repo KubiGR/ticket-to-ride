@@ -29,7 +29,7 @@ test('cities', () => {
   ).toEqual(['Los Angeles', 'Phoenix', 'Denver', 'Omaha', 'Chicago']);
 });
 
-test('citiesMore', () => {
+test('getShortestPathArray of cities', () => {
   const gameNetwork = new GameNetwork();
   gameNetwork.parseConnections();
   expect(
@@ -37,12 +37,19 @@ test('citiesMore', () => {
   ).toEqual(['Calgary', 'Helena', 'Salt Lake City', 'Denver', 'Phoenix']);
 });
 
-test('Houston, Phoenix, Denver', () => {
+test('getShortestPathArray unknown cities', () => {
   const gameNetwork = new GameNetwork();
   gameNetwork.parseConnections();
-  expect(
-    gameNetwork.getShortestPathArray(['Houston', 'Phoenix', 'Denver']),
-  ).toEqual(['Houston', 'Dallas', 'Oklahoma City', 'Denver', 'Phoenix']);
+
+  expect(() => {
+    gameNetwork.getShortestPathArray(['What?', 'Phoenix', 'Denver']);
+  }).toThrow();
+});
+
+test('getShortestPathArray returns [] if parseConnections is not called', () => {
+  const gameNetwork = new GameNetwork();
+
+  expect(gameNetwork.getShortestPathArray(['Phoenix', 'Denver'])).toEqual([]);
 });
 
 test('findSpanningTree', () => {
@@ -68,4 +75,26 @@ test('findSpanningTree', () => {
     { from: 'Omaha', to: 'Kansas City' },
     { from: 'Kansas City', to: 'Oklahoma City' },
   ]);
+});
+
+test('findSpanningTree throws unknown city', () => {
+  const gameNetwork = new GameNetwork();
+  gameNetwork.parseConnections();
+  expect(() => {
+    gameNetwork.getMinSpanningTreeOfShortestRoutes([
+      'Duluth',
+      'Oklahoma City',
+      'What??',
+      'Toronto',
+      'New Orleans',
+    ]);
+  }).toThrow();
+});
+
+test('findSpanningTree returns [] if parseConnections is not called', () => {
+  const gameNetwork = new GameNetwork();
+
+  expect(
+    gameNetwork.getMinSpanningTreeOfShortestRoutes(['Phoenix', 'Denver']),
+  ).toEqual([]);
 });
