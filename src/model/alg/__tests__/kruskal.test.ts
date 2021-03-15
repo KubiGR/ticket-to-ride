@@ -1,28 +1,26 @@
 import { Edge } from '../edge';
-import { Kruskal } from '../kruskal';
+import { kruskal } from '../kruskal';
 
 test('kruskal', () => {
-  const numNodes = 6;
-  const edges: Edge<number>[] = [
-    { from: 0, to: 1, distance: 1 },
-    { from: 0, to: 2, distance: 5 },
-    { from: 0, to: 4, distance: 7 },
-    { from: 1, to: 2, distance: 2 },
-    { from: 1, to: 3, distance: 5 },
-    { from: 2, to: 5, distance: 8 },
-    { from: 3, to: 4, distance: 3 },
-    { from: 3, to: 5, distance: 4 },
-    { from: 4, to: 5, distance: 5 },
+  const edges: Edge<string>[] = [
+    { from: 'A', to: 'B', distance: 1 },
+    { from: 'A', to: 'C', distance: 5 },
+    { from: 'A', to: 'E', distance: 7 },
+    { from: 'B', to: 'C', distance: 2 },
+    { from: 'B', to: 'D', distance: 5 },
+    { from: 'C', to: 'F', distance: 8 },
+    { from: 'D', to: 'E', distance: 3 },
+    { from: 'D', to: 'F', distance: 4 },
+    { from: 'E', to: 'F', distance: 5 },
   ];
-  const g = new Kruskal(numNodes, edges);
-  const spanningTree = g.kruskal();
+  const spanningTree = kruskal(edges);
 
   expect(spanningTree.length).toBe(5);
   expect(spanningTree).toEqual([
-    { from: 0, to: 1, distance: 1 },
-    { from: 1, to: 2, distance: 2 },
-    { from: 3, to: 4, distance: 3 },
-    { from: 3, to: 5, distance: 4 },
-    { from: 1, to: 3, distance: 5 },
+    { from: 'A', to: 'B', distance: 1 },
+    { from: 'B', to: 'C', distance: 2 },
+    { from: 'D', to: 'E', distance: 3 },
+    { from: 'D', to: 'F', distance: 4 },
+    { from: 'B', to: 'D', distance: 5 },
   ]);
 });

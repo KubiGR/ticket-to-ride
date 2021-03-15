@@ -1,35 +1,29 @@
-import { DisjointSet } from './disjointSet';
+import { DisjointSet } from 'disjoint-set-ds';
 import { Edge } from './edge';
-import { Graph } from './graph';
 
-export class Kruskal {
-  graph: Graph<number>;
+/**
+ * https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
+ *
+ * @returns
+ */
+export function kruskal<T>(edges: Edge<T>[]): Edge<T>[] {
+  edges.sort(function (a, b) {
+    return a.distance - b.distance;
+  });
+  const f: Edge<T>[] = [];
+  const ds = new DisjointSet();
 
-  constructor(numNodes: number, edges: Edge<number>[]) {
-    this.graph = new Graph(numNodes, edges);
-  }
+  edges.forEach((edge) => {
+    ds.makeSet(edge.from);
+    ds.makeSet(edge.to);
+  });
 
-  /**
-   * https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
-   *
-   * @returns
-   */
-  kruskal(): Edge<number>[] {
-    this.graph.edges.sort(function (a, b) {
-      return a.distance - b.distance;
-    });
-    const f: Edge<number>[] = [];
-    const ds = new DisjointSet(this.graph.numNodes);
+  edges.forEach((edge) => {
+    if (ds.find(edge.from) !== ds.find(edge.to)) {
+      f.push(edge);
+      ds.union(ds.find(edge.from), ds.find(edge.to));
+    }
+  });
 
-    this.graph.edges.forEach((edge) => {
-      const findFrom = ds.find(edge.from);
-      const findTo = ds.find(edge.to);
-      if (findFrom != findTo) {
-        f.push(edge);
-        ds.union(findFrom, findTo);
-      }
-    });
-
-    return f;
-  }
+  return f;
 }

@@ -1,6 +1,6 @@
 import { permutator } from './permute';
 import { Edge } from './edge';
-import { Kruskal } from './kruskal';
+import { kruskal } from './kruskal';
 import { Graph } from './graph';
 
 /**
@@ -103,19 +103,17 @@ export class FloydWarshall {
     for (let i = 0; i < nodeArray.length; i++) {
       for (let j = i + 1; j < nodeArray.length; j++) {
         kruskalEdges.push({
-          from: i,
-          to: j,
+          from: nodeArray[i],
+          to: nodeArray[j],
           distance: this.distance[nodeArray[i]][nodeArray[j]],
         });
       }
     }
-    const kruskalGraph = new Kruskal(nodeArray.length, kruskalEdges);
-    const solutionEdges = kruskalGraph.kruskal();
     const connections: Edge<number>[] = [];
-    solutionEdges.forEach((solutionEdge) => {
+    kruskal(kruskalEdges).forEach((solutionEdge) => {
       const shortestPath = this.shortestPath(
-        nodeArray[solutionEdge.from],
-        nodeArray[solutionEdge.to],
+        solutionEdge.from,
+        solutionEdge.to,
       );
       for (let i = 0; i < shortestPath.length - 1; i++) {
         connections.push({
