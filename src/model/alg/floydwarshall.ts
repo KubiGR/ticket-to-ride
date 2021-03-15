@@ -1,6 +1,6 @@
 import { permutator } from './permute';
 import { Edge } from './edge';
-import { kruskal } from './kruskal';
+import { kruskal } from 'kruskal-mst';
 import { Graph } from './graph';
 
 /**
@@ -28,10 +28,10 @@ export class FloydWarshall {
       }
     }
     this.graph.edges.forEach((e) => {
-      this.distance[e.from][e.to] = e.distance;
+      this.distance[e.from][e.to] = e.weight;
       this.next[e.from][e.to] = e.to;
       // symmetrical
-      this.distance[e.to][e.from] = e.distance;
+      this.distance[e.to][e.from] = e.weight;
       this.next[e.to][e.from] = e.from;
     });
   }
@@ -105,7 +105,7 @@ export class FloydWarshall {
         kruskalEdges.push({
           from: nodeArray[i],
           to: nodeArray[j],
-          distance: this.distance[nodeArray[i]][nodeArray[j]],
+          weight: this.distance[nodeArray[i]][nodeArray[j]],
         });
       }
     }
@@ -119,7 +119,7 @@ export class FloydWarshall {
         connections.push({
           from: shortestPath[i],
           to: shortestPath[i + 1],
-          distance: this.distance[shortestPath[i]][shortestPath[i + 1]],
+          weight: this.distance[shortestPath[i]][shortestPath[i + 1]],
         });
       }
     });

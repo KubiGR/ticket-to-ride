@@ -21,7 +21,7 @@ export class GameNetwork {
         numNodes++;
       }
       const fromMap = connections.get(d.from.name);
-      fromMap?.set(d.to.name, d.distance);
+      fromMap?.set(d.to.name, d.weight);
 
       if (!connections.has(d.to.name)) {
         connections.set(d.to.name, new Map());
@@ -30,12 +30,12 @@ export class GameNetwork {
         numNodes++;
       }
       const toMap = connections.get(d.to.name);
-      toMap?.set(d.from.name, d.distance);
+      toMap?.set(d.from.name, d.weight);
 
       edges.push({
         from: this.cityIndex.get(d.from.name) || 0,
         to: this.cityIndex.get(d.to.name) || 0,
-        distance: d.distance,
+        weight: d.weight,
       });
     });
     this.graph = new FloydWarshall(numNodes, edges);
@@ -76,11 +76,12 @@ export class GameNetwork {
       }
       const connections = this.graph.spanningTreeOfShortestPaths(numberArray);
       return connections.map((p) => {
-        return {
+        const edge: Edge<string> = {
           from: this.indexToCity.get(p.from) || '',
           to: this.indexToCity.get(p.to) || '',
-          distance: p.distance,
+          weight: p.weight,
         };
+        return edge;
       });
     } else {
       return [];

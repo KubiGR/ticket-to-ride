@@ -1,3 +1,4 @@
+import { Edge } from '../alg/edge';
 import { GameNetwork } from '../gameNetwork';
 
 test('city', () => {
@@ -63,18 +64,19 @@ test('findSpanningTree', () => {
     'Toronto',
     'New Orleans',
   ]);
-  expect(solution).toEqual([
-    { from: 'Winnipeg', to: 'Duluth', distance: 4 },
-    { from: 'Duluth', to: 'Omaha', distance: 2 },
-    { from: 'Omaha', to: 'Kansas City', distance: 1 },
-    { from: 'Kansas City', to: 'Oklahoma City', distance: 2 },
-    { from: 'Duluth', to: 'Sault St. Marie', distance: 3 },
-    { from: 'Sault St. Marie', to: 'Toronto', distance: 2 },
-    { from: 'Oklahoma City', to: 'El Paso', distance: 5 },
-    { from: 'Oklahoma City', to: 'Dallas', distance: 2 },
-    { from: 'Dallas', to: 'Houston', distance: 1 },
-    { from: 'Houston', to: 'New Orleans', distance: 2 },
-  ]);
+  const expected: Edge<string>[] = [
+    { from: 'Winnipeg', to: 'Duluth', weight: 4 },
+    { from: 'Duluth', to: 'Omaha', weight: 2 },
+    { from: 'Omaha', to: 'Kansas City', weight: 1 },
+    { from: 'Kansas City', to: 'Oklahoma City', weight: 2 },
+    { from: 'Duluth', to: 'Sault St. Marie', weight: 3 },
+    { from: 'Sault St. Marie', to: 'Toronto', weight: 2 },
+    { from: 'Oklahoma City', to: 'El Paso', weight: 5 },
+    { from: 'Oklahoma City', to: 'Dallas', weight: 2 },
+    { from: 'Dallas', to: 'Houston', weight: 1 },
+    { from: 'Houston', to: 'New Orleans', weight: 2 },
+  ];
+  expect(solution).toEqual(expected);
 });
 
 test('findSpanningTree throws unknown city', () => {

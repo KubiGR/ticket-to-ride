@@ -5,14 +5,14 @@ import { Edge } from './alg/edge';
 export class Connection implements Edge<City> {
   from: City;
   to: City;
-  distance: number;
+  weight: number;
   color1: TrackColor;
   color2: TrackColor | undefined;
 
   constructor(from: City, to: City, length: number, color1: TrackColor) {
     this.from = from;
     this.to = to;
-    this.distance = length;
+    this.weight = length;
     this.color1 = color1;
   }
 

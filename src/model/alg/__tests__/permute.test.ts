@@ -1,5 +1,11 @@
 import { permutator } from '../permute';
 
+test('permute0', () => {
+  const arr: number[] = [];
+  const permuted: number[][] = [[]];
+  expect(permutator(arr)).toEqual(permuted);
+});
+
 test('permute2', () => {
   const arr = [1, 2];
   const permuted = [
