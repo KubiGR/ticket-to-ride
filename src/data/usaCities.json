@@ -1,70 +1,38 @@
 [
-	"Atlanta",
-	"Boston",
-	"Calgary",
-	"Charleston",
-	"Chicago",
-	"Duluth",
-	"Dallas",
-  {
-    "city": "Denver",
-    "posX": 0.381,
-    "posY": 0.352
-  },
-	"El Paso",
-  {
-    "city": "Helena",
-    "posX": 0.320,
-    "posY": 0.190
-  },
-	"Houston",
-	"Kansas City",
-	"Little Rock",
-	"Los Angeles",
-	"Las Vegas",
-	"Miami",
-	"Montreal",
-	"Nashville",
-	"New York",
-	"New Orleans",
-	"Oklahoma City",
-	"Omaha",
-	"Phoenix",
-	"Pittsburgh",
-  {
-    "city": "Portland",
-    "posX": 0.053,
-    "posY": 0.181
-  },
-	"Raleigh",
-  {
-    "city": "Salt Lake City",
-    "posX": 0.246,
-    "posY": 0.320
-  },
-	"Santa Fe",
-	"Saint Louis",
-  {
-    "city": "San Francisco",
-    "posX": 0.038,
-    "posY": 0.387
-  },
-	"Sault St. Marie",
-  {
-    "city": "Seattle",
-    "posX": 0.075,
-    "posY": 0.128
-  },
-	"Toronto",
-	{
-    "city": "Vancouver",
-    "posX": 0.079,
-    "posY": 0.071
-  },
-  {
-    "city": "Winnipeg",
-    "posX": 0.451,
-    "posY": 0.064
-  },
-	"Washington"
+  { "name": "Atlanta", "posx": 0.799, "posy": 0.4116 },
+  { "name": "Boston", "posx": 0.975, "posy": 0.108 },
+  { "name": "Calgary", "posx": 0.215, "posy": 0.053 },
+  { "name": "Charleston", "posx": 0.898, "posy": 0.42 },
+  { "name": "Chicago", "posx": 0.696, "posy": 0.25 },
+  { "name": "Duluth", "posx": 0.568, "posy": 0.184 },
+  { "name": "Dallas", "posx": 0.556, "posy": 0.515 },
+  { "name": "Denver", "posX": 0.381, "posY": 0.352 },
+  { "name": "El Paso", "posx": 0.368, "posy": 0.539 },
+  { "name": "Helena", "posX": 0.32, "posY": 0.19 },
+  { "name": "Houston", "posx": 0.6, "posy": 0.556 },
+  { "name": "Kansas name", "posx": 0.557, "posy": 0.333 },
+  { "name": "Little Rock", "posx": 0.631, "posy": 0.428 },
+  { "name": "Los Angeles", "posx": 0.118, "posy": 0.497 },
+  { "name": "Las Vegas", "posx": 0.1858, "posy": 0.434 },
+  { "name": "Miami", "posx": 0.931, "posy": 0.584 },
+  { "name": "Montreal", "posx": 0.901, "posy": 0.047 },
+  { "name": "Nashville", "posx": 0.746, "posy": 0.375 },
+  { "name": "New York", "posx": 0.9209, "posy": 0.187 },
+  { "name": "New Orleans", "posx": 0.701, "posy": 0.55 },
+  { "name": "Oklahoma name", "posx": 0.536, "posy": 0.425 },
+  { "name": "Omaha", "posx": 0.534, "posy": 0.281 },
+  { "name": "Phoenix", "posx": 0.245, "posy": 0.502 },
+  { "name": "Pittsburgh", "posx": 0.832, "posy": 0.233 },
+  { "name": "Portland", "posX": 0.053, "posY": 0.181 },
+  { "name": "Raleigh", "posX": 0.868, "posY": 0.351 },
+  { "name": "Salt Lake name", "posX": 0.246, "posY": 0.32 },
+  { "name": "Santa Fe", "posX": 0.374, "posY": 0.447 },
+  { "name": "Saint Louis", "posX": 0.648, "posY": 0.334 },
+  { "name": "San Francisco", "posX": 0.038, "posY": 0.387 },
+  { "name": "Sault St. Marie", "posX": 0.7, "posY": 0.114 },
+  { "name": "Seattle", "posX": 0.075, "posY": 0.128 },
+  { "name": "Toronto", "posX": 0.814, "posY": 0.138 },
+  { "name": "Vancouver", "posX": 0.079, "posY": 0.071 },
+  { "name": "Winnipeg", "posX": 0.451, "posY": 0.064 },
+  { "name": "Washington", "posX": 0.93, "posY": 0.28 }
 ]
