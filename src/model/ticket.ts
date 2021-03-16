@@ -1,5 +1,5 @@
-import { City } from './city';
-import { Route } from './route';
+import { City } from 'model/city';
+import { Route } from 'model/route';
 
 export class Ticket {
   from: City;

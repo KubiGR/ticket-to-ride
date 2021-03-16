@@ -1,5 +1,5 @@
-import { Edge } from '../alg/edge';
-import { GameNetwork } from '../gameNetwork';
+import { Edge } from 'model/alg/edge';
+import { GameNetwork } from 'model/gameNetwork';
 
 test('city', () => {
   const gameNetwork = new GameNetwork();

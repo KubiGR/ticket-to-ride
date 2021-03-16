@@ -1,6 +1,6 @@
-import { City } from './city';
-import { TrackColor } from './trackColor';
-import { Edge } from './alg/edge';
+import { City } from 'model/city';
+import { TrackColor } from 'model/trackColor';
+import { Edge } from 'model/alg/edge';
 
 export class Connection implements Edge<City> {
   from: City;

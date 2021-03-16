@@ -1,8 +1,8 @@
-import { City } from '../city';
-import { Connection } from '../connection';
-import { Route } from '../route';
-import { Ticket } from '../ticket';
-import { TrackColor } from '../trackColor';
+import { City } from 'model/city';
+import { Connection } from 'model/connection';
+import { Route } from 'model/route';
+import { Ticket } from 'model/ticket';
+import { TrackColor } from 'model/trackColor';
 
 test('mission', () => {
   const mission = new Ticket(new City('a'), new City('b'), 3);

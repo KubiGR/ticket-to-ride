@@ -1,4 +1,4 @@
-import { getUSAConnectionsFromJSON } from '../usaMap';
+import { getUSAConnectionsFromJSON } from 'model/usaMap';
 
 test('readUsaConnections', () => {
   const connections = getUSAConnectionsFromJSON();
