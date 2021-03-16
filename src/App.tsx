@@ -2,19 +2,13 @@ import React, { useRef } from 'react';
 import './App.css';
 import { Stage, Layer, Image, Circle } from 'react-konva';
 import useImage from 'use-image';
-import PropTypes from 'prop-types';
 import useResizeObserver from 'use-resize-observer';
+import usaMap from './assets/usa-map.jpg';
 
 type MapProps = { width?: number; height?: number };
 const Map = ({ width, height }: MapProps): JSX.Element => {
-  const url = './usa-map.jpg';
-  const [image] = useImage(url);
+  const [image] = useImage(usaMap);
   return <Image image={image} width={width} height={height} />;
-};
-
-Map.propTypes = {
-  width: PropTypes.number,
-  height: PropTypes.number,
 };
 
 const App = (): JSX.Element => {
@@ -29,16 +23,6 @@ const App = (): JSX.Element => {
     y: 0.11,
     s: 0.008,
   };
-  // console.log(targetRef.current?.clientWidth);
-
-  // useEffect(() => {
-  //   console.log('useEffect');
-  //   if (targetRef.current) {
-  //     setWidth(targetRef.current.clientWidth);
-  //     console.log('useEffect');
-  //     console.log(width);
-  //   }
-  // });
 
   return (
     <div ref={ref}>

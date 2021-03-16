@@ -2,6 +2,7 @@
     "compilerOptions": {
       "baseUrl": "src",
       "lib": ["dom", "dom.iterable", "esnext"],
+      "checkJs": true,
       "allowJs": true,
       "allowSyntheticDefaultImports": true,
       "skipLibCheck": true,
@@ -14,5 +15,5 @@
       "noEmit": true,
       "jsx": "react"
     },
-    "include": ["src"]
+    "include": ["src", "index.d.ts"]
   }
