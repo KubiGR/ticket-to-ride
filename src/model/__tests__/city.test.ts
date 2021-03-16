@@ -1,4 +1,4 @@
-import { City } from '../city';
+import { City } from 'model/city';
 
 test('city', () => {
   const city = new City('name');

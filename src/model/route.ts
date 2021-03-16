@@ -1,4 +1,4 @@
-import { Connection } from './connection';
+import { Connection } from 'model/connection';
 
 export class Route {
   connections: Connection[];

@@ -1,6 +1,6 @@
-import { getUSAConnectionsFromJSON } from './usaMap';
-import { Edge } from './alg/edge';
-import { FloydWarshall } from './alg/floydwarshall';
+import { getUSAConnectionsFromJSON } from 'model/usaMap';
+import { Edge } from 'model/alg/edge';
+import { FloydWarshall } from 'model/alg/floydwarshall';
 
 export class GameNetwork {
   graph: FloydWarshall<string> | undefined;

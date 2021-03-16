@@ -1,6 +1,6 @@
-import data from '../data/usaConnections.json';
-import { Connection } from './connection';
-import { TrackColor } from './trackColor';
+import data from 'data/usaConnections.json';
+import { Connection } from 'model/connection';
+import { TrackColor } from 'model/trackColor';
 
 export function getUSAConnectionsFromJSON(): Connection[] {
   const connections: Connection[] = [];
