@@ -449,13 +449,21 @@
     "to": "Seattle",
     "length": 1,
     "color1": "Gray",
-    "color2": "Gray"
+    "color2": "Gray",
+    "posX1": 0.066,
+    "posY1": 0.081,
+    "posX2": 0.079,
+    "posY2": 0.081,
+    "rot": 90
   },
   {
     "from": "Vancouver",
     "to": "Calgary",
     "length": 3,
-    "color1": "Gray"
+    "color1": "Gray",
+    "posX1": 0.093,
+    "posY1": 0.059,
+    "rot": 354
   },
   {
     "from": "Washington",

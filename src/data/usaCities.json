@@ -1,0 +1,70 @@
+[
+	"Atlanta",
+	"Boston",
+	"Calgary",
+	"Charleston",
+	"Chicago",
+	"Duluth",
+	"Dallas",
+  {
+    "city": "Denver",
+    "posX": 0.381,
+    "posY": 0.352
+  },
+	"El Paso",
+  {
+    "city": "Helena",
+    "posX": 0.320,
+    "posY": 0.190
+  },
+	"Houston",
+	"Kansas City",
+	"Little Rock",
+	"Los Angeles",
+	"Las Vegas",
+	"Miami",
+	"Montreal",
+	"Nashville",
+	"New York",
+	"New Orleans",
+	"Oklahoma City",
+	"Omaha",
+	"Phoenix",
+	"Pittsburgh",
+  {
+    "city": "Portland",
+    "posX": 0.053,
+    "posY": 0.181
+  },
+	"Raleigh",
+  {
+    "city": "Salt Lake City",
+    "posX": 0.246,
+    "posY": 0.320
+  },
+	"Santa Fe",
+	"Saint Louis",
+  {
+    "city": "San Francisco",
+    "posX": 0.038,
+    "posY": 0.387
+  },
+	"Sault St. Marie",
+  {
+    "city": "Seattle",
+    "posX": 0.075,
+    "posY": 0.128
+  },
+	"Toronto",
+	{
+    "city": "Vancouver",
+    "posX": 0.079,
+    "posY": 0.071
+  },
+  {
+    "city": "Winnipeg",
+    "posX": 0.451,
+    "posY": 0.064
+  },
+	"Washington"
+]
