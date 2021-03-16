@@ -1,6 +1,6 @@
 import { City } from 'model/city';
 import { TrackColor } from 'model/trackColor';
-import { Edge } from 'model/alg/edge';
+import { Edge } from 'floyd-warshall-shortest';
 
 export class Connection implements Edge<City> {
   from: City;

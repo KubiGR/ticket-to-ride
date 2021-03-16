@@ -1,4 +1,4 @@
-import { Edge } from 'model/alg/edge';
+import { Edge } from 'floyd-warshall-shortest';
 import { GameNetwork } from 'model/gameNetwork';
 
 test('city', () => {

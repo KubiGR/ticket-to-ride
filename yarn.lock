@@ -3689,6 +3689,11 @@ flatted@^3.1.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.1.1.tgz#c4b489e80096d9df1dfc97c79871aea7c617c469"
   integrity sha512-zAoAQiudy+r5SvnSw3KJy5os/oRJYHzrzja/tBDqrZtNhUw8bt6y8OBzMWcjWr+8liV8Eb6yOhw8WZ7VFZ5ZzA==
 
+floyd-warshall-shortest@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/floyd-warshall-shortest/-/floyd-warshall-shortest-1.0.0.tgz#932276b237e12d8f67f51870e2ffb438d844e1b5"
+  integrity sha512-cUFCWL1PHw1bZbJeJiGtiegH9+2Vfskrt81ML2ldWjgRUSqm5l+bnSgAApZ21ytgYC75dP5i85RHb1uFB69V8g==
+
 follow-redirects@^1.0.0:
   version "1.13.3"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.3.tgz#e5598ad50174c1bc4e872301e82ac2cd97f90267"
