@@ -1,68 +1,61 @@
 import { getUSAConnectionsFromJSON } from 'model/usaMap';
 import { FloydWarshall, Edge } from 'floyd-warshall-shortest';
 import { kruskal } from 'kruskal-mst';
+import { Connection } from './connection';
 
 export class GameNetwork {
   graph!: FloydWarshall<string>;
-  cannotPass: Edge<string>[] = [];
-  shouldPass: Edge<string>[] = [];
-  usaEdges!: Edge<string>[];
+  cannotPass: Set<Connection> = new Set();
+  shouldPass: Set<Connection> = new Set();
+  usaEdges!: Connection[];
 
   constructor() {
     this.parseConnections();
   }
 
   parseConnections(): void {
-    this.usaEdges = getUSAConnectionsFromJSON().map((c) => {
-      return { from: c.from.name, to: c.to.name, weight: c.weight };
-    });
-
+    this.usaEdges = getUSAConnectionsFromJSON();
     this.graph = new FloydWarshall(this.usaEdges, false);
   }
 
-  addShouldPass(edge: Edge<string>): void {
-    this.shouldPass.push(edge);
+  getConnection(from: string, to: string): Connection {
+    for (let i = 0; i < this.usaEdges.length; i++) {
+      const connection = this.usaEdges[i];
+      if (from != to && connection.contains(from) && connection.contains(to))
+        return connection;
+    }
+    throw new Error('Connection not found: ' + from + ', ' + to);
+  }
+
+  addShouldPass(edge: Connection): void {
+    if (this.cannotPass.has(edge))
+      throw new Error(
+        'addShouldPass: ' + edge + ' is in ' + ' cannot pass list',
+      );
+    this.shouldPass.add(edge);
     this.processEdgeRestrictions();
   }
 
-  addCannotPass(edge: Edge<string>): void {
-    this.cannotPass.push(edge);
+  addCannotPass(edge: Connection): void {
+    if (this.shouldPass.has(edge))
+      throw new Error(
+        'addCannotPass: ' + edge + ' is in ' + ' should pass list',
+      );
+    this.cannotPass.add(edge);
     this.processEdgeRestrictions();
   }
 
   processEdgeRestrictions(): void {
-    const includes = function (
-      cannotPass: Edge<string>[],
-      e: Edge<string>,
-    ): boolean {
-      for (let i = 0; i < cannotPass.length; i++) {
-        const cannot = cannotPass[i];
-        if (
-          (cannot.from === e.from && cannot.to == e.to) ||
-          (cannot.to === e.from && cannot.from === e.to)
-        )
-          return true;
-      }
-      return false;
-    };
-
     const restrictedEdges = this.usaEdges
       .slice()
-      .filter((e) => !includes(this.cannotPass, e));
+      .filter((e) => !this.cannotPass.has(e));
 
-    this.shouldPass.forEach((edge) => {
-      const found = restrictedEdges.find(
-        (e) =>
-          (edge.from === e.from && edge.to == e.to) ||
-          (edge.to === e.from && edge.from === e.to),
-      );
-      if (found === undefined)
-        throw new Error('Not found shouldPass edge: ' + edge);
-      {
-        const index = restrictedEdges.indexOf(found);
-        restrictedEdges.splice(index, 1);
-        restrictedEdges.push({ from: found.from, to: found.to, weight: 0 });
-      }
+    this.shouldPass.forEach((shouldPassEdge) => {
+      const index = restrictedEdges.indexOf(shouldPassEdge);
+      restrictedEdges.splice(index, 1);
+      const clone = shouldPassEdge.clone();
+      clone.weight = 0;
+      restrictedEdges.push(clone);
     });
     this.graph = new FloydWarshall(restrictedEdges, false);
   }
@@ -73,6 +66,14 @@ export class GameNetwork {
 
   getShortestVisitingPath(cities: string[]): string[] {
     return this.graph.getShortestVisitingPath(cities);
+  }
+
+  getConnectionsForPath(path: string[]): Connection[] {
+    const connections: Connection[] = [];
+    for (let i = 0; i < path.length - 1; i++) {
+      connections.push(this.getConnection(path[i], path[i + 1]));
+    }
+    return connections;
   }
 
   getMinSpanningTreeOfShortestRoutes(cities: string[]): Edge<string>[] {

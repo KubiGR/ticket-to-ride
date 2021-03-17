@@ -1,30 +1,36 @@
-import { City } from 'model/city';
 import { TrackColor } from 'model/trackColor';
 import { Edge } from 'floyd-warshall-shortest';
 
-export class Connection implements Edge<City> {
-  from: City;
-  to: City;
+export class Connection implements Edge<string> {
+  from: string;
+  to: string;
   weight: number;
   color1: TrackColor;
   color2: TrackColor | undefined;
 
-  constructor(from: City, to: City, length: number, color1: TrackColor) {
+  constructor(from: string, to: string, length: number, color1: TrackColor) {
     this.from = from;
     this.to = to;
     this.weight = length;
     this.color1 = color1;
   }
 
-  contains(city: City): boolean {
-    return this.from.name == city.name || this.to.name == city.name;
+  contains(city: string): boolean {
+    return this.from == city || this.to == city;
   }
+
   isAdjacentTo(connection: Connection): boolean {
     return (
-      this.to.name == connection.from.name ||
-      this.to.name == connection.to.name ||
-      this.from.name == connection.to.name ||
-      this.from.name == connection.from.name
+      this.to == connection.from ||
+      this.to == connection.to ||
+      this.from == connection.to ||
+      this.from == connection.from
     );
+  }
+
+  clone(): Connection {
+    const clone = new Connection(this.from, this.to, this.weight, this.color1);
+    clone.color2 = this.color2;
+    return clone;
   }
 }

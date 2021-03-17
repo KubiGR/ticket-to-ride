@@ -10,42 +10,88 @@ test('getShortestPath no restrictions', () => {
   ]);
 });
 
-test('getShortestPath with shouldPass', () => {
+test('getConnectionForPath', () => {
   const gameNetwork = new GameNetwork();
-  gameNetwork.addShouldPass({ from: 'Los Angeles', to: 'El Paso', weight: 6 });
-
-  const path = gameNetwork.getShortestPath('Los Angeles', 'Denver');
-  console.log(path);
-  expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
+  const path = ['Los Angeles', 'Phoenix', 'Denver'];
+  const connections = gameNetwork.getConnectionsForPath(path);
+  console.log(connections);
+  expect(connections).toEqual([
+    {
+      from: 'Phoenix',
+      to: 'Los Angeles',
+      weight: 3,
+      color1: 'Gray',
+    },
+    {
+      from: 'Phoenix',
+      to: 'Denver',
+      weight: 5,
+      color1: 'White',
+    },
+  ]);
 });
 
-test('getShortestPath with shouldPass (not found)', () => {
+test('getConnection  (not found)', () => {
   const gameNetwork = new GameNetwork();
   expect(() => {
-    gameNetwork.addShouldPass({ from: 'What', to: 'Los Angeles', weight: 6 });
+    gameNetwork.getConnection('What', 'El Paso');
   }).toThrow();
+});
+
+test('addCannotPass error when in should pass', () => {
+  const gameNetwork = new GameNetwork();
+  const connection = gameNetwork.getConnection('Los Angeles', 'El Paso');
+  gameNetwork.addShouldPass(connection);
+
+  expect(() => {
+    gameNetwork.addCannotPass(connection);
+  }).toThrow();
+});
+
+test('addShouldPass error when in cannot pass', () => {
+  const gameNetwork = new GameNetwork();
+  const connection = gameNetwork.getConnection('Los Angeles', 'El Paso');
+  gameNetwork.addCannotPass(connection);
+
+  expect(() => {
+    gameNetwork.addShouldPass(connection);
+  }).toThrow();
+});
+
+test('getShortestPath with shouldPass', () => {
+  const gameNetwork = new GameNetwork();
+  const connection = gameNetwork.getConnection('Los Angeles', 'El Paso');
+  gameNetwork.addShouldPass(connection);
+
+  const path = gameNetwork.getShortestPath('Los Angeles', 'Denver');
+  expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
 });
 
 test('getShortestPath with shouldPass (inverse)', () => {
   const gameNetwork = new GameNetwork();
-  gameNetwork.addShouldPass({ from: 'El Paso', to: 'Los Angeles', weight: 6 });
+  const connection = gameNetwork.getConnection('El Paso', 'Los Angeles');
+  gameNetwork.addShouldPass(connection);
 
   const path = gameNetwork.getShortestPath('Los Angeles', 'Denver');
-  console.log(path);
   expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
 });
 
 test('getShortestPath with cannotPass 1', () => {
   const gameNetwork = new GameNetwork();
-  gameNetwork.addCannotPass({ from: 'Phoenix', to: 'Denver', weight: 5 });
+  const connection = gameNetwork.getConnection('Phoenix', 'Denver');
+  gameNetwork.addCannotPass(connection);
+
   const path = gameNetwork.getShortestPath('Los Angeles', 'Denver');
   expect(path).toEqual(['Los Angeles', 'Phoenix', 'Santa Fe', 'Denver']);
 });
 
 test('getShortestPath with cannotPass 2', () => {
   const gameNetwork = new GameNetwork();
-  gameNetwork.addCannotPass({ from: 'Phoenix', to: 'Denver', weight: 5 });
-  gameNetwork.addCannotPass({ from: 'Phoenix', to: 'Santa Fe', weight: 3 });
+  const connection1 = gameNetwork.getConnection('Phoenix', 'Denver');
+  const connection2 = gameNetwork.getConnection('Phoenix', 'Santa Fe');
+  gameNetwork.addCannotPass(connection1);
+  gameNetwork.addCannotPass(connection2);
+
   const path = gameNetwork.getShortestPath('Los Angeles', 'Denver');
   expect(path).toEqual([
     'Los Angeles',
