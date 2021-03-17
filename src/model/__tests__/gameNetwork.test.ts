@@ -10,6 +10,27 @@ test('getShortestPath no restrictions', () => {
   ]);
 });
 
+test('getConnectionForPath', () => {
+  const gameNetwork = new GameNetwork();
+  const path = ['Los Angeles', 'Phoenix', 'Denver'];
+  const connections = gameNetwork.getConnectionsForPath(path);
+  console.log(connections);
+  expect(connections).toEqual([
+    {
+      from: 'Phoenix',
+      to: 'Los Angeles',
+      weight: 3,
+      color1: 'Gray',
+    },
+    {
+      from: 'Phoenix',
+      to: 'Denver',
+      weight: 5,
+      color1: 'White',
+    },
+  ]);
+});
+
 test('getConnection  (not found)', () => {
   const gameNetwork = new GameNetwork();
   expect(() => {

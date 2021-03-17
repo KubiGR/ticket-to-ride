@@ -68,6 +68,14 @@ export class GameNetwork {
     return this.graph.getShortestVisitingPath(cities);
   }
 
+  getConnectionsForPath(path: string[]): Connection[] {
+    const connections: Connection[] = [];
+    for (let i = 0; i < path.length - 1; i++) {
+      connections.push(this.getConnection(path[i], path[i + 1]));
+    }
+    return connections;
+  }
+
   getMinSpanningTreeOfShortestRoutes(cities: string[]): Edge<string>[] {
     const graph = this.graph; // for editor!!
 
