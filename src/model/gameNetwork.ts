@@ -3,62 +3,109 @@ import { FloydWarshall, Edge } from 'floyd-warshall-shortest';
 import { kruskal } from 'kruskal-mst';
 
 export class GameNetwork {
-  graph: FloydWarshall<string> | undefined;
+  graph!: FloydWarshall<string>;
+  cannotPass: Edge<string>[] = [];
+  shouldPass: Edge<string>[] = [];
+  usaEdges!: Edge<string>[];
+
+  constructor() {
+    this.parseConnections();
+  }
 
   parseConnections(): void {
-    const usaEdges: Edge<string>[] = getUSAConnectionsFromJSON().map((c) => {
+    this.usaEdges = getUSAConnectionsFromJSON().map((c) => {
       return { from: c.from.name, to: c.to.name, weight: c.weight };
     });
 
-    this.graph = new FloydWarshall(usaEdges, false);
+    this.graph = new FloydWarshall(this.usaEdges, false);
   }
 
-  getShortestPath(from: string, to: string): string[] | undefined {
-    return this.graph?.getShortestPath(from, to);
+  addShouldPass(edge: Edge<string>): void {
+    this.shouldPass.push(edge);
+    this.processEdgeRestrictions();
   }
 
-  getShortestVisitingPath(cities: string[]): string[] | undefined {
-    return this.graph?.getShortestVisitingPath(cities);
+  addCannotPass(edge: Edge<string>): void {
+    this.cannotPass.push(edge);
+    this.processEdgeRestrictions();
   }
 
-  getMinSpanningTreeOfShortestRoutes(
-    cities: string[],
-  ): Edge<string>[] | undefined {
-    if (this.graph === undefined) return undefined;
+  processEdgeRestrictions(): void {
+    const includes = function (
+      cannotPass: Edge<string>[],
+      e: Edge<string>,
+    ): boolean {
+      for (let i = 0; i < cannotPass.length; i++) {
+        const cannot = cannotPass[i];
+        if (
+          (cannot.from === e.from && cannot.to == e.to) ||
+          (cannot.to === e.from && cannot.from === e.to)
+        )
+          return true;
+      }
+      return false;
+    };
+
+    const restrictedEdges = this.usaEdges
+      .slice()
+      .filter((e) => !includes(this.cannotPass, e));
+
+    this.shouldPass.forEach((edge) => {
+      const found = restrictedEdges.find(
+        (e) =>
+          (edge.from === e.from && edge.to == e.to) ||
+          (edge.to === e.from && edge.from === e.to),
+      );
+      if (found === undefined)
+        throw new Error('Not found shouldPass edge: ' + edge);
+      {
+        const index = restrictedEdges.indexOf(found);
+        restrictedEdges.splice(index, 1);
+        restrictedEdges.push({ from: found.from, to: found.to, weight: 0 });
+      }
+    });
+    this.graph = new FloydWarshall(restrictedEdges, false);
+  }
+
+  getShortestPath(from: string, to: string): string[] {
+    return this.graph.getShortestPath(from, to);
+  }
+
+  getShortestVisitingPath(cities: string[]): string[] {
+    return this.graph.getShortestVisitingPath(cities);
+  }
+
+  getMinSpanningTreeOfShortestRoutes(cities: string[]): Edge<string>[] {
     const graph = this.graph; // for editor!!
 
-    if (!this.graph.isDirected()) {
-      const kruskalEdges: Edge<string>[] = [];
-      for (let i = 0; i < cities.length; i++) {
-        for (let j = i + 1; j < cities.length; j++) {
-          kruskalEdges.push({
-            from: cities[i],
-            to: cities[j],
-            weight: graph.getShortestDistance(cities[i], cities[j]),
-          });
-        }
+    const kruskalEdges: Edge<string>[] = [];
+    for (let i = 0; i < cities.length; i++) {
+      for (let j = i + 1; j < cities.length; j++) {
+        kruskalEdges.push({
+          from: cities[i],
+          to: cities[j],
+          weight: graph.getShortestDistance(cities[i], cities[j]),
+        });
       }
-      const connections: Edge<string>[] = [];
-      kruskal(kruskalEdges).forEach((solutionEdge) => {
-        const shortestPath = graph.getShortestPath(
-          solutionEdge.from,
-          solutionEdge.to,
-        );
-        for (let i = 0; i < shortestPath.length - 1; i++) {
-          connections.push({
-            from: shortestPath[i],
-            to: shortestPath[i + 1],
-            weight: graph.getShortestDistance(
-              shortestPath[i],
-              shortestPath[i + 1],
-            ),
-          });
-        }
-      });
-
-      return connections;
-    } else {
-      return [];
     }
+    const connections: Edge<string>[] = [];
+    kruskal(kruskalEdges).forEach((solutionEdge) => {
+      const shortestPath = graph.getShortestPath(
+        solutionEdge.from,
+        solutionEdge.to,
+      );
+      for (let i = 0; i < shortestPath.length - 1; i++) {
+        connections.push({
+          from: shortestPath[i],
+          to: shortestPath[i + 1],
+          weight: graph.getShortestDistance(
+            shortestPath[i],
+            shortestPath[i + 1],
+          ),
+        });
+      }
+    });
+
+    return connections;
   }
 }
