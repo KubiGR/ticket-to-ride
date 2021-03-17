@@ -14,7 +14,6 @@ test('getConnectionForPath', () => {
   const gameNetwork = new GameNetwork();
   const path = ['Los Angeles', 'Phoenix', 'Denver'];
   const connections = gameNetwork.getConnectionsForPath(path);
-  console.log(connections);
   expect(connections).toEqual([
     {
       from: 'Phoenix',
@@ -101,10 +100,22 @@ test('getShortestPath with cannotPass 2', () => {
   ]);
 });
 
+test('getShortestPath with cannotPass 2', () => {
+  const gameNetwork = new GameNetwork();
+  const connection1 = gameNetwork.getConnection('Vancouver', 'Calgary');
+  const connection2 = gameNetwork.getConnection('Vancouver', 'Seattle');
+  gameNetwork.addCannotPass(connection1);
+  gameNetwork.addCannotPass(connection2);
+
+  const path = gameNetwork.getShortestPath('Vancouver', 'Denver');
+  console.log(path);
+  expect(path).toEqual([]);
+});
+
 test('cities', () => {
   const gameNetwork = new GameNetwork();
   expect(
-    gameNetwork.getShortestVisitingPath(['Los Angeles', 'Denver', 'Chicago']),
+    gameNetwork.getShortestVisitingPath(['Denver', 'Los Angeles', 'Chicago']),
   ).toEqual(['Los Angeles', 'Phoenix', 'Denver', 'Omaha', 'Chicago']);
 });
 

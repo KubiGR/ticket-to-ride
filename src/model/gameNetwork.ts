@@ -13,7 +13,7 @@ export class GameNetwork {
     this.parseConnections();
   }
 
-  parseConnections(): void {
+  private parseConnections(): void {
     this.usaEdges = getUSAConnectionsFromJSON();
     this.graph = new FloydWarshall(this.usaEdges, false);
   }
@@ -46,9 +46,15 @@ export class GameNetwork {
   }
 
   processEdgeRestrictions(): void {
-    const restrictedEdges = this.usaEdges
-      .slice()
-      .filter((e) => !this.cannotPass.has(e));
+    const restrictedEdges = this.usaEdges.slice();
+
+    this.cannotPass.forEach((cannotPassEdge) => {
+      const index = restrictedEdges.indexOf(cannotPassEdge);
+      restrictedEdges.splice(index, 1);
+      const clone = cannotPassEdge.clone();
+      clone.weight = Infinity;
+      restrictedEdges.push(clone);
+    });
 
     this.shouldPass.forEach((shouldPassEdge) => {
       const index = restrictedEdges.indexOf(shouldPassEdge);
