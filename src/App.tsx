@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import './App.css';
 import { Stage, Layer, Image, Circle, Line } from 'react-konva';
 import useImage from 'use-image';
@@ -6,8 +6,9 @@ import useResizeObserver from 'use-resize-observer';
 import usaMap from './assets/usa-map.jpg';
 import usaCities from './data/usaCities.json';
 import usaConnections from './data/usaConnections.json';
-import { stringToArray } from 'konva/types/shapes/Text';
-import { GameNetwork } from './model/gameNetwork';
+import { GameNetwork } from 'model/gameNetwork';
+import { Connection } from 'model/connection';
+import { TrackColor } from 'model/trackColor';
 
 type MapProps = { width?: number; height?: number };
 const Map = ({ width, height }: MapProps): JSX.Element => {
@@ -16,26 +17,51 @@ const Map = ({ width, height }: MapProps): JSX.Element => {
 };
 
 const App = (): JSX.Element => {
-  const [selectedCities, setSelectedCities] = useState<string[]>();
-  const gameNetwork = new GameNetwork();
+  const [selectedCities, setSelectedCities] = useState<string[]>([]);
+  const [cannotPassConnections, setCannotPassConnections] = useState<
+    Connection[]
+  >([]);
+  const [shouldPassConnections, setshouldPassConnections] = useState<
+    Connection[]
+  >([]);
   const ref = useRef<HTMLDivElement>(null);
-  const { width, height } = useResizeObserver<HTMLDivElement>({ ref });
+  // const { width, height } = useResizeObserver<HTMLDivElement>({ ref });
   const mapHeight = 900;
   const mapWidth = mapHeight * 1.56;
   const lineStrokeSize = mapWidth * 0.012;
   const cityFillRadius = mapWidth * 0.008;
 
-  // const getPointerPosition = (evt: any) => {
-  //   console.info(
-  //     (evt.evt.layerX / mapWidth).toFixed(4) +
-  //       ' ' +
-  //       (evt.evt.layerY / mapWidth).toFixed(4),
-  //   );
-  // };
+  const getPointerPosition = (evt: any) => {
+    console.info(
+      (evt.evt.layerX / mapWidth).toFixed(4) +
+        ' ' +
+        (evt.evt.layerY / mapWidth).toFixed(4),
+    );
+  };
 
-  useEffect(() => {
-    console.log('cities changed');
-  }, [selectedCities]);
+  const gameNetwork = new GameNetwork();
+  cannotPassConnections.forEach((con) => {
+    const connection = gameNetwork.getConnection(con.from, con.to);
+    console.log(connection);
+    gameNetwork.addCannotPass(connection);
+  });
+  shouldPassConnections.forEach((con) => {
+    const connection = gameNetwork.getConnection(con.from, con.to);
+    console.log(connection);
+    gameNetwork.addShouldPass(connection);
+  });
+  console.log('cannotPassConnections');
+  console.log(cannotPassConnections);
+  console.log('shouldPassConnections');
+  console.log(shouldPassConnections);
+  const citiesArray = gameNetwork.getShortestVisitingPath(selectedCities);
+  const connectionsArray = gameNetwork.getConnectionsForPath(citiesArray);
+  console.log(citiesArray);
+  console.log(connectionsArray);
+  const stringifiedConnections = connectionsArray.map((connection) => {
+    return connection.from + '-' + connection.to + '1';
+  });
+  console.log(stringifiedConnections);
 
   const cityClick = (cityName: string) => {
     console.log(cityName);
@@ -45,14 +71,61 @@ const App = (): JSX.Element => {
         citiesArray.push(cityName);
         return citiesArray;
       });
+    } else {
+      setSelectedCities((prevCities) => {
+        const citiesArray = prevCities ? prevCities?.slice() : [];
+        const index = citiesArray.indexOf(cityName);
+        if (index > -1) {
+          citiesArray.splice(index, 1);
+        }
+        return citiesArray;
+      });
     }
   };
 
-  const connectionClick = (connectionName: string) => {
-    console.log(connectionName);
+  const connectionClick = (con: Connection) => {
+    if (!cannotPassConnections?.includes(con)) {
+      setCannotPassConnections((prevCons) => {
+        const connectionsArr = prevCons ? prevCons?.slice() : [];
+        connectionsArr.push(con);
+        return connectionsArr;
+      });
+    } else {
+      setCannotPassConnections((prevCons) => {
+        const connectionsArr = prevCons ? prevCons?.slice() : [];
+        const index = connectionsArr.indexOf(con);
+        if (index > -1) {
+          connectionsArr.splice(index, 1);
+        }
+        return connectionsArr;
+      });
+    }
+  };
+
+  const connectionRightClick = (con: Connection) => {
+    if (!shouldPassConnections?.includes(con)) {
+      setshouldPassConnections((prevCons) => {
+        const connectionsArr = prevCons ? prevCons?.slice() : [];
+        connectionsArr.push(con);
+        return connectionsArr;
+      });
+    } else {
+      setshouldPassConnections((prevCons) => {
+        const connectionsArr = prevCons ? prevCons?.slice() : [];
+        const index = connectionsArr.indexOf(con);
+        if (index > -1) {
+          connectionsArr.splice(index, 1);
+        }
+        return connectionsArr;
+      });
+    }
   };
 
   const drawCitiesArray = usaCities.map((city) => {
+    let isCitySelected = false;
+    if (selectedCities.includes(city.name)) {
+      isCitySelected = true;
+    }
     return (
       <Circle
         key={city.name}
@@ -60,13 +133,23 @@ const App = (): JSX.Element => {
         y={mapWidth * city.posY}
         radius={cityFillRadius}
         opacity={0.5}
-        fill="green"
+        fill={isCitySelected ? 'blue' : 'green'}
         onClick={() => cityClick(city.name)}
       />
     );
   });
 
   const drawConnectionsArray = usaConnections.flatMap((con) => {
+    let isConnectionSelected = false;
+    if (stringifiedConnections.includes(con.from + '-' + con.to + '1')) {
+      isConnectionSelected = true;
+    }
+    const connectionId = new Connection(
+      con.from,
+      con.to,
+      con.length,
+      TrackColor[con.color1 as keyof typeof TrackColor],
+    );
     if (con.graphPoints1) {
       if (!con.graphPoints2) {
         return [
@@ -74,9 +157,16 @@ const App = (): JSX.Element => {
             key={con.from + '-' + con.to + '1'}
             points={con.graphPoints1.map((point) => mapWidth * point)}
             strokeWidth={lineStrokeSize}
-            stroke="green"
+            stroke={isConnectionSelected ? 'blue' : 'green'}
             opacity={0.5}
-            onClick={() => connectionClick(con.from + '-' + con.to + '1')}
+            onClick={(e) => {
+              console.log(e.evt);
+              if (e.evt.button === 0) {
+                connectionClick(connectionId);
+              } else if (e.evt.button === 2) {
+                connectionRightClick(connectionId);
+              }
+            }}
           />,
         ];
       } else {
@@ -85,17 +175,31 @@ const App = (): JSX.Element => {
             key={con.from + '-' + con.to + '1'}
             points={con.graphPoints1.map((point) => mapWidth * point)}
             strokeWidth={lineStrokeSize}
-            stroke="green"
+            stroke={isConnectionSelected ? 'blue' : 'green'}
             opacity={0.5}
-            onClick={() => connectionClick(con.from + '-' + con.to + '1')}
+            onClick={(e) => {
+              console.log(e.evt);
+              if (e.evt.button === 0) {
+                connectionClick(connectionId);
+              } else if (e.evt.button === 2) {
+                connectionRightClick(connectionId);
+              }
+            }}
           />,
           <Line
             key={con.from + '-' + con.to + '2'}
             points={con.graphPoints2.map((point) => mapWidth * point)}
             strokeWidth={lineStrokeSize}
-            stroke="green"
+            stroke={isConnectionSelected ? 'blue' : 'green'}
             opacity={0.5}
-            onClick={() => connectionClick(con.from + '-' + con.to + '2')}
+            onClick={(e) => {
+              console.log(e.evt);
+              if (e.evt.button === 0) {
+                connectionClick(connectionId);
+              } else if (e.evt.button === 2) {
+                connectionRightClick(connectionId);
+              }
+            }}
           />,
         ];
       }
@@ -108,7 +212,8 @@ const App = (): JSX.Element => {
       <Stage
         width={mapWidth}
         height={mapHeight}
-        // onClick={(evt) => getPointerPosition(evt)}
+        onClick={(e) => getPointerPosition(e)}
+        onContextMenu={(e) => e.evt.preventDefault()}
       >
         <Layer>
           <Map width={mapWidth} height={mapHeight} />

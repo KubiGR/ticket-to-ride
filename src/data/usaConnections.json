@@ -389,7 +389,8 @@
     "from": "Salt Lake City",
     "to": "Helena",
     "length": 3,
-    "color1": "Purple"
+    "color1": "Purple",
+    "graphPoints1": [0.2571, 0.2963, 0.3134, 0.2023]
   },
   {
     "from": "San Francisco",
@@ -516,7 +517,8 @@
     "from": "Winnipeg",
     "to": "Helena",
     "length": 4,
-    "color1": "Blue"
+    "color1": "Blue",
+    "graphPoints1": [0.3348, 0.1759, 0.4387, 0.0712]
   },
   {
     "from": "Winnipeg",
