@@ -7,8 +7,8 @@ export function getUSAConnectionsFromJSON(): Connection[] {
 
   data.forEach((d) => {
     const connection: Connection = new Connection(
-      { name: d.from },
-      { name: d.to },
+      d.from,
+      d.to,
       d.length,
       TrackColor[d.color1 as keyof typeof TrackColor],
     );

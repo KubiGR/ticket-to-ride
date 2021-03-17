@@ -1,12 +1,11 @@
-import { City } from 'model/city';
 import { Route } from 'model/route';
 
 export class Ticket {
-  from: City;
-  to: City;
+  from: string;
+  to: string;
   points: number;
 
-  constructor(from: City, to: City, points: number) {
+  constructor(from: string, to: string, points: number) {
     this.from = from;
     this.to = to;
     this.points = points;
