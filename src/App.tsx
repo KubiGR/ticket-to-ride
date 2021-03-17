@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { Stage, Layer, Image, Circle, Line } from 'react-konva';
 import useImage from 'use-image';
@@ -6,6 +6,8 @@ import useResizeObserver from 'use-resize-observer';
 import usaMap from './assets/usa-map.jpg';
 import usaCities from './data/usaCities.json';
 import usaConnections from './data/usaConnections.json';
+import { stringToArray } from 'konva/types/shapes/Text';
+import { GameNetwork } from './model/gameNetwork';
 
 type MapProps = { width?: number; height?: number };
 const Map = ({ width, height }: MapProps): JSX.Element => {
@@ -14,6 +16,8 @@ const Map = ({ width, height }: MapProps): JSX.Element => {
 };
 
 const App = (): JSX.Element => {
+  const [selectedCities, setSelectedCities] = useState<string[]>();
+  const gameNetwork = new GameNetwork();
   const ref = useRef<HTMLDivElement>(null);
   const { width, height } = useResizeObserver<HTMLDivElement>({ ref });
   const mapHeight = 900;
@@ -29,8 +33,19 @@ const App = (): JSX.Element => {
   //   );
   // };
 
+  useEffect(() => {
+    console.log('cities changed');
+  }, [selectedCities]);
+
   const cityClick = (cityName: string) => {
     console.log(cityName);
+    if (!selectedCities?.includes(cityName)) {
+      setSelectedCities((prevCities) => {
+        const citiesArray = prevCities ? prevCities?.slice() : [];
+        citiesArray.push(cityName);
+        return citiesArray;
+      });
+    }
   };
 
   const connectionClick = (connectionName: string) => {
@@ -89,7 +104,7 @@ const App = (): JSX.Element => {
 
   return (
     <div ref={ref}>
-      Size: {width}x{height}
+      Selected Cities: {selectedCities}
       <Stage
         width={mapWidth}
         height={mapHeight}
