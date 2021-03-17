@@ -1,9 +1,11 @@
 import React, { useRef } from 'react';
 import './App.css';
-import { Stage, Layer, Image, Circle, Rect, Line } from 'react-konva';
+import { Stage, Layer, Image, Circle, Line } from 'react-konva';
 import useImage from 'use-image';
 import useResizeObserver from 'use-resize-observer';
 import usaMap from './assets/usa-map.jpg';
+import usaCities from './data/usaCities.json';
+import usaConnections from './data/usaConnections.json';
 
 type MapProps = { width?: number; height?: number };
 const Map = ({ width, height }: MapProps): JSX.Element => {
@@ -12,39 +14,78 @@ const Map = ({ width, height }: MapProps): JSX.Element => {
 };
 
 const App = (): JSX.Element => {
-  // const [width, setWidth] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
   const { width, height } = useResizeObserver<HTMLDivElement>({ ref });
-  // aspect ratio of usaMap = 1.56
   const mapHeight = 900;
   const mapWidth = mapHeight * 1.56;
-  const vancouverPos = {
-    x: 0.08,
-    y: 0.07,
-  };
-  const vancouverCalgaryRoute1 = {
-    x: 0.226,
-    y: 0.044,
+  const lineStrokeSize = mapWidth * 0.012;
+  const cityFillRadius = mapWidth * 0.008;
+
+  // const getPointerPosition = (evt: any) => {
+  //   console.info(
+  //     (evt.evt.layerX / mapWidth).toFixed(4) +
+  //       ' ' +
+  //       (evt.evt.layerY / mapWidth).toFixed(4),
+  //   );
+  // };
+
+  const cityClick = (cityName: string) => {
+    console.log(cityName);
   };
 
-  const relSizes = {
-    r: 0.008,
-    w: 0.036,
-    h: 0.012,
+  const connectionClick = (connectionName: string) => {
+    console.log(connectionName);
   };
 
-  const vancouverRelX = mapWidth * vancouverPos.x;
-  const vancouverRelY = mapWidth * vancouverPos.y;
-  const vancouverCalgaryRoute1X = mapWidth * vancouverCalgaryRoute1.x;
-  const vancouverCalgaryRoute1Y = mapWidth * vancouverCalgaryRoute1.y;
-  const relRadius = mapWidth * relSizes.r;
-  const relRectWidth = mapWidth * relSizes.w;
-  const relRectHeight = mapWidth * relSizes.h;
+  const drawCitiesArray = usaCities.map((city) => {
+    return (
+      <Circle
+        key={city.name}
+        x={mapWidth * city.posX}
+        y={mapWidth * city.posY}
+        radius={cityFillRadius}
+        opacity={0.5}
+        fill="green"
+        onClick={() => cityClick(city.name)}
+      />
+    );
+  });
 
-  const getPointerPosition = (evt: any) => {
-    console.info(evt);
-    console.info(evt.evt.layerX / mapWidth + ' ' + evt.evt.layerY / mapWidth);
-  };
+  const drawConnectionsArray = usaConnections.flatMap((con) => {
+    if (con.graphPoints1) {
+      if (!con.graphPoints2) {
+        return [
+          <Line
+            key={con.from + '-' + con.to + '1'}
+            points={con.graphPoints1.map((point) => mapWidth * point)}
+            strokeWidth={lineStrokeSize}
+            stroke="green"
+            opacity={0.5}
+            onClick={() => connectionClick(con.from + '-' + con.to + '1')}
+          />,
+        ];
+      } else {
+        return [
+          <Line
+            key={con.from + '-' + con.to + '1'}
+            points={con.graphPoints1.map((point) => mapWidth * point)}
+            strokeWidth={lineStrokeSize}
+            stroke="green"
+            opacity={0.5}
+            onClick={() => connectionClick(con.from + '-' + con.to + '1')}
+          />,
+          <Line
+            key={con.from + '-' + con.to + '2'}
+            points={con.graphPoints2.map((point) => mapWidth * point)}
+            strokeWidth={lineStrokeSize}
+            stroke="green"
+            opacity={0.5}
+            onClick={() => connectionClick(con.from + '-' + con.to + '2')}
+          />,
+        ];
+      }
+    } else return [];
+  });
 
   return (
     <div ref={ref}>
@@ -52,30 +93,14 @@ const App = (): JSX.Element => {
       <Stage
         width={mapWidth}
         height={mapHeight}
-        onClick={(evt) => getPointerPosition(evt)}
+        // onClick={(evt) => getPointerPosition(evt)}
       >
         <Layer>
           <Map width={mapWidth} height={mapHeight} />
         </Layer>
         <Layer>
-          <Circle
-            onClick={() => console.log('click')}
-            x={vancouverRelX}
-            y={vancouverRelY}
-            radius={relRadius}
-            opacity={0.5}
-            fill="green"
-          />
-          <Line
-            x={0.226}
-            y={0.044}
-            points={[0.226, 0.044, 0.262, 0.028]}
-            strokeWidth={5}
-            stroke="green"
-            tension={0.5}
-            // fill="green"
-            // opacity={0.5}
-          />
+          {drawCitiesArray}
+          {drawConnectionsArray}
         </Layer>
       </Stage>
     </div>

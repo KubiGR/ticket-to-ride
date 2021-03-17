@@ -29,13 +29,15 @@
     "from": "Calgary",
     "to": "Winnipeg",
     "length": 6,
-    "color1": "White"
+    "color1": "White",
+    "graphPoints1": [0.229, 0.050, 0.264, 0.034, 0.300, 0.027, 0.337, 0.025, 0.377, 0.028, 0.411, 0.038, 0.444, 0.054]
   },
   {
     "from": "Calgary",
     "to": "Helena",
     "length": 4,
-    "color1": "Gray"
+    "color1": "Gray",
+    "graphPoints1": [0.2258, 0.0641, 0.3205, 0.1766]
   },
   {
     "from": "Charleston",
@@ -423,20 +425,24 @@
     "from": "Seattle",
     "to": "Calgary",
     "length": 4,
-    "color1": "Gray"
+    "color1": "Gray",
+    "graphPoints1": [0.0912, 0.1254, 0.1275, 0.1254, 0.1652, 0.1204, 0.1973, 0.0969, 0.2137, 0.0641]
   },
   {
     "from": "Seattle",
     "to": "Portland",
     "length": 1,
     "color1": "Gray",
-    "color2": "Gray"
+    "color2": "Gray",
+    "graphPoints1": [0.0648, 0.1339, 0.0520, 0.1660],
+    "graphPoints2": [0.0769, 0.1389, 0.0641, 0.1709]
   },
   {
     "from": "Seattle",
     "to": "Helena",
     "length": 6,
-    "color1": "Yellow"
+    "color1": "Yellow",
+    "graphPoints1": [0.0883, 0.1410, 0.3063, 0.1909]
   },
   {
     "from": "Toronto",
@@ -450,20 +456,15 @@
     "length": 1,
     "color1": "Gray",
     "color2": "Gray",
-    "posX1": 0.066,
-    "posY1": 0.081,
-    "posX2": 0.079,
-    "posY2": 0.081,
-    "rot": 90
+    "graphPoints1": [0.070, 0.081, 0.071, 0.1163],
+    "graphPoints2": [0.084, 0.081, 0.084, 0.1163]
   },
   {
     "from": "Vancouver",
     "to": "Calgary",
     "length": 3,
     "color1": "Gray",
-    "posX1": 0.093,
-    "posY1": 0.059,
-    "rot": 354
+    "graphPoints1": [0.094, 0.065, 0.204, 0.052]
   },
   {
     "from": "Washington",
