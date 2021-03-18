@@ -6,7 +6,7 @@ import { Connection } from './connection';
 export class GameNetwork {
   graph!: FloydWarshall<string>;
   cannotPass: Set<Connection> = new Set();
-  shouldPass: Set<Connection> = new Set();
+  established: Set<Connection> = new Set();
   usaEdges!: Connection[];
 
   constructor() {
@@ -27,19 +27,19 @@ export class GameNetwork {
     throw new Error('Connection not found: ' + from + ', ' + to);
   }
 
-  addShouldPass(edge: Connection): void {
+  addEstablished(edge: Connection): void {
     if (this.cannotPass.has(edge))
       throw new Error(
-        'addShouldPass: ' + edge + ' is in ' + ' cannot pass list',
+        'addEstablished: ' + edge + ' is in ' + ' cannot pass list',
       );
-    this.shouldPass.add(edge);
+    this.established.add(edge);
     this.processEdgeRestrictions();
   }
 
   addCannotPass(edge: Connection): void {
-    if (this.shouldPass.has(edge))
+    if (this.established.has(edge))
       throw new Error(
-        'addCannotPass: ' + edge + ' is in ' + ' should pass list',
+        'addCannotPass: ' + edge + ' is in ' + ' established list',
       );
     this.cannotPass.add(edge);
     this.processEdgeRestrictions();
@@ -56,7 +56,7 @@ export class GameNetwork {
       restrictedEdges.push(clone);
     });
 
-    this.shouldPass.forEach((shouldPassEdge) => {
+    this.established.forEach((shouldPassEdge) => {
       const index = restrictedEdges.indexOf(shouldPassEdge);
       restrictedEdges.splice(index, 1);
       const clone = shouldPassEdge.clone();
