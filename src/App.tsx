@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import './App.css';
 import { Stage, Layer, Image, Circle, Line } from 'react-konva';
 import useImage from 'use-image';
-import useResizeObserver from 'use-resize-observer';
 import usaMap from './assets/usa-map.jpg';
 import usaCities from './data/usaCities.json';
 import usaConnections from './data/usaConnections.json';
@@ -25,7 +24,6 @@ const App = (): JSX.Element => {
     Connection[]
   >([]);
   const ref = useRef<HTMLDivElement>(null);
-  // const { width, height } = useResizeObserver<HTMLDivElement>({ ref });
   const mapHeight = 900;
   const mapWidth = mapHeight * 1.56;
   const lineStrokeSize = mapWidth * 0.012;
@@ -158,7 +156,7 @@ const App = (): JSX.Element => {
             points={con.graphPoints1.map((point) => mapWidth * point)}
             strokeWidth={lineStrokeSize}
             stroke={isConnectionSelected ? 'blue' : 'green'}
-            opacity={0.5}
+            opacity={0.8}
             onClick={(e) => {
               console.log(e.evt);
               if (e.evt.button === 0) {
@@ -176,7 +174,7 @@ const App = (): JSX.Element => {
             points={con.graphPoints1.map((point) => mapWidth * point)}
             strokeWidth={lineStrokeSize}
             stroke={isConnectionSelected ? 'blue' : 'green'}
-            opacity={0.5}
+            opacity={0.8}
             onClick={(e) => {
               console.log(e.evt);
               if (e.evt.button === 0) {
@@ -191,7 +189,7 @@ const App = (): JSX.Element => {
             points={con.graphPoints2.map((point) => mapWidth * point)}
             strokeWidth={lineStrokeSize}
             stroke={isConnectionSelected ? 'blue' : 'green'}
-            opacity={0.5}
+            opacity={0.8}
             onClick={(e) => {
               console.log(e.evt);
               if (e.evt.button === 0) {
