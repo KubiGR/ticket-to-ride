@@ -46,7 +46,7 @@ const App = (): JSX.Element => {
   shouldPassConnections.forEach((con) => {
     const connection = gameNetwork.getConnection(con.from, con.to);
     console.log(connection);
-    gameNetwork.addShouldPass(connection);
+    gameNetwork.addEstablished(connection);
   });
   console.log('cannotPassConnections');
   console.log(cannotPassConnections);
