@@ -1,4 +1,5 @@
 import { Edge } from 'floyd-warshall-shortest';
+import { Constants } from 'model/constants';
 import { GameNetwork } from 'model/gameNetwork';
 
 test('getShortestPath no restrictions', () => {
@@ -73,6 +74,16 @@ test('getShortestPath with shouldPass (inverse)', () => {
 
   const path = gameNetwork.getShortestPath('Los Angeles', 'Denver');
   expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
+});
+
+test('established connections reduce train number', () => {
+  const gameNetwork = new GameNetwork();
+  const connection = gameNetwork.getConnection('El Paso', 'Los Angeles');
+  gameNetwork.addEstablished(connection);
+
+  expect(gameNetwork.getAvailableTrains()).toEqual(
+    Constants.TOTAL_TRAINS - connection.weight,
+  );
 });
 
 test('getShortestPath with cannotPass 1', () => {

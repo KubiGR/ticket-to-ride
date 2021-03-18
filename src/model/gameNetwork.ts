@@ -2,12 +2,15 @@ import { getUSAConnectionsFromJSON } from 'model/usaMap';
 import { FloydWarshall, Edge } from 'floyd-warshall-shortest';
 import { kruskal } from 'kruskal-mst';
 import { Connection } from './connection';
+import { Constants } from './constants';
 
 export class GameNetwork {
-  graph!: FloydWarshall<string>;
-  cannotPass: Set<Connection> = new Set();
-  established: Set<Connection> = new Set();
-  usaEdges!: Connection[];
+  private graph!: FloydWarshall<string>;
+  private cannotPass: Set<Connection> = new Set();
+  private established: Set<Connection> = new Set();
+  private usaEdges!: Connection[];
+
+  private availableTrains = Constants.TOTAL_TRAINS;
 
   constructor() {
     this.parseConnections();
@@ -33,6 +36,7 @@ export class GameNetwork {
         'addEstablished: ' + edge + ' is in ' + ' cannot pass list',
       );
     this.established.add(edge);
+    this.availableTrains -= edge.weight;
     this.processEdgeRestrictions();
   }
 
@@ -114,5 +118,9 @@ export class GameNetwork {
     });
 
     return connections;
+  }
+
+  getAvailableTrains(): number {
+    return this.availableTrains;
   }
 }
