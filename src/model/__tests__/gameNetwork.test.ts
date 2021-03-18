@@ -40,7 +40,7 @@ test('getConnection  (not found)', () => {
 test('addCannotPass error when in should pass', () => {
   const gameNetwork = new GameNetwork();
   const connection = gameNetwork.getConnection('Los Angeles', 'El Paso');
-  gameNetwork.addShouldPass(connection);
+  gameNetwork.addEstablished(connection);
 
   expect(() => {
     gameNetwork.addCannotPass(connection);
@@ -53,14 +53,14 @@ test('addShouldPass error when in cannot pass', () => {
   gameNetwork.addCannotPass(connection);
 
   expect(() => {
-    gameNetwork.addShouldPass(connection);
+    gameNetwork.addEstablished(connection);
   }).toThrow();
 });
 
 test('getShortestPath with shouldPass', () => {
   const gameNetwork = new GameNetwork();
   const connection = gameNetwork.getConnection('Los Angeles', 'El Paso');
-  gameNetwork.addShouldPass(connection);
+  gameNetwork.addEstablished(connection);
 
   const path = gameNetwork.getShortestPath('Los Angeles', 'Denver');
   expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
@@ -69,7 +69,7 @@ test('getShortestPath with shouldPass', () => {
 test('getShortestPath with shouldPass (inverse)', () => {
   const gameNetwork = new GameNetwork();
   const connection = gameNetwork.getConnection('El Paso', 'Los Angeles');
-  gameNetwork.addShouldPass(connection);
+  gameNetwork.addEstablished(connection);
 
   const path = gameNetwork.getShortestPath('Los Angeles', 'Denver');
   expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
