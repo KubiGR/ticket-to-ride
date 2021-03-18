@@ -38,6 +38,10 @@ const config: webpack.Configuration = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
+    alias: {
+      model: path.resolve(__dirname, 'src/model'),
+      data: path.resolve(__dirname, 'src/data'),
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
