@@ -3,12 +3,14 @@ import { FloydWarshall, Edge } from 'floyd-warshall-shortest';
 import { kruskal } from 'kruskal-mst';
 import { Connection } from './connection';
 import { Constants } from './constants';
+import { Ticket } from './ticket';
 
 export class GameNetwork {
   private graph!: FloydWarshall<string>;
   private cannotPass: Set<Connection> = new Set();
   private established: Set<Connection> = new Set();
   private usaEdges!: Connection[];
+  private tickets!: Ticket[];
 
   private availableTrains = Constants.TOTAL_TRAINS;
 
@@ -79,11 +81,12 @@ export class GameNetwork {
   }
 
   getConnectionsForPath(path: string[]): Connection[] {
-    const connections: Connection[] = [];
+    const connections: Set<Connection> = new Set();
     for (let i = 0; i < path.length - 1; i++) {
-      connections.push(this.getConnection(path[i], path[i + 1]));
+      const connection = this.getConnection(path[i], path[i + 1]);
+      connections.add(connection);
     }
-    return connections;
+    return Array.from(connections);
   }
 
   getMinSpanningTreeOfShortestRoutes(cities: string[]): Edge<string>[] {
@@ -122,5 +125,11 @@ export class GameNetwork {
 
   getAvailableTrains(): number {
     return this.availableTrains;
+  }
+
+  getTrains(connections: Connection[]): number {
+    return Connection.getTrains(
+      connections.filter((c) => !this.established.has(c)),
+    );
   }
 }

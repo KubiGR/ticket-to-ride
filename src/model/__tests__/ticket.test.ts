@@ -27,3 +27,26 @@ test('routeNotCompletesMission', () => {
 
   expect(mission.completedBy(route)).toBe(false);
 });
+
+test('getPoints', () => {
+  const mission1 = new Ticket('from1', 'to1', 10);
+  const mission2 = new Ticket('from2', 'to2', 5);
+
+  expect(Ticket.getPoints([mission1, mission2])).toBe(15);
+});
+
+test('getPoints empty', () => {
+  expect(Ticket.getPoints([])).toBe(0);
+});
+
+test('getCities', () => {
+  const mission1 = new Ticket('from1', 'to1', 10);
+  const mission2 = new Ticket('from2', 'to1', 5);
+
+  const cities = Ticket.getCities([mission1, mission2]);
+  expect(cities).toEqual(['from1', 'to1', 'from2']);
+});
+
+test('getCities empty', () => {
+  expect(Ticket.getCities([])).toEqual([]);
+});
