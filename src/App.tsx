@@ -32,7 +32,7 @@ const App = (): JSX.Element => {
   const getPointerPosition = (evt: any) => {
     console.info(
       (evt.evt.layerX / mapWidth).toFixed(4) +
-        ' ' +
+        ', ' +
         (evt.evt.layerY / mapWidth).toFixed(4),
     );
   };
@@ -54,15 +54,11 @@ const App = (): JSX.Element => {
   console.log(shouldPassConnections);
   const citiesArray = gameNetwork.getShortestVisitingPath(selectedCities);
   const connectionsArray = gameNetwork.getConnectionsForPath(citiesArray);
-  console.log(citiesArray);
-  console.log(connectionsArray);
   const stringifiedConnections = connectionsArray.map((connection) => {
     return connection.from + '-' + connection.to + '1';
   });
-  console.log(stringifiedConnections);
 
   const cityClick = (cityName: string) => {
-    console.log(cityName);
     if (!selectedCities?.includes(cityName)) {
       setSelectedCities((prevCities) => {
         const citiesArray = prevCities ? prevCities?.slice() : [];
@@ -82,7 +78,9 @@ const App = (): JSX.Element => {
   };
 
   const connectionClick = (con: Connection) => {
-    if (!cannotPassConnections?.includes(con)) {
+    if (
+      !cannotPassConnections?.some((e) => e.from + e.to === con.from + con.to)
+    ) {
       setCannotPassConnections((prevCons) => {
         const connectionsArr = prevCons ? prevCons?.slice() : [];
         connectionsArr.push(con);
@@ -91,7 +89,9 @@ const App = (): JSX.Element => {
     } else {
       setCannotPassConnections((prevCons) => {
         const connectionsArr = prevCons ? prevCons?.slice() : [];
-        const index = connectionsArr.indexOf(con);
+        const index = connectionsArr.findIndex(
+          (e) => e.from + e.to === con.from + con.to,
+        );
         if (index > -1) {
           connectionsArr.splice(index, 1);
         }
@@ -101,7 +101,9 @@ const App = (): JSX.Element => {
   };
 
   const connectionRightClick = (con: Connection) => {
-    if (!shouldPassConnections?.includes(con)) {
+    if (
+      !shouldPassConnections?.some((e) => e.from + e.to === con.from + con.to)
+    ) {
       setshouldPassConnections((prevCons) => {
         const connectionsArr = prevCons ? prevCons?.slice() : [];
         connectionsArr.push(con);
@@ -110,7 +112,9 @@ const App = (): JSX.Element => {
     } else {
       setshouldPassConnections((prevCons) => {
         const connectionsArr = prevCons ? prevCons?.slice() : [];
-        const index = connectionsArr.indexOf(con);
+        const index = connectionsArr.findIndex(
+          (e) => e.from + e.to === con.from + con.to,
+        );
         if (index > -1) {
           connectionsArr.splice(index, 1);
         }
@@ -148,60 +152,58 @@ const App = (): JSX.Element => {
       con.length,
       TrackColor[con.color1 as keyof typeof TrackColor],
     );
-    if (con.graphPoints1) {
-      if (!con.graphPoints2) {
-        return [
-          <Line
-            key={con.from + '-' + con.to + '1'}
-            points={con.graphPoints1.map((point) => mapWidth * point)}
-            strokeWidth={lineStrokeSize}
-            stroke={isConnectionSelected ? 'blue' : 'green'}
-            opacity={0.8}
-            onClick={(e) => {
-              console.log(e.evt);
-              if (e.evt.button === 0) {
-                connectionClick(connectionId);
-              } else if (e.evt.button === 2) {
-                connectionRightClick(connectionId);
-              }
-            }}
-          />,
-        ];
-      } else {
-        return [
-          <Line
-            key={con.from + '-' + con.to + '1'}
-            points={con.graphPoints1.map((point) => mapWidth * point)}
-            strokeWidth={lineStrokeSize}
-            stroke={isConnectionSelected ? 'blue' : 'green'}
-            opacity={0.8}
-            onClick={(e) => {
-              console.log(e.evt);
-              if (e.evt.button === 0) {
-                connectionClick(connectionId);
-              } else if (e.evt.button === 2) {
-                connectionRightClick(connectionId);
-              }
-            }}
-          />,
-          <Line
-            key={con.from + '-' + con.to + '2'}
-            points={con.graphPoints2.map((point) => mapWidth * point)}
-            strokeWidth={lineStrokeSize}
-            stroke={isConnectionSelected ? 'blue' : 'green'}
-            opacity={0.8}
-            onClick={(e) => {
-              console.log(e.evt);
-              if (e.evt.button === 0) {
-                connectionClick(connectionId);
-              } else if (e.evt.button === 2) {
-                connectionRightClick(connectionId);
-              }
-            }}
-          />,
-        ];
-      }
-    } else return [];
+    if (!con.graphPoints2) {
+      return [
+        <Line
+          key={con.from + '-' + con.to + '1'}
+          points={con.graphPoints1.map((point) => mapWidth * point)}
+          strokeWidth={lineStrokeSize}
+          stroke={isConnectionSelected ? 'blue' : 'green'}
+          opacity={0.8}
+          onClick={(e) => {
+            console.log(e.evt);
+            if (e.evt.button === 0) {
+              connectionClick(connectionId);
+            } else if (e.evt.button === 2) {
+              connectionRightClick(connectionId);
+            }
+          }}
+        />,
+      ];
+    } else {
+      return [
+        <Line
+          key={con.from + '-' + con.to + '1'}
+          points={con.graphPoints1.map((point) => mapWidth * point)}
+          strokeWidth={lineStrokeSize}
+          stroke={isConnectionSelected ? 'blue' : 'green'}
+          opacity={0.8}
+          onClick={(e) => {
+            console.log(e.evt);
+            if (e.evt.button === 0) {
+              connectionClick(connectionId);
+            } else if (e.evt.button === 2) {
+              connectionRightClick(connectionId);
+            }
+          }}
+        />,
+        <Line
+          key={con.from + '-' + con.to + '2'}
+          points={con.graphPoints2.map((point) => mapWidth * point)}
+          strokeWidth={lineStrokeSize}
+          stroke={isConnectionSelected ? 'blue' : 'green'}
+          opacity={0.8}
+          onClick={(e) => {
+            console.log(e.evt);
+            if (e.evt.button === 0) {
+              connectionClick(connectionId);
+            } else if (e.evt.button === 2) {
+              connectionRightClick(connectionId);
+            }
+          }}
+        />,
+      ];
+    }
   });
 
   return (
