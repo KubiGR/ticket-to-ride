@@ -1,5 +1,9 @@
 import { Edge } from 'floyd-warshall-shortest';
+import { Connection } from 'model/connection';
+import { Constants } from 'model/constants';
 import { GameNetwork } from 'model/gameNetwork';
+import { Ticket } from 'model/ticket';
+import { getUSATicketsFromJSON } from 'model/usaTickets';
 
 test('getShortestPath no restrictions', () => {
   const gameNetwork = new GameNetwork();
@@ -75,6 +79,16 @@ test('getShortestPath with shouldPass (inverse)', () => {
   expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
 });
 
+test('established connections reduce train number', () => {
+  const gameNetwork = new GameNetwork();
+  const connection = gameNetwork.getConnection('El Paso', 'Los Angeles');
+  gameNetwork.addEstablished(connection);
+
+  expect(gameNetwork.getAvailableTrains()).toEqual(
+    Constants.TOTAL_TRAINS - connection.weight,
+  );
+});
+
 test('getShortestPath with cannotPass 1', () => {
   const gameNetwork = new GameNetwork();
   const connection = gameNetwork.getConnection('Phoenix', 'Denver');
@@ -108,7 +122,6 @@ test('getShortestPath with cannotPass 2', () => {
   gameNetwork.addCannotPass(connection2);
 
   const path = gameNetwork.getShortestPath('Vancouver', 'Denver');
-  console.log(path);
   expect(path).toEqual([]);
 });
 
@@ -175,3 +188,84 @@ test('findSpanningTree throws unknown city', () => {
     ]);
   }).toThrow();
 });
+
+/**
+ * Acceptance test for tickets
+ */
+
+test('Execution scenario for tickets', () => {
+  const gameNetwork = new GameNetwork();
+
+  // const tickets = getUSATicketsFromJSON();
+  const tickets = [
+    new Ticket('Boston', 'Miami', 12),
+    new Ticket('Calgary', 'Salt Lake City', 7),
+    new Ticket('Calgary', 'Phoenix', 13),
+  ];
+
+  const connections = gameNetwork.getConnectionsForPath(
+    gameNetwork.getShortestVisitingPath(Ticket.getCities(tickets)),
+  );
+  const points = Ticket.getPoints(tickets);
+  expect(points).toBe(32);
+  const trains = gameNetwork.getTrains(connections);
+  expect(trains).toBe(43);
+});
+
+test('Execution scenario for tickets with established connections', () => {
+  const gameNetwork = new GameNetwork();
+
+  // const tickets = getUSATicketsFromJSON();
+  const tickets = [
+    new Ticket('Boston', 'Miami', 12),
+    new Ticket('Calgary', 'Salt Lake City', 7),
+    new Ticket('Calgary', 'Phoenix', 13),
+  ];
+
+  // this connection exists and is part of the route
+  gameNetwork.addEstablished(gameNetwork.getConnection('Boston', 'New York'));
+  const connections = gameNetwork.getConnectionsForPath(
+    gameNetwork.getShortestVisitingPath(Ticket.getCities(tickets)),
+  );
+  const points = Ticket.getPoints(tickets);
+  expect(points).toBe(32);
+  const trains = gameNetwork.getTrains(connections);
+  expect(trains).toBe(41); // two less trains needed
+});
+
+// test('given a ticket array 1 element returns connections', () => {
+//   const gameNetwork = new GameNetwork();
+
+//   const ticket = new Ticket('Kansas City', 'Houston', 5);
+//   const tickets = [ticket];
+
+//   const path = gameNetwork.getShortestVisitingPath(['Kansas City', 'Houston']);
+//   const connections = gameNetwork.getConnectionsForPath(path);
+
+//   const result = gameNetwork.getConnectionsForTickets(tickets);
+
+//   expect(result).toEqual(connections);
+//   // [
+//   //   Connection {
+//   //     from: 'Oklahoma City',
+//   //     to: 'Kansas City',
+//   //     weight: 2,
+//   //     color1: 'Gray',
+//   //     color2: 'Gray'
+//   //   },
+//   //   Connection {
+//   //     from: 'Oklahoma City',
+//   //     to: 'Dallas',
+//   //     weight: 2,
+//   //     color1: 'Gray',
+//   //     color2: 'Gray'
+//   //   },
+//   //   Connection {
+//   //     from: 'Dallas',
+//   //     to: 'Houston',
+//   //     weight: 1,
+//   //     color1: 'Gray',
+//   //     color2: 'Gray'
+//   //   }
+//   // ]
+// });

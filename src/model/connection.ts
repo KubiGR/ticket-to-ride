@@ -37,4 +37,8 @@ export class Connection implements Edge<string> {
   isEqual(other: Connection): boolean {
     return this.contains(other.from) && this.contains(other.to);
   }
+
+  static getTrains(connections: Connection[]): number {
+    return connections.map((c) => c.weight).reduce((sum, t) => sum + t, 0);
+  }
 }
