@@ -33,4 +33,8 @@ export class Connection implements Edge<string> {
     clone.color2 = this.color2;
     return clone;
   }
+
+  isEqual(other: Connection): boolean {
+    return this.contains(other.from) && this.contains(other.to);
+  }
 }
