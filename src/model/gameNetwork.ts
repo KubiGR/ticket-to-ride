@@ -2,12 +2,18 @@ import { getUSAConnectionsFromJSON } from 'model/usaMap';
 import { FloydWarshall, Edge } from 'floyd-warshall-shortest';
 import { kruskal } from 'kruskal-mst';
 import { Connection } from './connection';
+import { Constants } from './constants';
+import { Ticket } from './ticket';
 
 export class GameNetwork {
-  graph!: FloydWarshall<string>;
-  cannotPass: Set<Connection> = new Set();
-  established: Set<Connection> = new Set();
-  usaEdges!: Connection[];
+  private graph!: FloydWarshall<string>;
+  private cannotPass: Set<Connection> = new Set();
+  private established: Set<Connection> = new Set();
+  private usaEdges!: Connection[];
+  private tickets!: Ticket[];
+
+  private availableTrains = Constants.TOTAL_TRAINS;
+  private establishedPoints = 0;
 
   constructor() {
     this.parseConnections();
@@ -34,6 +40,8 @@ export class GameNetwork {
       );
     this.established.add(edge);
     this.processEdgeRestrictions();
+    this.availableTrains -= edge.weight;
+    this.establishedPoints += edge.getPoints();
   }
 
   addCannotPass(edge: Connection): void {
@@ -75,11 +83,12 @@ export class GameNetwork {
   }
 
   getConnectionsForPath(path: string[]): Connection[] {
-    const connections: Connection[] = [];
+    const connections: Set<Connection> = new Set();
     for (let i = 0; i < path.length - 1; i++) {
-      connections.push(this.getConnection(path[i], path[i + 1]));
+      const connection = this.getConnection(path[i], path[i + 1]);
+      connections.add(connection);
     }
-    return connections;
+    return Array.from(connections);
   }
 
   getMinSpanningTreeOfShortestRoutes(cities: string[]): Edge<string>[] {
@@ -114,5 +123,28 @@ export class GameNetwork {
     });
 
     return connections;
+  }
+
+  getAvailableTrains(): number {
+    return this.availableTrains;
+  }
+
+  getPoints(): number {
+    return this.establishedPoints;
+  }
+
+  getRequiredNumOfTrains(connections: Connection[]): number {
+    return Connection.getTrains(
+      connections.filter((c) => !this.established.has(c)),
+    );
+  }
+
+  getGainPoints(tickets: Ticket[], connections: Connection[]): number {
+    const ticketPoints = Ticket.getPoints(tickets);
+    const linePoints = connections
+      .filter((c) => !this.established.has(c))
+      .map((c) => c.getPoints())
+      .reduce((sum, x) => sum + x, 0);
+    return ticketPoints + linePoints;
   }
 }

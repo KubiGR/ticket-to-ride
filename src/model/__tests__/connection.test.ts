@@ -33,3 +33,13 @@ test('isEqual two unequal 2', () => {
   const connection2 = new Connection('a', 'c', 5, TrackColor.Red);
   expect(connection1.isEqual(connection2)).toBe(false);
 });
+
+test('getTrains', () => {
+  const connection1 = new Connection('a', 'b', 3, TrackColor.Black);
+  const connection2 = new Connection('a', 'c', 5, TrackColor.Red);
+  expect(Connection.getTrains([connection1, connection2])).toBe(8);
+});
+
+test('getTrains empty', () => {
+  expect(Connection.getTrains([])).toBe(0);
+});

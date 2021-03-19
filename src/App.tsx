@@ -54,6 +54,14 @@ const App = (): JSX.Element => {
   console.log(shouldPassConnections);
   const citiesArray = gameNetwork.getShortestVisitingPath(selectedCities);
   const connectionsArray = gameNetwork.getConnectionsForPath(citiesArray);
+  console.log(
+    'Available trains: ' +
+      (gameNetwork.getAvailableTrains() -
+        gameNetwork.getRequiredNumOfTrains(connectionsArray)) +
+      '\nTotal Points    : ' +
+      (gameNetwork.getPoints() +
+        gameNetwork.getGainPoints([], connectionsArray)),
+  );
   const stringifiedConnections = connectionsArray.map((connection) => {
     return connection.from + '-' + connection.to + '1';
   });
