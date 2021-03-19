@@ -57,7 +57,9 @@ const App = (): JSX.Element => {
   console.log(
     'Available trains: ' +
       (gameNetwork.getAvailableTrains() -
-        gameNetwork.getTrains(connectionsArray)),
+        gameNetwork.getTrains(connectionsArray)) +
+      '\n Points: ' +
+      gameNetwork.getPoints([], connectionsArray),
   );
   const stringifiedConnections = connectionsArray.map((connection) => {
     return connection.from + '-' + connection.to + '1';

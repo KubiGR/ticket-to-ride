@@ -13,6 +13,7 @@ export class GameNetwork {
   private tickets!: Ticket[];
 
   private availableTrains = Constants.TOTAL_TRAINS;
+  private establishedPoints = 0;
 
   constructor() {
     this.parseConnections();
@@ -38,8 +39,9 @@ export class GameNetwork {
         'addEstablished: ' + edge + ' is in ' + ' cannot pass list',
       );
     this.established.add(edge);
-    this.availableTrains -= edge.weight;
     this.processEdgeRestrictions();
+    this.availableTrains -= edge.weight;
+    this.establishedPoints += edge.getPoints();
   }
 
   addCannotPass(edge: Connection): void {
@@ -131,5 +133,14 @@ export class GameNetwork {
     return Connection.getTrains(
       connections.filter((c) => !this.established.has(c)),
     );
+  }
+
+  getPoints(tickets: Ticket[], connections: Connection[]): number {
+    const ticketPoints = Ticket.getPoints(tickets);
+    const linePoints = connections
+      .filter((c) => !this.established.has(c))
+      .map((c) => c.getPoints())
+      .reduce((sum, x) => sum + x, 0);
+    return ticketPoints + linePoints + this.establishedPoints;
   }
 }

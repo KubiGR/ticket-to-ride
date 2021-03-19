@@ -41,4 +41,28 @@ export class Connection implements Edge<string> {
   static getTrains(connections: Connection[]): number {
     return connections.map((c) => c.weight).reduce((sum, t) => sum + t, 0);
   }
+
+  getPoints(): number {
+    switch (this.weight) {
+      case 1: {
+        return 1;
+      }
+      case 2: {
+        return 2;
+      }
+      case 3: {
+        return 4;
+      }
+      case 4: {
+        return 7;
+      }
+      case 5: {
+        return 10;
+      }
+      case 6: {
+        return 15;
+      }
+    }
+    throw new Error('Should not be a weight: ' + this.weight);
+  }
 }

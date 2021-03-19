@@ -193,6 +193,53 @@ test('findSpanningTree throws unknown city', () => {
  * Acceptance test for tickets
  */
 
+test('Execution scenario for a ticket', () => {
+  const gameNetwork = new GameNetwork();
+
+  // const tickets = getUSATicketsFromJSON();
+  const tickets = [new Ticket('Calgary', 'Phoenix', 13)];
+
+  const connections = gameNetwork.getConnectionsForPath(
+    gameNetwork.getShortestVisitingPath(Ticket.getCities(tickets)),
+  );
+  const points = gameNetwork.getPoints(tickets, connections);
+  expect(points).toBe(13 + 7 + 7 + 10);
+  const trains = gameNetwork.getTrains(connections);
+  expect(trains).toBe(13);
+});
+
+test('Execution scenario for a ticket and an established line not in the connections', () => {
+  const gameNetwork = new GameNetwork();
+
+  // const tickets = getUSATicketsFromJSON();
+  const tickets = [new Ticket('Calgary', 'Phoenix', 13)];
+  gameNetwork.addEstablished(gameNetwork.getConnection('Vancouver', 'Calgary'));
+
+  const connections = gameNetwork.getConnectionsForPath(
+    gameNetwork.getShortestVisitingPath(Ticket.getCities(tickets)),
+  );
+  const points = gameNetwork.getPoints(tickets, connections);
+  expect(points).toBe(13 + 7 + 7 + 10 + 4);
+  const trains = gameNetwork.getTrains(connections);
+  expect(trains).toBe(13);
+});
+
+test('Execution scenario for a ticket and an established line WITHIN in the connections', () => {
+  const gameNetwork = new GameNetwork();
+
+  // const tickets = getUSATicketsFromJSON();
+  const tickets = [new Ticket('Calgary', 'Phoenix', 13)];
+  gameNetwork.addEstablished(gameNetwork.getConnection('Helena', 'Calgary'));
+
+  const connections = gameNetwork.getConnectionsForPath(
+    gameNetwork.getShortestVisitingPath(Ticket.getCities(tickets)),
+  );
+  const points = gameNetwork.getPoints(tickets, connections);
+  expect(points).toBe(13 + 7 + 7 + 10);
+  const trains = gameNetwork.getTrains(connections);
+  expect(trains).toBe(9);
+});
+
 test('Execution scenario for tickets', () => {
   const gameNetwork = new GameNetwork();
 
