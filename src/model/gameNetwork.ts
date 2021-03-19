@@ -129,18 +129,22 @@ export class GameNetwork {
     return this.availableTrains;
   }
 
-  getTrains(connections: Connection[]): number {
+  getPoints(): number {
+    return this.establishedPoints;
+  }
+
+  getRequiredNumOfTrains(connections: Connection[]): number {
     return Connection.getTrains(
       connections.filter((c) => !this.established.has(c)),
     );
   }
 
-  getPoints(tickets: Ticket[], connections: Connection[]): number {
+  getGainPoints(tickets: Ticket[], connections: Connection[]): number {
     const ticketPoints = Ticket.getPoints(tickets);
     const linePoints = connections
       .filter((c) => !this.established.has(c))
       .map((c) => c.getPoints())
       .reduce((sum, x) => sum + x, 0);
-    return ticketPoints + linePoints + this.establishedPoints;
+    return ticketPoints + linePoints;
   }
 }

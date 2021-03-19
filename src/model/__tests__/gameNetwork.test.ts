@@ -202,9 +202,9 @@ test('Execution scenario for a ticket', () => {
   const connections = gameNetwork.getConnectionsForPath(
     gameNetwork.getShortestVisitingPath(Ticket.getCities(tickets)),
   );
-  const points = gameNetwork.getPoints(tickets, connections);
+  const points = gameNetwork.getGainPoints(tickets, connections);
   expect(points).toBe(13 + 7 + 7 + 10);
-  const trains = gameNetwork.getTrains(connections);
+  const trains = gameNetwork.getRequiredNumOfTrains(connections);
   expect(trains).toBe(13);
 });
 
@@ -218,9 +218,9 @@ test('Execution scenario for a ticket and an established line not in the connect
   const connections = gameNetwork.getConnectionsForPath(
     gameNetwork.getShortestVisitingPath(Ticket.getCities(tickets)),
   );
-  const points = gameNetwork.getPoints(tickets, connections);
-  expect(points).toBe(13 + 7 + 7 + 10 + 4);
-  const trains = gameNetwork.getTrains(connections);
+  const points = gameNetwork.getGainPoints(tickets, connections);
+  expect(points).toBe(13 + 7 + 7 + 10);
+  const trains = gameNetwork.getRequiredNumOfTrains(connections);
   expect(trains).toBe(13);
 });
 
@@ -234,9 +234,9 @@ test('Execution scenario for a ticket and an established line WITHIN in the conn
   const connections = gameNetwork.getConnectionsForPath(
     gameNetwork.getShortestVisitingPath(Ticket.getCities(tickets)),
   );
-  const points = gameNetwork.getPoints(tickets, connections);
-  expect(points).toBe(13 + 7 + 7 + 10);
-  const trains = gameNetwork.getTrains(connections);
+  const points = gameNetwork.getGainPoints(tickets, connections);
+  expect(points).toBe(13 + 0 + 7 + 10);
+  const trains = gameNetwork.getRequiredNumOfTrains(connections);
   expect(trains).toBe(9);
 });
 
@@ -253,11 +253,11 @@ test('Execution scenario for tickets', () => {
   const connections = gameNetwork.getConnectionsForPath(
     gameNetwork.getShortestVisitingPath(Ticket.getCities(tickets)),
   );
-  const points = gameNetwork.getPoints(tickets, connections);
+  const points = gameNetwork.getGainPoints(tickets, connections);
   expect(points).toBe(
     32 + 7 + 4 + 4 + 10 + 4 + 7 + 1 + 2 + 15 + 7 + 2 + 2 + 2 + 2,
   );
-  const trains = gameNetwork.getTrains(connections);
+  const trains = gameNetwork.getRequiredNumOfTrains(connections);
   expect(trains).toBe(43);
 });
 
@@ -276,11 +276,9 @@ test('Execution scenario for tickets with established connections', () => {
   const connections = gameNetwork.getConnectionsForPath(
     gameNetwork.getShortestVisitingPath(Ticket.getCities(tickets)),
   );
-  const points = gameNetwork.getPoints(tickets, connections);
-  expect(points).toBe(
-    32 + 7 + 4 + 4 + 10 + 4 + 7 + 1 + 2 + 15 + 7 + 2 + 2 + 2 + 2,
-  );
-  const trains = gameNetwork.getTrains(connections);
+  const points = gameNetwork.getGainPoints(tickets, connections);
+  expect(points).toBe(32 + 7 + 4 + 4 + 10 + 4 + 7 + 1 + 2 + 15 + 7 + 2 + 2 + 2);
+  const trains = gameNetwork.getRequiredNumOfTrains(connections);
   expect(trains).toBe(41); // two less trains needed
 });
 
