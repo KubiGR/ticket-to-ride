@@ -253,8 +253,10 @@ test('Execution scenario for tickets', () => {
   const connections = gameNetwork.getConnectionsForPath(
     gameNetwork.getShortestVisitingPath(Ticket.getCities(tickets)),
   );
-  const points = Ticket.getPoints(tickets);
-  expect(points).toBe(32);
+  const points = gameNetwork.getPoints(tickets, connections);
+  expect(points).toBe(
+    32 + 7 + 4 + 4 + 10 + 4 + 7 + 1 + 2 + 15 + 7 + 2 + 2 + 2 + 2,
+  );
   const trains = gameNetwork.getTrains(connections);
   expect(trains).toBe(43);
 });
@@ -274,8 +276,10 @@ test('Execution scenario for tickets with established connections', () => {
   const connections = gameNetwork.getConnectionsForPath(
     gameNetwork.getShortestVisitingPath(Ticket.getCities(tickets)),
   );
-  const points = Ticket.getPoints(tickets);
-  expect(points).toBe(32);
+  const points = gameNetwork.getPoints(tickets, connections);
+  expect(points).toBe(
+    32 + 7 + 4 + 4 + 10 + 4 + 7 + 1 + 2 + 15 + 7 + 2 + 2 + 2 + 2,
+  );
   const trains = gameNetwork.getTrains(connections);
   expect(trains).toBe(41); // two less trains needed
 });
