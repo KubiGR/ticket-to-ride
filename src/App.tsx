@@ -78,9 +78,7 @@ const App = (): JSX.Element => {
   };
 
   const connectionClick = (con: Connection) => {
-    if (
-      !cannotPassConnections?.some((e) => e.from + e.to === con.from + con.to)
-    ) {
+    if (!cannotPassConnections?.some((e) => e.isEqual(con))) {
       setCannotPassConnections((prevCons) => {
         const connectionsArr = prevCons ? prevCons?.slice() : [];
         connectionsArr.push(con);
@@ -89,9 +87,7 @@ const App = (): JSX.Element => {
     } else {
       setCannotPassConnections((prevCons) => {
         const connectionsArr = prevCons ? prevCons?.slice() : [];
-        const index = connectionsArr.findIndex(
-          (e) => e.from + e.to === con.from + con.to,
-        );
+        const index = connectionsArr.findIndex((e) => e.isEqual(con));
         if (index > -1) {
           connectionsArr.splice(index, 1);
         }
@@ -101,9 +97,7 @@ const App = (): JSX.Element => {
   };
 
   const connectionRightClick = (con: Connection) => {
-    if (
-      !shouldPassConnections?.some((e) => e.from + e.to === con.from + con.to)
-    ) {
+    if (!shouldPassConnections?.some((e) => e.isEqual(con))) {
       setshouldPassConnections((prevCons) => {
         const connectionsArr = prevCons ? prevCons?.slice() : [];
         connectionsArr.push(con);
@@ -112,9 +106,7 @@ const App = (): JSX.Element => {
     } else {
       setshouldPassConnections((prevCons) => {
         const connectionsArr = prevCons ? prevCons?.slice() : [];
-        const index = connectionsArr.findIndex(
-          (e) => e.from + e.to === con.from + con.to,
-        );
+        const index = connectionsArr.findIndex((e) => e.isEqual(con));
         if (index > -1) {
           connectionsArr.splice(index, 1);
         }
@@ -208,7 +200,6 @@ const App = (): JSX.Element => {
 
   return (
     <div ref={ref}>
-      Selected Cities: {selectedCities}
       <Stage
         width={mapWidth}
         height={mapHeight}
