@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+      "target": "ES6",
       "baseUrl": "src",
       "lib": ["dom", "dom.iterable", "esnext"],
       "checkJs": true,
@@ -13,7 +14,8 @@
       "resolveJsonModule": true,
       "isolatedModules": true,
       "noEmit": true,
-      "jsx": "react"
+      "jsx": "react",
+      "useDefineForClassFields": true
     },
     "include": ["src", "index.d.ts"]
   }
