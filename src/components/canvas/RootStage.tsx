@@ -43,22 +43,22 @@ export const RootStage = observer(() => {
   const drawConnectionsArray = usaConnections.flatMap((con) => {
     const connectionId = mapStore.gameNetwork.getConnection(con.from, con.to);
     let connectionDrawColor = 'green';
-    let connectionDrawOpacity = 0.4;
+    let connectionDrawOpacity = 0.0;
     const connectionType = mapStore.connectionTypeSelectionMap.get(
       connectionId,
     );
     if (connectionType) {
       if (connectionType.includes('selected')) {
         connectionDrawColor = '#7d85ff';
-        connectionDrawOpacity = 0.8;
+        connectionDrawOpacity = 1;
       }
       if (connectionType.includes('cannotPass')) {
         connectionDrawColor = '#ff5959';
-        connectionDrawOpacity = 0.8;
+        connectionDrawOpacity = 1;
       }
       if (connectionType.includes('shouldPass')) {
         connectionDrawColor = '#4551ff';
-        connectionDrawOpacity = 0.8;
+        connectionDrawOpacity = 1;
       }
     }
 
