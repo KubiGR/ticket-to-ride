@@ -3,21 +3,24 @@ import { GameNetwork } from 'model/gameNetwork';
 import { Connection } from 'model/connection';
 
 export class MapStore {
-  gameNetwork = new GameNetwork();
-  selectedCities: string[] = [];
-  cannotPassConnections: Connection[] = [];
-  shouldPassConnections: Connection[] = [];
+  gameNetwork;
+  selectedCities;
+  cannotPassConnections: Connection[];
+  shouldPassConnections: Connection[];
 
   constructor() {
     makeAutoObservable(this);
-    console.log('mapStore constructor');
-    console.log(this.cannotPassConnections);
+    this.gameNetwork = new GameNetwork();
+    this.selectedCities = [];
+    this.cannotPassConnections = [];
+    this.shouldPassConnections = [];
+    console.log(this);
     this.selectedCities.push('Vancouver');
-    console.log(this.selectedCities);
   }
 
-  toggleSelectedCity(cityName: string) {
-    console.log(this.selectedCities);
+  toggleSelectedCity(cityName: string): void {
+    console.log(cityName);
+    console.log(this);
     if (!this.selectedCities?.includes(cityName)) {
       this.selectedCities.push(cityName);
     } else {
@@ -28,7 +31,7 @@ export class MapStore {
     }
   }
 
-  toggleShouldPassConnection(con: Connection) {
+  toggleShouldPassConnection(con: Connection): void {
     if (!this.shouldPassConnections?.some((e) => e.isEqual(con))) {
       this.shouldPassConnections.push(con);
     } else {
@@ -39,7 +42,7 @@ export class MapStore {
     }
   }
 
-  toggleCannotPassConnection(con: Connection) {
+  toggleCannotPassConnection(con: Connection): void {
     if (!this.cannotPassConnections?.some((e) => e.isEqual(con))) {
       this.cannotPassConnections.push(con);
     } else {
@@ -50,7 +53,7 @@ export class MapStore {
     }
   }
 
-  get connectionTypeSelectionMap() {
+  get connectionTypeSelectionMap(): Map<Connection, string[]> {
     const citiesArray = this.gameNetwork.getShortestVisitingPath(
       this.selectedCities,
     );

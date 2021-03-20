@@ -1,10 +1,9 @@
-import React, { Component, useContext } from 'react';
+import React from 'react';
 import { MapImage } from 'components/canvas/MapImage';
 import { Stage, Layer, Circle, Line } from 'react-konva';
 
 import usaCities from 'data/usaCities.json';
 import usaConnections from 'data/usaConnections.json';
-import mapStore from 'stores/mapStore';
 import { observer } from 'mobx-react';
 import { useMapStore } from 'providers/MapStoreProvider';
 
@@ -12,13 +11,13 @@ const mapHeight = 900;
 const mapWidth = mapHeight * 1.56;
 const lineStrokeSize = mapWidth * 0.012;
 const cityFillRadius = mapWidth * 0.008;
-const getPointerPosition = (evt: any) => {
-  console.info(
-    (evt.evt.layerX / mapWidth).toFixed(4) +
-      ', ' +
-      (evt.evt.layerY / mapWidth).toFixed(4),
-  );
-};
+// const getPointerPosition = (evt: any) => {
+//   console.info(
+//     (evt.evt.layerX / mapWidth).toFixed(4) +
+//       ', ' +
+//       (evt.evt.layerY / mapWidth).toFixed(4),
+//   );
+// };
 
 export const RootStage = observer(() => {
   const {
@@ -126,7 +125,7 @@ export const RootStage = observer(() => {
     <Stage
       width={mapWidth}
       height={mapHeight}
-      onClick={(e) => getPointerPosition(e)}
+      // onClick={(e) => getPointerPosition(e)}
       onContextMenu={(e) => e.evt.preventDefault()}
     >
       <Layer>
