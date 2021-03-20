@@ -22,6 +22,5 @@ export function useMapStore(): MapStore {
   if (context === undefined) {
     throw new Error('useMapStore must be used within MapStoreProvider');
   }
-  console.log(context);
   return context;
 }

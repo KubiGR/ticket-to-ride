@@ -20,18 +20,11 @@ const cityFillRadius = mapWidth * 0.008;
 // };
 
 export const RootStage = observer(() => {
-  const {
-    gameNetwork,
-    selectedCities,
-    connectionTypeSelectionMap,
-    toggleCannotPassConnection,
-    toggleSelectedCity,
-    toggleShouldPassConnection,
-  } = useMapStore();
+  const mapStore = useMapStore();
 
   const drawCitiesArray = usaCities.map((city) => {
     let isCitySelected = false;
-    if (selectedCities.includes(city.name)) {
+    if (mapStore.selectedCities.includes(city.name)) {
       isCitySelected = true;
     }
     return (
@@ -42,16 +35,18 @@ export const RootStage = observer(() => {
         radius={cityFillRadius}
         opacity={0.5}
         fill={isCitySelected ? 'blue' : 'green'}
-        onClick={() => toggleSelectedCity(city.name)}
+        onClick={() => mapStore.toggleSelectedCity(city.name)}
       />
     );
   });
 
   const drawConnectionsArray = usaConnections.flatMap((con) => {
-    const connectionId = gameNetwork.getConnection(con.from, con.to);
+    const connectionId = mapStore.gameNetwork.getConnection(con.from, con.to);
     let connectionDrawColor = 'green';
     let connectionDrawOpacity = 0.4;
-    const connectionType = connectionTypeSelectionMap.get(connectionId);
+    const connectionType = mapStore.connectionTypeSelectionMap.get(
+      connectionId,
+    );
     if (connectionType) {
       if (connectionType.includes('selected')) {
         connectionDrawColor = '#7d85ff';
@@ -76,11 +71,10 @@ export const RootStage = observer(() => {
           stroke={connectionDrawColor}
           opacity={connectionDrawOpacity}
           onClick={(e) => {
-            console.log(e.evt);
             if (e.evt.button === 0) {
-              toggleCannotPassConnection(connectionId);
+              mapStore.toggleCannotPassConnection(connectionId);
             } else if (e.evt.button === 2) {
-              toggleShouldPassConnection(connectionId);
+              mapStore.toggleShouldPassConnection(connectionId);
             }
           }}
         />,
@@ -94,11 +88,10 @@ export const RootStage = observer(() => {
           stroke={connectionDrawColor}
           opacity={connectionDrawOpacity}
           onClick={(e) => {
-            console.log(e.evt);
             if (e.evt.button === 0) {
-              toggleCannotPassConnection(connectionId);
+              mapStore.toggleCannotPassConnection(connectionId);
             } else if (e.evt.button === 2) {
-              toggleShouldPassConnection(connectionId);
+              mapStore.toggleShouldPassConnection(connectionId);
             }
           }}
         />,
@@ -109,11 +102,10 @@ export const RootStage = observer(() => {
           stroke={connectionDrawColor}
           opacity={connectionDrawOpacity}
           onClick={(e) => {
-            console.log(e.evt);
             if (e.evt.button === 0) {
-              toggleCannotPassConnection(connectionId);
+              mapStore.toggleCannotPassConnection(connectionId);
             } else if (e.evt.button === 2) {
-              toggleShouldPassConnection(connectionId);
+              mapStore.toggleShouldPassConnection(connectionId);
             }
           }}
         />,

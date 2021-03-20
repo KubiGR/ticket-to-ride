@@ -1,26 +1,54 @@
-import { makeAutoObservable } from 'mobx';
+import { autorun, makeAutoObservable, runInAction } from 'mobx';
 import { GameNetwork } from 'model/gameNetwork';
 import { Connection } from 'model/connection';
 
 export class MapStore {
-  gameNetwork;
-  selectedCities;
-  cannotPassConnections: Connection[];
-  shouldPassConnections: Connection[];
+  gameNetwork = new GameNetwork();
+  selectedCities: string[] = [];
+  cannotPassConnections: Connection[] = [];
+  shouldPassConnections: Connection[] = [];
+  connectionTypeSelectionMap: Map<Connection, string[]> = new Map();
 
   constructor() {
     makeAutoObservable(this);
-    this.gameNetwork = new GameNetwork();
-    this.selectedCities = [];
-    this.cannotPassConnections = [];
-    this.shouldPassConnections = [];
     console.log(this);
-    this.selectedCities.push('Vancouver');
+
+    autorun(() => {
+      this.generateConnectionTypeSelectionMap();
+    });
+  }
+
+  generateConnectionTypeSelectionMap(): void {
+    const connectionsArray = this.gameNetwork.getConnectionsOfMinSpanningTreeOfShortestRoutes(
+      this.selectedCities,
+    );
+
+    const connectionTypeSelectionMap = connectionsArray.reduce((acc, cur) => {
+      acc.set(cur, ['selected']);
+      return acc;
+    }, new Map());
+
+    this.cannotPassConnections.forEach((cannotPassConnection) => {
+      if (connectionTypeSelectionMap.get(cannotPassConnection)) {
+        connectionTypeSelectionMap.get(cannotPassConnection).push('cannotPass');
+      } else {
+        connectionTypeSelectionMap.set(cannotPassConnection, ['cannotPass']);
+      }
+    });
+
+    this.shouldPassConnections.forEach((shouldPassConnection) => {
+      if (connectionTypeSelectionMap.get(shouldPassConnection)) {
+        connectionTypeSelectionMap.get(shouldPassConnection).push('shouldPass');
+      } else {
+        connectionTypeSelectionMap.set(shouldPassConnection, ['shouldPass']);
+      }
+    });
+
+    console.log(connectionTypeSelectionMap);
+    this.connectionTypeSelectionMap = connectionTypeSelectionMap;
   }
 
   toggleSelectedCity(cityName: string): void {
-    console.log(cityName);
-    console.log(this);
     if (!this.selectedCities?.includes(cityName)) {
       this.selectedCities.push(cityName);
     } else {
@@ -52,34 +80,4 @@ export class MapStore {
       }
     }
   }
-
-  get connectionTypeSelectionMap(): Map<Connection, string[]> {
-    const citiesArray = this.gameNetwork.getShortestVisitingPath(
-      this.selectedCities,
-    );
-    const connectionsArray = this.gameNetwork.getConnectionsForPath(
-      citiesArray,
-    );
-    const connectionTypeSelectionMap = connectionsArray.reduce((acc, cur) => {
-      acc.set(cur, ['selected']);
-      return acc;
-    }, new Map());
-    this.cannotPassConnections.forEach((cannotPassConnection) => {
-      if (connectionTypeSelectionMap.get(cannotPassConnection)) {
-        connectionTypeSelectionMap.get(cannotPassConnection).push('cannotPass');
-      } else {
-        connectionTypeSelectionMap.set(cannotPassConnection, ['cannotPass']);
-      }
-    });
-    this.shouldPassConnections.forEach((shouldPassConnection) => {
-      if (connectionTypeSelectionMap.get(shouldPassConnection)) {
-        connectionTypeSelectionMap.get(shouldPassConnection).push('shouldPass');
-      } else {
-        connectionTypeSelectionMap.set(shouldPassConnection, ['shouldPass']);
-      }
-    });
-    return connectionTypeSelectionMap;
-  }
 }
-
-export default new MapStore();
