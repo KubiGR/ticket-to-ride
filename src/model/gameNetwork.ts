@@ -147,7 +147,6 @@ export class GameNetwork {
     cities: string[],
   ): Connection[] {
     let newcities = this.findCitiesToInclude(cities);
-    console.log(cities);
     while (newcities.length > cities.length) {
       cities = newcities;
       newcities = this.findCitiesToInclude(cities);

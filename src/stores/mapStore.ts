@@ -49,7 +49,8 @@ export class MapStore {
         connectionTypeSelectionMap.set(shouldPassConnection, ['shouldPass']);
       }
     });
-
+    console.log(this.shouldPassConnections);
+    console.log(this.cannotPassConnections);
     this.connectionTypeSelectionMap = connectionTypeSelectionMap;
   }
 
@@ -69,36 +70,39 @@ export class MapStore {
       const index = this.cannotPassConnections.findIndex((e) => e.isEqual(con));
       if (index > -1) {
         this.cannotPassConnections.splice(index, 1);
+        this.gameNetwork.removeCannotPass(con);
       }
-      this.gameNetwork.removeCannotPass(con);
     }
     if (!this.shouldPassConnections?.some((e) => e.isEqual(con))) {
       this.shouldPassConnections.push(con);
+      this.gameNetwork.addEstablished(con);
     } else {
       const index = this.shouldPassConnections.findIndex((e) => e.isEqual(con));
       if (index > -1) {
         this.shouldPassConnections.splice(index, 1);
+        this.gameNetwork.removeEstablished(con);
       }
     }
-    this.gameNetwork.addEstablished(con);
   }
 
   toggleCannotPassConnection(con: Connection): void {
     if (this.shouldPassConnections?.some((e) => e.isEqual(con))) {
+      console.log('found shouldPass');
       const index = this.shouldPassConnections.findIndex((e) => e.isEqual(con));
       if (index > -1) {
         this.shouldPassConnections.splice(index, 1);
+        this.gameNetwork.removeEstablished(con);
       }
-      this.gameNetwork.removeEstablished(con);
     }
     if (!this.cannotPassConnections?.some((e) => e.isEqual(con))) {
       this.cannotPassConnections.push(con);
+      this.gameNetwork.addCannotPass(con);
     } else {
       const index = this.cannotPassConnections.findIndex((e) => e.isEqual(con));
       if (index > -1) {
         this.cannotPassConnections.splice(index, 1);
+        this.gameNetwork.removeCannotPass(con);
       }
     }
-    this.gameNetwork.addCannotPass(con);
   }
 }
