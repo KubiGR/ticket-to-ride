@@ -68,6 +68,7 @@ export class MapStore {
         this.shouldPassConnections.splice(index, 1);
       }
     }
+    this.gameNetwork.addEstablished(con);
   }
 
   toggleCannotPassConnection(con: Connection): void {
@@ -79,5 +80,6 @@ export class MapStore {
         this.cannotPassConnections.splice(index, 1);
       }
     }
+    this.gameNetwork.addCannotPass(con);
   }
 }
