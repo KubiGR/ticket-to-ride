@@ -1,4 +1,4 @@
-import { autorun, makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable, reaction } from 'mobx';
 import { GameNetwork } from 'model/gameNetwork';
 import { Connection } from 'model/connection';
 
@@ -12,7 +12,18 @@ export class MapStore {
   constructor() {
     makeAutoObservable(this);
 
-    autorun(() => this.generateConnectionTypeSelectionMap());
+    reaction(
+      () => {
+        return [
+          this.selectedCities.length,
+          this.cannotPassConnections.length,
+          this.shouldPassConnections.length,
+        ];
+      },
+      () => {
+        this.generateConnectionTypeSelectionMap();
+      },
+    );
   }
 
   generateConnectionTypeSelectionMap(): void {
@@ -49,8 +60,6 @@ export class MapStore {
         connectionTypeSelectionMap.set(shouldPassConnection, ['shouldPass']);
       }
     });
-    console.log(this.shouldPassConnections);
-    console.log(this.cannotPassConnections);
     this.connectionTypeSelectionMap = connectionTypeSelectionMap;
   }
 
