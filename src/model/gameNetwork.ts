@@ -44,12 +44,35 @@ export class GameNetwork {
     this.establishedPoints += edge.getPoints();
   }
 
+  removeEstablished(edge: Connection): void {
+    if (!this.established.has(edge))
+      throw new Error(
+        'removeEstablished: ' +
+          edge +
+          ' is in not in the ' +
+          ' established list',
+      );
+    this.established.delete(edge);
+    this.processEdgeRestrictions();
+    this.availableTrains += edge.weight;
+    this.establishedPoints -= edge.getPoints();
+  }
+
   addCannotPass(edge: Connection): void {
     if (this.established.has(edge))
       throw new Error(
         'addCannotPass: ' + edge + ' is in ' + ' established list',
       );
     this.cannotPass.add(edge);
+    this.processEdgeRestrictions();
+  }
+
+  removeCannotPass(edge: Connection): void {
+    if (!this.cannotPass.has(edge))
+      throw new Error(
+        'removeCannotPass: ' + edge + ' is not in ' + ' cannotPass list',
+      );
+    this.cannotPass.delete(edge);
     this.processEdgeRestrictions();
   }
 
