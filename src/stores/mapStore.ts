@@ -1,4 +1,4 @@
-import { autorun, makeAutoObservable } from 'mobx';
+import { autorun, makeAutoObservable, runInAction } from 'mobx';
 import { GameNetwork } from 'model/gameNetwork';
 import { Connection } from 'model/connection';
 
@@ -11,11 +11,8 @@ export class MapStore {
 
   constructor() {
     makeAutoObservable(this);
-    console.log(this);
 
-    autorun(() => {
-      this.generateConnectionTypeSelectionMap();
-    });
+    autorun(() => this.generateConnectionTypeSelectionMap());
   }
 
   generateConnectionTypeSelectionMap(): void {
@@ -31,6 +28,7 @@ export class MapStore {
         (this.gameNetwork.getPoints() +
           this.gameNetwork.getGainPoints([], connectionsArray)),
     );
+
     const connectionTypeSelectionMap = connectionsArray.reduce((acc, cur) => {
       acc.set(cur, ['selected']);
       return acc;
@@ -52,7 +50,6 @@ export class MapStore {
       }
     });
 
-    console.log(connectionTypeSelectionMap);
     this.connectionTypeSelectionMap = connectionTypeSelectionMap;
   }
 
@@ -68,6 +65,13 @@ export class MapStore {
   }
 
   toggleShouldPassConnection(con: Connection): void {
+    if (this.cannotPassConnections?.some((e) => e.isEqual(con))) {
+      const index = this.cannotPassConnections.findIndex((e) => e.isEqual(con));
+      if (index > -1) {
+        this.cannotPassConnections.splice(index, 1);
+      }
+      this.gameNetwork.removeCannotPass(con);
+    }
     if (!this.shouldPassConnections?.some((e) => e.isEqual(con))) {
       this.shouldPassConnections.push(con);
     } else {
@@ -80,6 +84,13 @@ export class MapStore {
   }
 
   toggleCannotPassConnection(con: Connection): void {
+    if (this.shouldPassConnections?.some((e) => e.isEqual(con))) {
+      const index = this.shouldPassConnections.findIndex((e) => e.isEqual(con));
+      if (index > -1) {
+        this.shouldPassConnections.splice(index, 1);
+      }
+      this.gameNetwork.removeEstablished(con);
+    }
     if (!this.cannotPassConnections?.some((e) => e.isEqual(con))) {
       this.cannotPassConnections.push(con);
     } else {
