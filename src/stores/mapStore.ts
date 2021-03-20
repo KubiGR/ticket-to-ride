@@ -1,4 +1,4 @@
-import { autorun, makeAutoObservable, runInAction } from 'mobx';
+import { autorun, makeAutoObservable } from 'mobx';
 import { GameNetwork } from 'model/gameNetwork';
 import { Connection } from 'model/connection';
 
