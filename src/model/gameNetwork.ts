@@ -99,10 +99,12 @@ export class GameNetwork {
     const kruskalEdges: Edge<string>[] = [];
     for (let i = 0; i < cities.length; i++) {
       for (let j = i + 1; j < cities.length; j++) {
+        const distance = graph.getShortestDistance(cities[i], cities[j]);
+        if (distance === Infinity) return [];
         kruskalEdges.push({
           from: cities[i],
           to: cities[j],
-          weight: graph.getShortestDistance(cities[i], cities[j]),
+          weight: distance,
         });
       }
     }
