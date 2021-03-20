@@ -108,16 +108,16 @@ export class GameNetwork {
         });
       }
     }
-    const connections: Connection[] = [];
+    const connections: Set<Connection> = new Set();
     kruskal(kruskalEdges).forEach((solutionEdge) => {
       this.getConnectionsForPath(
         graph.getShortestPath(solutionEdge.from, solutionEdge.to),
       ).forEach((c) => {
-        connections.push(c);
+        connections.add(c);
       });
     });
 
-    return connections;
+    return Array.from(connections);
   }
 
   getAvailableTrains(): number {
