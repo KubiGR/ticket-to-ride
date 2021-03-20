@@ -91,35 +91,30 @@ export class GameNetwork {
     return Array.from(connections);
   }
 
-  getMinSpanningTreeOfShortestRoutes(cities: string[]): Edge<string>[] {
+  getConnectionsOfMinSpanningTreeOfShortestRoutes(
+    cities: string[],
+  ): Connection[] {
     const graph = this.graph; // for editor!!
 
     const kruskalEdges: Edge<string>[] = [];
     for (let i = 0; i < cities.length; i++) {
       for (let j = i + 1; j < cities.length; j++) {
+        const distance = graph.getShortestDistance(cities[i], cities[j]);
+        if (distance === Infinity) return [];
         kruskalEdges.push({
           from: cities[i],
           to: cities[j],
-          weight: graph.getShortestDistance(cities[i], cities[j]),
+          weight: distance,
         });
       }
     }
-    const connections: Edge<string>[] = [];
+    const connections: Connection[] = [];
     kruskal(kruskalEdges).forEach((solutionEdge) => {
-      const shortestPath = graph.getShortestPath(
-        solutionEdge.from,
-        solutionEdge.to,
-      );
-      for (let i = 0; i < shortestPath.length - 1; i++) {
-        connections.push({
-          from: shortestPath[i],
-          to: shortestPath[i + 1],
-          weight: graph.getShortestDistance(
-            shortestPath[i],
-            shortestPath[i + 1],
-          ),
-        });
-      }
+      this.getConnectionsForPath(
+        graph.getShortestPath(solutionEdge.from, solutionEdge.to),
+      ).forEach((c) => {
+        connections.push(c);
+      });
     });
 
     return connections;
