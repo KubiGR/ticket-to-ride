@@ -7,7 +7,6 @@ export class MapStore {
   selectedCities: string[] = [];
   cannotPassConnections: Connection[] = [];
   shouldPassConnections: Connection[] = [];
-  // connectionTypeSelectionMap: Map<Connection, string[]> = new Map();
 
   constructor() {
     makeAutoObservable(this);
@@ -50,43 +49,6 @@ export class MapStore {
     return connectionTypeSelectionMap;
   }
 
-  // generateConnectionTypeSelectionMap(): void {
-  //   const connectionsArray = this.gameNetwork.getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
-  //     this.selectedCities,
-  //   );
-
-  //   console.log(
-  //     'Available trains: ' +
-  //       (this.gameNetwork.getAvailableTrains() -
-  //         this.gameNetwork.getRequiredNumOfTrains(connectionsArray)) +
-  //       '\nTotal Points    : ' +
-  //       (this.gameNetwork.getPoints() +
-  //         this.gameNetwork.getGainPoints([], connectionsArray)),
-  //   );
-
-  //   const connectionTypeSelectionMap = connectionsArray.reduce((acc, cur) => {
-  //     acc.set(cur, ['selected']);
-  //     return acc;
-  //   }, new Map());
-
-  //   this.cannotPassConnections.forEach((cannotPassConnection) => {
-  //     if (connectionTypeSelectionMap.get(cannotPassConnection)) {
-  //       connectionTypeSelectionMap.get(cannotPassConnection).push('cannotPass');
-  //     } else {
-  //       connectionTypeSelectionMap.set(cannotPassConnection, ['cannotPass']);
-  //     }
-  //   });
-
-  //   this.shouldPassConnections.forEach((shouldPassConnection) => {
-  //     if (connectionTypeSelectionMap.get(shouldPassConnection)) {
-  //       connectionTypeSelectionMap.get(shouldPassConnection).push('shouldPass');
-  //     } else {
-  //       connectionTypeSelectionMap.set(shouldPassConnection, ['shouldPass']);
-  //     }
-  //   });
-  //   this.connectionTypeSelectionMap = connectionTypeSelectionMap;
-  // }
-
   toggleSelectedCity(cityName: string): void {
     if (!this.selectedCities?.includes(cityName)) {
       this.selectedCities.push(cityName);
@@ -100,42 +62,49 @@ export class MapStore {
 
   toggleShouldPassConnection(con: Connection): void {
     if (this.cannotPassConnections?.some((e) => e.isEqual(con))) {
-      const index = this.cannotPassConnections.findIndex((e) => e.isEqual(con));
-      if (index > -1) {
-        this.cannotPassConnections.splice(index, 1);
-        this.gameNetwork.removeCannotPass(con);
-      }
+      this.removeCannotPassConnection(con);
     }
     if (!this.shouldPassConnections?.some((e) => e.isEqual(con))) {
-      this.shouldPassConnections.push(con);
-      this.gameNetwork.addEstablished(con);
+      this.addEstablishedConnection(con);
     } else {
-      const index = this.shouldPassConnections.findIndex((e) => e.isEqual(con));
-      if (index > -1) {
-        this.shouldPassConnections.splice(index, 1);
-        this.gameNetwork.removeEstablished(con);
-      }
+      this.removeEstablishedConnection(con);
     }
   }
 
   toggleCannotPassConnection(con: Connection): void {
     if (this.shouldPassConnections?.some((e) => e.isEqual(con))) {
-      console.log('found shouldPass');
-      const index = this.shouldPassConnections.findIndex((e) => e.isEqual(con));
-      if (index > -1) {
-        this.shouldPassConnections.splice(index, 1);
-        this.gameNetwork.removeEstablished(con);
-      }
+      this.removeEstablishedConnection(con);
     }
     if (!this.cannotPassConnections?.some((e) => e.isEqual(con))) {
-      this.cannotPassConnections.push(con);
-      this.gameNetwork.addCannotPass(con);
+      this.addCannotPassConnection(con);
     } else {
-      const index = this.cannotPassConnections.findIndex((e) => e.isEqual(con));
-      if (index > -1) {
-        this.cannotPassConnections.splice(index, 1);
-        this.gameNetwork.removeCannotPass(con);
-      }
+      this.removeCannotPassConnection(con);
     }
+  }
+
+  removeEstablishedConnection(con: Connection): void {
+    const index = this.shouldPassConnections.findIndex((e) => e.isEqual(con));
+    if (index > -1) {
+      this.shouldPassConnections.splice(index, 1);
+      this.gameNetwork.removeEstablished(con);
+    }
+  }
+
+  addEstablishedConnection(con: Connection): void {
+    this.shouldPassConnections.push(con);
+    this.gameNetwork.addEstablished(con);
+  }
+
+  removeCannotPassConnection(con: Connection): void {
+    const index = this.cannotPassConnections.findIndex((e) => e.isEqual(con));
+    if (index > -1) {
+      this.cannotPassConnections.splice(index, 1);
+      this.gameNetwork.removeCannotPass(con);
+    }
+  }
+
+  addCannotPassConnection(con: Connection): void {
+    this.cannotPassConnections.push(con);
+    this.gameNetwork.addCannotPass(con);
   }
 }
