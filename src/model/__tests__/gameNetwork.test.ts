@@ -1,9 +1,6 @@
-import { Edge } from 'floyd-warshall-shortest';
-import { Connection } from 'model/connection';
 import { Constants } from 'model/constants';
 import { GameNetwork } from 'model/gameNetwork';
 import { Ticket } from 'model/ticket';
-import { getUSATicketsFromJSON } from 'model/usaTickets';
 
 test('getShortestPath no restrictions', () => {
   const gameNetwork = new GameNetwork();
@@ -153,7 +150,7 @@ test('getShortestPathArray unknown cities', () => {
 
 test('findSpanningTree', () => {
   const gameNetwork = new GameNetwork();
-  const solution = gameNetwork.getMinSpanningTreeOfShortestRoutes([
+  const solution = gameNetwork.getConnectionsOfMinSpanningTreeOfShortestRoutes([
     'Winnipeg',
     'Duluth',
     'Oklahoma City',
@@ -161,25 +158,36 @@ test('findSpanningTree', () => {
     'Toronto',
     'New Orleans',
   ]);
-  const expected: Edge<string>[] = [
-    { from: 'Winnipeg', to: 'Duluth', weight: 4 },
-    { from: 'Duluth', to: 'Omaha', weight: 2 },
-    { from: 'Omaha', to: 'Kansas City', weight: 1 },
-    { from: 'Kansas City', to: 'Oklahoma City', weight: 2 },
-    { from: 'Duluth', to: 'Sault St. Marie', weight: 3 },
-    { from: 'Sault St. Marie', to: 'Toronto', weight: 2 },
-    { from: 'Oklahoma City', to: 'El Paso', weight: 5 },
-    { from: 'Oklahoma City', to: 'Dallas', weight: 2 },
-    { from: 'Dallas', to: 'Houston', weight: 1 },
-    { from: 'Houston', to: 'New Orleans', weight: 2 },
-  ];
-  expect(solution).toEqual(expected);
+  expect(solution.includes(gameNetwork.getConnection('Winnipeg', 'Duluth')));
+  expect(solution.includes(gameNetwork.getConnection('Omaha', 'Duluth')));
+  expect(solution.includes(gameNetwork.getConnection('Omaha', 'Kansas City')));
+  expect(
+    solution.includes(
+      gameNetwork.getConnection('Kansas City', 'Oklahoma City'),
+    ),
+  );
+  expect(
+    solution.includes(gameNetwork.getConnection('Duluth', 'Sault St. Marie')),
+  );
+  expect(
+    solution.includes(gameNetwork.getConnection('Sault St. Marie', 'Toronto')),
+  );
+  expect(
+    solution.includes(gameNetwork.getConnection('Oklahoma City', 'El Paso')),
+  );
+  expect(
+    solution.includes(gameNetwork.getConnection('Oklahoma City', 'Dallas')),
+  );
+  expect(solution.includes(gameNetwork.getConnection('Dallas', 'Houston')));
+  expect(
+    solution.includes(gameNetwork.getConnection('Houston', 'New Orleans')),
+  );
 });
 
 test('findSpanningTree throws unknown city', () => {
   const gameNetwork = new GameNetwork();
   expect(() => {
-    gameNetwork.getMinSpanningTreeOfShortestRoutes([
+    gameNetwork.getConnectionsOfMinSpanningTreeOfShortestRoutes([
       'Duluth',
       'Oklahoma City',
       'What??',
