@@ -52,8 +52,12 @@ const App = (): JSX.Element => {
   console.log(cannotPassConnections);
   console.log('shouldPassConnections');
   console.log(shouldPassConnections);
-  const citiesArray = gameNetwork.getShortestVisitingPath(selectedCities);
-  const connectionsArray = gameNetwork.getConnectionsForPath(citiesArray);
+  // const connectionsArray = gameNetwork.getConnectionsForPath(
+  //   gameNetwork.getShortestVisitingPath(selectedCities),
+  // );
+  const connectionsArray = gameNetwork.getConnectionsOfMinSpanningTreeOfShortestRoutes(
+    selectedCities,
+  );
   console.log(
     'Available trains: ' +
       (gameNetwork.getAvailableTrains() -
