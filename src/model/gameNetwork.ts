@@ -108,16 +108,78 @@ export class GameNetwork {
         });
       }
     }
-    const connections: Connection[] = [];
+    const connections: Set<Connection> = new Set();
     kruskal(kruskalEdges).forEach((solutionEdge) => {
       this.getConnectionsForPath(
         graph.getShortestPath(solutionEdge.from, solutionEdge.to),
       ).forEach((c) => {
-        connections.push(c);
+        connections.add(c);
       });
     });
 
-    return connections;
+    return Array.from(connections);
+  }
+
+  getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
+    cities: string[],
+  ): Connection[] {
+    let newcities = this.findCitiesToInclude(cities);
+    console.log(cities);
+    while (newcities.length > cities.length) {
+      cities = newcities;
+      newcities = this.findCitiesToInclude(cities);
+      console.log(cities);
+    }
+
+    return this.getConnectionsOfMinSpanningTreeOfShortestRoutes(cities);
+  }
+
+  findCitiesToInclude(cities: string[]): string[] {
+    let bestConnections = this.getConnectionsOfMinSpanningTreeOfShortestRoutes(
+      cities,
+    );
+    let bestDistance = this.getRequiredNumOfTrains(bestConnections);
+    let bestPoints = this.getGainPoints([], bestConnections);
+    let bestCities = cities.slice();
+
+    const passing: Set<string> = new Set();
+    bestConnections.forEach((c) => {
+      passing.add(c.from);
+      passing.add(c.to);
+    });
+
+    const neighbors: Set<string> = new Set();
+    passing.forEach((city) => {
+      neighbors.add(city);
+      this.usaEdges.forEach((conn) => {
+        if (conn.contains(city)) {
+          neighbors.add(conn.from);
+          neighbors.add(conn.to);
+        }
+      });
+    });
+
+    neighbors.forEach((city) => {
+      const tempCities = cities.slice();
+      tempCities.push(city);
+      const tempConnections = this.getConnectionsOfMinSpanningTreeOfShortestRoutes(
+        tempCities,
+      );
+      const tempDistance = this.getRequiredNumOfTrains(tempConnections);
+      const tempPoints = this.getGainPoints([], tempConnections);
+
+      if (
+        tempDistance < bestDistance ||
+        (tempDistance == bestDistance && tempPoints > bestPoints)
+      ) {
+        bestDistance = tempDistance;
+        bestConnections = tempConnections;
+        bestPoints = tempPoints;
+        bestCities = tempCities;
+      }
+    });
+
+    return bestCities;
   }
 
   getAvailableTrains(): number {
