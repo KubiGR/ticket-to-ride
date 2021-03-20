@@ -120,13 +120,27 @@ export class GameNetwork {
     return Array.from(connections);
   }
 
-  getBestConnectionsOfMinSpanningTreeOfShortestRoutes(
+  getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
     cities: string[],
   ): Connection[] {
+    let newcities = this.findCitiesToInclude(cities);
+    console.log(cities);
+    while (newcities.length > cities.length) {
+      cities = newcities;
+      newcities = this.findCitiesToInclude(cities);
+      console.log(cities);
+    }
+
+    return this.getConnectionsOfMinSpanningTreeOfShortestRoutes(cities);
+  }
+
+  findCitiesToInclude(cities: string[]): string[] {
     let bestConnections = this.getConnectionsOfMinSpanningTreeOfShortestRoutes(
       cities,
     );
     let bestDistance = this.getRequiredNumOfTrains(bestConnections);
+    let bestPoints = this.getGainPoints([], bestConnections);
+    let bestCities = cities.slice();
 
     const passing: Set<string> = new Set();
     bestConnections.forEach((c) => {
@@ -152,14 +166,20 @@ export class GameNetwork {
         tempCities,
       );
       const tempDistance = this.getRequiredNumOfTrains(tempConnections);
+      const tempPoints = this.getGainPoints([], tempConnections);
 
-      if (tempDistance < bestDistance) {
+      if (
+        tempDistance < bestDistance ||
+        (tempDistance == bestDistance && tempPoints > bestPoints)
+      ) {
         bestDistance = tempDistance;
         bestConnections = tempConnections;
+        bestPoints = tempPoints;
+        bestCities = tempCities;
       }
     });
 
-    return bestConnections;
+    return bestCities;
   }
 
   getAvailableTrains(): number {
