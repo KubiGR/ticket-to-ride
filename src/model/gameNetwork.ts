@@ -192,8 +192,9 @@ export class GameNetwork {
       const tempPoints = this.getGainPoints([], tempConnections);
 
       if (
-        tempDistance < bestDistance ||
-        (tempDistance == bestDistance && tempPoints > bestPoints)
+        tempDistance > 0 &&
+        (tempDistance < bestDistance ||
+          (tempDistance == bestDistance && tempPoints > bestPoints))
       ) {
         bestDistance = tempDistance;
         bestConnections = tempConnections;

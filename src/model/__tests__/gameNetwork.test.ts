@@ -290,39 +290,13 @@ test('Execution scenario for tickets with established connections', () => {
   expect(trains).toBe(41); // two less trains needed
 });
 
-// test('given a ticket array 1 element returns connections', () => {
-//   const gameNetwork = new GameNetwork();
+test('getOpt should return a route between Calgary and Helena when Vancouver is closed', () => {
+  const gameNetwork = new GameNetwork();
+  gameNetwork.addCannotPass(gameNetwork.getConnection('Vancouver', 'Calgary'));
+  gameNetwork.addCannotPass(gameNetwork.getConnection('Vancouver', 'Seattle'));
 
-//   const ticket = new Ticket('Kansas City', 'Houston', 5);
-//   const tickets = [ticket];
-
-//   const path = gameNetwork.getShortestVisitingPath(['Kansas City', 'Houston']);
-//   const connections = gameNetwork.getConnectionsForPath(path);
-
-//   const result = gameNetwork.getConnectionsForTickets(tickets);
-
-//   expect(result).toEqual(connections);
-//   // [
-//   //   Connection {
-//   //     from: 'Oklahoma City',
-//   //     to: 'Kansas City',
-//   //     weight: 2,
-//   //     color1: 'Gray',
-//   //     color2: 'Gray'
-//   //   },
-//   //   Connection {
-//   //     from: 'Oklahoma City',
-//   //     to: 'Dallas',
-//   //     weight: 2,
-//   //     color1: 'Gray',
-//   //     color2: 'Gray'
-//   //   },
-//   //   Connection {
-//   //     from: 'Dallas',
-//   //     to: 'Houston',
-//   //     weight: 1,
-//   //     color1: 'Gray',
-//   //     color2: 'Gray'
-//   //   }
-//   // ]
-// });
+  const connections = gameNetwork.getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
+    ['Calgary', 'Helena'],
+  );
+  expect(connections.length).toBe(1);
+});
