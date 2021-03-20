@@ -55,7 +55,7 @@ const App = (): JSX.Element => {
   // const connectionsArray = gameNetwork.getConnectionsForPath(
   //   gameNetwork.getShortestVisitingPath(selectedCities),
   // );
-  const connectionsArray = gameNetwork.getConnectionsOfMinSpanningTreeOfShortestRoutes(
+  const connectionsArray = gameNetwork.getBestConnectionsOfMinSpanningTreeOfShortestRoutes(
     selectedCities,
   );
   console.log(

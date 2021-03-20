@@ -120,6 +120,48 @@ export class GameNetwork {
     return Array.from(connections);
   }
 
+  getBestConnectionsOfMinSpanningTreeOfShortestRoutes(
+    cities: string[],
+  ): Connection[] {
+    let bestConnections = this.getConnectionsOfMinSpanningTreeOfShortestRoutes(
+      cities,
+    );
+    let bestDistance = this.getRequiredNumOfTrains(bestConnections);
+
+    const passing: Set<string> = new Set();
+    bestConnections.forEach((c) => {
+      passing.add(c.from);
+      passing.add(c.to);
+    });
+
+    const neighbors: Set<string> = new Set();
+    passing.forEach((city) => {
+      neighbors.add(city);
+      this.usaEdges.forEach((conn) => {
+        if (conn.contains(city)) {
+          neighbors.add(conn.from);
+          neighbors.add(conn.to);
+        }
+      });
+    });
+
+    neighbors.forEach((city) => {
+      const tempCities = cities.slice();
+      tempCities.push(city);
+      const tempConnections = this.getConnectionsOfMinSpanningTreeOfShortestRoutes(
+        tempCities,
+      );
+      const tempDistance = this.getRequiredNumOfTrains(tempConnections);
+
+      if (tempDistance < bestDistance) {
+        bestDistance = tempDistance;
+        bestConnections = tempConnections;
+      }
+    });
+
+    return bestConnections;
+  }
+
   getAvailableTrains(): number {
     return this.availableTrains;
   }
