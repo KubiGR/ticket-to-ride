@@ -1,4 +1,4 @@
-import { makeAutoObservable, reaction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import { GameNetwork } from 'model/gameNetwork';
 import { Connection } from 'model/connection';
 
@@ -7,26 +7,13 @@ export class MapStore {
   selectedCities: string[] = [];
   cannotPassConnections: Connection[] = [];
   shouldPassConnections: Connection[] = [];
-  connectionTypeSelectionMap: Map<Connection, string[]> = new Map();
+  // connectionTypeSelectionMap: Map<Connection, string[]> = new Map();
 
   constructor() {
     makeAutoObservable(this);
-
-    reaction(
-      () => {
-        return [
-          this.selectedCities.length,
-          this.cannotPassConnections.length,
-          this.shouldPassConnections.length,
-        ];
-      },
-      () => {
-        this.generateConnectionTypeSelectionMap();
-      },
-    );
   }
 
-  generateConnectionTypeSelectionMap(): void {
+  get connectionTypeSelectionMap(): Map<Connection, string[]> {
     const connectionsArray = this.gameNetwork.getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
       this.selectedCities,
     );
@@ -60,8 +47,45 @@ export class MapStore {
         connectionTypeSelectionMap.set(shouldPassConnection, ['shouldPass']);
       }
     });
-    this.connectionTypeSelectionMap = connectionTypeSelectionMap;
+    return connectionTypeSelectionMap;
   }
+
+  // generateConnectionTypeSelectionMap(): void {
+  //   const connectionsArray = this.gameNetwork.getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
+  //     this.selectedCities,
+  //   );
+
+  //   console.log(
+  //     'Available trains: ' +
+  //       (this.gameNetwork.getAvailableTrains() -
+  //         this.gameNetwork.getRequiredNumOfTrains(connectionsArray)) +
+  //       '\nTotal Points    : ' +
+  //       (this.gameNetwork.getPoints() +
+  //         this.gameNetwork.getGainPoints([], connectionsArray)),
+  //   );
+
+  //   const connectionTypeSelectionMap = connectionsArray.reduce((acc, cur) => {
+  //     acc.set(cur, ['selected']);
+  //     return acc;
+  //   }, new Map());
+
+  //   this.cannotPassConnections.forEach((cannotPassConnection) => {
+  //     if (connectionTypeSelectionMap.get(cannotPassConnection)) {
+  //       connectionTypeSelectionMap.get(cannotPassConnection).push('cannotPass');
+  //     } else {
+  //       connectionTypeSelectionMap.set(cannotPassConnection, ['cannotPass']);
+  //     }
+  //   });
+
+  //   this.shouldPassConnections.forEach((shouldPassConnection) => {
+  //     if (connectionTypeSelectionMap.get(shouldPassConnection)) {
+  //       connectionTypeSelectionMap.get(shouldPassConnection).push('shouldPass');
+  //     } else {
+  //       connectionTypeSelectionMap.set(shouldPassConnection, ['shouldPass']);
+  //     }
+  //   });
+  //   this.connectionTypeSelectionMap = connectionTypeSelectionMap;
+  // }
 
   toggleSelectedCity(cityName: string): void {
     if (!this.selectedCities?.includes(cityName)) {
