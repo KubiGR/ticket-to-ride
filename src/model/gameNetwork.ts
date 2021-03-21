@@ -10,8 +10,6 @@ export class GameNetwork {
   private router: Router = new Router();
   private cannotPass: Set<Connection> = new Set();
   private established: Set<Connection> = new Set();
-  private mapEdges!: Connection[];
-  private tickets!: Ticket[];
   private ticketReports: TicketReport[] = [];
 
   private availableTrains = Constants.TOTAL_TRAINS;

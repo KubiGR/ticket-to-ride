@@ -27,18 +27,6 @@ export class Router {
     this.graph = new FloydWarshall(restrictedEdges, false);
   }
 
-  getEdges(): Connection[] {
-    return this.mapEdges;
-  }
-
-  setGraph(graph: FloydWarshall<string>): void {
-    this.graph = graph;
-  }
-
-  getGraph(): FloydWarshall<string> {
-    return this.graph;
-  }
-
   getShortestPath(from: string, to: string): string[] {
     return this.graph.getShortestPath(from, to);
   }
@@ -98,7 +86,7 @@ export class Router {
     cannotPass: Set<Connection>,
     established: Set<Connection>,
   ): void {
-    const restrictedEdges = this.getEdges().slice();
+    const restrictedEdges = this.mapEdges.slice();
 
     cannotPass.forEach((cannotPassEdge) => {
       const index = restrictedEdges.indexOf(cannotPassEdge);
@@ -147,7 +135,7 @@ export class Router {
     const neighbors: Set<string> = new Set();
     passing.forEach((city) => {
       neighbors.add(city);
-      this.getEdges().forEach((conn) => {
+      this.mapEdges.forEach((conn) => {
         if (conn.contains(city)) {
           neighbors.add(conn.from);
           neighbors.add(conn.to);

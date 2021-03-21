@@ -1,6 +1,4 @@
-import { Connection } from 'model/connection';
 import { Ticket } from 'model/ticket';
-import { TrackColor } from 'model/trackColor';
 
 test('mission', () => {
   const mission = new Ticket('a', 'b', 3);
