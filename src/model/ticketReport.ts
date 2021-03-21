@@ -20,9 +20,9 @@ export class TicketReport {
 
   static filterFn(t: TicketReport): boolean {
     return (
-      t.remainingTrains < 3 ||
-      t.remainingConnections == 1 ||
-      t.completionPercentage() > 60
+      t.remainingTrains < 7 ||
+      t.remainingConnections < 3 ||
+      t.completionPercentage() > 0.4
     );
   }
 }
