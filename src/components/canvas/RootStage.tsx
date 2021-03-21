@@ -7,7 +7,7 @@ import usaConnections from 'data/usaConnections.json';
 import { observer } from 'mobx-react';
 import { useMapStore } from 'providers/MapStoreProvider';
 
-const mapHeight = 900;
+const mapHeight = 600;
 const mapWidth = mapHeight * 1.56;
 const lineStrokeSize = mapWidth * 0.012;
 const cityFillRadius = mapWidth * 0.008;

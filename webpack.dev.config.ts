@@ -45,6 +45,7 @@ const config: webpack.Configuration = {
       data: path.resolve(__dirname, 'src/data'),
       stores: path.resolve(__dirname, 'src/stores'),
       providers: path.resolve(__dirname, 'src/providers'),
+      utils: path.resolve(__dirname, 'src/utils'),
     },
   },
   plugins: [

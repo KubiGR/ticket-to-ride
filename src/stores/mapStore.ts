@@ -1,10 +1,14 @@
 import { makeAutoObservable } from 'mobx';
 import { GameNetwork } from 'model/gameNetwork';
 import { Connection } from 'model/connection';
+import { Ticket } from 'model/ticket';
+import { removeItemOnce } from 'utils/helpers';
+import { usaMap } from 'model/usaMap';
 
 export class MapStore {
   gameNetwork = new GameNetwork();
   selectedCities: string[] = [];
+  selectedTickets: Ticket[] = [];
   cannotPassConnections: Connection[] = [];
   shouldPassConnections: Connection[] = [];
 
@@ -53,14 +57,52 @@ export class MapStore {
     return connectionTypeSelectionMap;
   }
 
+  get notSelectedTickets(): Ticket[] {
+    return usaMap
+      .getTickets()
+      .filter(
+        (el) =>
+          this.selectedCities.includes(el.from) ||
+          this.selectedCities.includes(el.to),
+      )
+      .filter((el) => !this.selectedTickets.includes(el));
+  }
+
+  addTicket(ticket: Ticket): void {
+    this.selectedTickets.push(ticket);
+    [ticket.from, ticket.to].forEach((city) => {
+      if (!this.selectedCities.includes(city)) {
+        this.selectedCities.push(city);
+      }
+    });
+  }
+
+  removeTicket(ticketToRemove: Ticket): void {
+    removeItemOnce(this.selectedTickets, ticketToRemove);
+    if (
+      !this.selectedTickets.some(
+        (ticket) =>
+          ticket.from === ticketToRemove.from ||
+          ticket.to === ticketToRemove.from,
+      )
+    ) {
+      this.toggleSelectedCity(ticketToRemove.from);
+    }
+    if (
+      !this.selectedTickets.some(
+        (ticket) =>
+          ticket.from === ticketToRemove.to || ticket.to === ticketToRemove.to,
+      )
+    ) {
+      this.toggleSelectedCity(ticketToRemove.to);
+    }
+  }
+
   toggleSelectedCity(cityName: string): void {
     if (!this.selectedCities?.includes(cityName)) {
       this.selectedCities.push(cityName);
     } else {
-      const index = this.selectedCities.indexOf(cityName);
-      if (index > -1) {
-        this.selectedCities.splice(index, 1);
-      }
+      removeItemOnce(this.selectedCities, cityName);
     }
   }
 
@@ -87,11 +129,8 @@ export class MapStore {
   }
 
   removeEstablishedConnection(con: Connection): void {
-    const index = this.shouldPassConnections.findIndex((e) => e.isEqual(con));
-    if (index > -1) {
-      this.shouldPassConnections.splice(index, 1);
-      this.gameNetwork.removeEstablished(con);
-    }
+    removeItemOnce(this.shouldPassConnections, con);
+    this.gameNetwork.removeEstablished(con);
   }
 
   addEstablishedConnection(con: Connection): void {
@@ -100,11 +139,8 @@ export class MapStore {
   }
 
   removeCannotPassConnection(con: Connection): void {
-    const index = this.cannotPassConnections.findIndex((e) => e.isEqual(con));
-    if (index > -1) {
-      this.cannotPassConnections.splice(index, 1);
-      this.gameNetwork.removeCannotPass(con);
-    }
+    removeItemOnce(this.cannotPassConnections, con);
+    this.gameNetwork.removeCannotPass(con);
   }
 
   addCannotPassConnection(con: Connection): void {

@@ -1,18 +1,20 @@
 import React from 'react';
 import './App.css';
 import { RootStage } from 'components/canvas/RootStage';
+import TicketViewer from './tickets/TicketViewer';
 
 const App = (): JSX.Element => {
-  // console.log(
-  //   'Available trains: ' +
-  //     (gameNetwork.getAvailableTrains() -
-  //       gameNetwork.getRequiredNumOfTrains(connectionsArray)) +
-  //     '\nTotal Points    : ' +
-  //     (gameNetwork.getPoints() +
-  //       gameNetwork.getGainPoints([], connectionsArray)),
-  // );
+  return (
+    <div className="container">
+      <div className="map">
+        <RootStage />
+      </div>
 
-  return <RootStage />;
+      <div className="tickets">
+        <TicketViewer />
+      </div>
+    </div>
+  );
 };
 
 export default App;

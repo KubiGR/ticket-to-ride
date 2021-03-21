@@ -1,12 +1,12 @@
 import { usaMap } from 'model/usaMap';
-import { Connection } from 'model/connection';
-import { Constants } from 'model/constants';
-import { Ticket } from 'model/ticket';
-import { TicketReport } from 'model/ticketReport';
-import { Router } from 'model/router';
+import { Connection } from './connection';
+import { Constants } from './constants';
+import { Ticket } from './ticket';
+import { TicketReport } from './ticketReport';
+import { Routing } from './routing';
 
 export class GameNetwork {
-  private router: Router = new Router();
+  private router: Routing = new Routing();
   private cannotPass: Set<Connection> = new Set();
   private established: Set<Connection> = new Set();
   private ticketReports: TicketReport[] = [];
@@ -161,7 +161,7 @@ export class GameNetwork {
     return this.establishedPoints;
   }
 
-  getRouter(): Router {
+  getRouter(): Routing {
     return this.router;
   }
 }

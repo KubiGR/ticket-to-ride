@@ -3,7 +3,7 @@ import { kruskal } from 'kruskal-mst/dist';
 import { Connection } from './connection';
 import { Ticket } from './ticket';
 
-export class Router {
+export class Routing {
   private graph!: FloydWarshall<string>;
   private mapEdges: Connection[] = [];
   private established!: Set<Connection>;
