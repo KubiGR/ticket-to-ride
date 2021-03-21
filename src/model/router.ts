@@ -5,8 +5,9 @@ import { Ticket } from './ticket';
 
 export class Router {
   private graph!: FloydWarshall<string>;
-  private mapEdges!: Connection[];
+  private mapEdges: Connection[] = [];
   private established!: Set<Connection>;
+  private pointImportance = 0.0;
 
   /**
    * The established set is maintained by gameNetwork and passed here
@@ -23,20 +24,24 @@ export class Router {
     this.graph = new FloydWarshall(mapEdges, false);
   }
 
-  regenerateGraph(restrictedEdges: Connection[]): void {
-    this.graph = new FloydWarshall(restrictedEdges, false);
-  }
-
-  getEdges(): Connection[] {
-    return this.mapEdges;
-  }
-
-  setGraph(graph: FloydWarshall<string>): void {
-    this.graph = graph;
-  }
-
-  getGraph(): FloydWarshall<string> {
-    return this.graph;
+  /**
+   * How important are points in finding the minimum distance.
+   *
+   * Default 0.0: points are not considered at all in finding the min
+   * Weigths increase as distances increase till 0.19
+   * After that longer routes are considered better than shorter routes.
+   * Max (capped) 0.39: keep all the routes still in positive numbers
+   * Any value beyond this make longer routes having negative distance.
+   *
+   * @param parameter
+   */
+  setPointImportance(parameter: number): void {
+    if (parameter > 0.39) parameter = 0.39;
+    this.pointImportance = parameter;
+    this.mapEdges.forEach((e) => {
+      e.weight = e.trains - this.pointImportance * e.getPoints();
+    });
+    this.graph = new FloydWarshall(this.mapEdges, false);
   }
 
   getShortestPath(from: string, to: string): string[] {
@@ -98,7 +103,7 @@ export class Router {
     cannotPass: Set<Connection>,
     established: Set<Connection>,
   ): void {
-    const restrictedEdges = this.getEdges().slice();
+    const restrictedEdges = this.mapEdges.slice();
 
     cannotPass.forEach((cannotPassEdge) => {
       const index = restrictedEdges.indexOf(cannotPassEdge);
@@ -115,7 +120,8 @@ export class Router {
       clone.weight = 0;
       restrictedEdges.push(clone);
     });
-    this.regenerateGraph(restrictedEdges);
+
+    this.graph = new FloydWarshall(restrictedEdges, false);
   }
 
   getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
@@ -130,7 +136,7 @@ export class Router {
     return this.getConnectionsOfMinSpanningTreeOfShortestRoutes(cities);
   }
 
-  findCitiesToInclude(cities: string[]): string[] {
+  private findCitiesToInclude(cities: string[]): string[] {
     let bestConnections = this.getConnectionsOfMinSpanningTreeOfShortestRoutes(
       cities,
     );
@@ -147,7 +153,7 @@ export class Router {
     const neighbors: Set<string> = new Set();
     passing.forEach((city) => {
       neighbors.add(city);
-      this.getEdges().forEach((conn) => {
+      this.mapEdges.forEach((conn) => {
         if (conn.contains(city)) {
           neighbors.add(conn.from);
           neighbors.add(conn.to);
