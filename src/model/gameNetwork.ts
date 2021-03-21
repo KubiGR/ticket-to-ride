@@ -32,6 +32,22 @@ export class GameNetwork {
     this.router.setEdges(usaMap.getConnections());
   }
 
+  /**
+   * How important are points in finding the minimum distance.
+   *
+   * Default 0.0: points are not considered at all in finding the min distance.
+   * Weigths increase as distances increase till 0.19.
+   * After that, longer routes are considered better than shorter routes.
+   * Max 0.39: keep all the routes still in positive numbers.
+   * Any value beyond this make longer routes having negative distance.
+   *
+   * @param parameter
+   */
+  setPointImportance(parameter: number): void {
+    this.router.setPointImportance(parameter);
+    this.opponentNetwork?.router.setPointImportance(parameter);
+  }
+
   addEstablished(edge: Connection): void {
     if (this.cannotPass.has(edge))
       throw new Error(

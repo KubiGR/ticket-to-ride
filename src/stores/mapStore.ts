@@ -10,6 +10,7 @@ export class MapStore {
 
   constructor() {
     this.gameNetwork.createOpponent();
+    this.gameNetwork.setPointImportance(0.19);
     makeAutoObservable(this);
   }
 
