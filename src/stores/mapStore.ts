@@ -9,6 +9,7 @@ export class MapStore {
   shouldPassConnections: Connection[] = [];
 
   constructor() {
+    this.gameNetwork.createOpponent();
     makeAutoObservable(this);
   }
 

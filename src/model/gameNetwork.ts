@@ -1,4 +1,4 @@
-import { getUSAConnectionsFromJSON } from 'model/usaMap';
+import { usaMap } from 'model/usaMap';
 import { FloydWarshall, Edge } from 'floyd-warshall-shortest';
 import { kruskal } from 'kruskal-mst';
 import { Connection } from './connection';
@@ -11,25 +11,33 @@ export class GameNetwork {
   private graph!: FloydWarshall<string>;
   private cannotPass: Set<Connection> = new Set();
   private established: Set<Connection> = new Set();
-  private usaEdges!: Connection[];
+  private mapEdges!: Connection[];
   private tickets!: Ticket[];
   private ticketReports: TicketReport[] = [];
 
   private availableTrains = Constants.TOTAL_TRAINS;
   private establishedPoints = 0;
 
+  private opponentNetwork: GameNetwork | undefined;
+  private name = 'Player';
+
   constructor() {
     this.parseConnections();
   }
 
+  createOpponent(): void {
+    this.opponentNetwork = new GameNetwork();
+    this.opponentNetwork.name = 'Opponent';
+  }
+
   private parseConnections(): void {
-    this.usaEdges = getUSAConnectionsFromJSON();
-    this.graph = new FloydWarshall(this.usaEdges, false);
+    this.mapEdges = usaMap.getConnections();
+    this.graph = new FloydWarshall(this.mapEdges, false);
   }
 
   getConnection(from: string, to: string): Connection {
-    for (let i = 0; i < this.usaEdges.length; i++) {
-      const connection = this.usaEdges[i];
+    for (let i = 0; i < this.mapEdges.length; i++) {
+      const connection = this.mapEdges[i];
       if (from != to && connection.contains(from) && connection.contains(to))
         return connection;
     }
@@ -45,12 +53,15 @@ export class GameNetwork {
     this.processEdgeRestrictions();
     this.availableTrains -= edge.weight;
     this.establishedPoints += edge.getPoints();
+
+    this.opponentNetwork?.addCannotPass(edge);
+
     this.generateTicketReports();
     this.consoleReports();
   }
 
   consoleReports(): void {
-    console.log('====== TICKET REPORT =====');
+    console.log('====== ' + this.name + ' TICKET REPORT =====');
     this.ticketReports
       .filter(TicketReport.filterFn)
       .sort(TicketReport.compare)
@@ -110,6 +121,11 @@ export class GameNetwork {
     this.processEdgeRestrictions();
     this.availableTrains += edge.weight;
     this.establishedPoints -= edge.getPoints();
+
+    this.opponentNetwork?.removeCannotPass(edge);
+
+    this.generateTicketReports();
+    this.consoleReports();
   }
 
   addCannotPass(edge: Connection): void {
@@ -119,6 +135,8 @@ export class GameNetwork {
       );
     this.cannotPass.add(edge);
     this.processEdgeRestrictions();
+
+    this.opponentNetwork?.addEstablished(edge);
   }
 
   removeCannotPass(edge: Connection): void {
@@ -128,10 +146,12 @@ export class GameNetwork {
       );
     this.cannotPass.delete(edge);
     this.processEdgeRestrictions();
+
+    this.opponentNetwork?.removeEstablished(edge);
   }
 
   processEdgeRestrictions(): void {
-    const restrictedEdges = this.usaEdges.slice();
+    const restrictedEdges = this.mapEdges.slice();
 
     this.cannotPass.forEach((cannotPassEdge) => {
       const index = restrictedEdges.indexOf(cannotPassEdge);
@@ -226,7 +246,7 @@ export class GameNetwork {
     const neighbors: Set<string> = new Set();
     passing.forEach((city) => {
       neighbors.add(city);
-      this.usaEdges.forEach((conn) => {
+      this.mapEdges.forEach((conn) => {
         if (conn.contains(city)) {
           neighbors.add(conn.from);
           neighbors.add(conn.to);
