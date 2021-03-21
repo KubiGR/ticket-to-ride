@@ -1,9 +1,11 @@
 import { TrackColor } from 'model/trackColor';
 import { Edge } from 'floyd-warshall-shortest';
+import { Constants } from './constants';
 
 export class Connection implements Edge<string> {
   from: string;
   to: string;
+  trains: number;
   weight: number;
   color1: TrackColor;
   color2: TrackColor | undefined;
@@ -11,8 +13,9 @@ export class Connection implements Edge<string> {
   constructor(from: string, to: string, length: number, color1: TrackColor) {
     this.from = from;
     this.to = to;
-    this.weight = length;
+    this.trains = length;
     this.color1 = color1;
+    this.weight = length - Constants.POINT_IMPORTANCE * this.getPoints();
   }
 
   contains(city: string): boolean {
@@ -29,7 +32,7 @@ export class Connection implements Edge<string> {
   }
 
   clone(): Connection {
-    const clone = new Connection(this.from, this.to, this.weight, this.color1);
+    const clone = new Connection(this.from, this.to, this.trains, this.color1);
     clone.color2 = this.color2;
     return clone;
   }
@@ -39,11 +42,15 @@ export class Connection implements Edge<string> {
   }
 
   static getTrains(connections: Connection[]): number {
+    return connections.map((c) => c.trains).reduce((sum, t) => sum + t, 0);
+  }
+
+  static getWeight(connections: Connection[]): number {
     return connections.map((c) => c.weight).reduce((sum, t) => sum + t, 0);
   }
 
   getPoints(): number {
-    switch (this.weight) {
+    switch (this.trains) {
       case 1: {
         return 1;
       }
@@ -63,6 +70,6 @@ export class Connection implements Edge<string> {
         return 15;
       }
     }
-    throw new Error('Should not be a weight: ' + this.weight);
+    throw new Error('Should not be a trains value: ' + this.trains);
   }
 }

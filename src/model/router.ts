@@ -134,7 +134,7 @@ export class Router {
     let bestConnections = this.getConnectionsOfMinSpanningTreeOfShortestRoutes(
       cities,
     );
-    let bestDistance = this.getRequiredNumOfTrains(bestConnections);
+    let bestDistance = this.getRequiredWeight(bestConnections);
     let bestPoints = this.getGainPoints([], bestConnections);
     let bestCities = cities.slice();
 
@@ -161,7 +161,7 @@ export class Router {
       const tempConnections = this.getConnectionsOfMinSpanningTreeOfShortestRoutes(
         tempCities,
       );
-      const tempDistance = this.getRequiredNumOfTrains(tempConnections);
+      const tempDistance = this.getRequiredWeight(tempConnections);
       const tempPoints = this.getGainPoints([], tempConnections);
 
       if (
@@ -177,6 +177,12 @@ export class Router {
     });
 
     return bestCities;
+  }
+
+  getRequiredWeight(connections: Connection[]): number {
+    return Connection.getWeight(
+      connections.filter((c) => !this.established.has(c)),
+    );
   }
 
   getRequiredNumOfTrains(connections: Connection[]): number {
