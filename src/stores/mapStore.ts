@@ -14,17 +14,19 @@ export class MapStore {
   }
 
   get connectionTypeSelectionMap(): Map<Connection, string[]> {
-    const connectionsArray = this.gameNetwork.getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
-      this.selectedCities,
-    );
+    const connectionsArray = this.gameNetwork
+      .getRouter()
+      .getOptConnectionsOfMinSpanningTreeOfShortestRoutes(this.selectedCities);
 
     console.log(
       'Available trains: ' +
         (this.gameNetwork.getAvailableTrains() -
-          this.gameNetwork.getRequiredNumOfTrains(connectionsArray)) +
+          this.gameNetwork
+            .getRouter()
+            .getRequiredNumOfTrains(connectionsArray)) +
         '\nTotal Points    : ' +
         (this.gameNetwork.getPoints() +
-          this.gameNetwork.getGainPoints([], connectionsArray)),
+          this.gameNetwork.getRouter().getGainPoints([], connectionsArray)),
     );
 
     const connectionTypeSelectionMap = connectionsArray.reduce((acc, cur) => {

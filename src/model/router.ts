@@ -1,10 +1,22 @@
 import { Edge, FloydWarshall } from 'floyd-warshall-shortest';
 import { kruskal } from 'kruskal-mst/dist';
 import { Connection } from './connection';
+import { Ticket } from './ticket';
 
 export class Router {
   private graph!: FloydWarshall<string>;
   private mapEdges!: Connection[];
+  private established!: Set<Connection>;
+
+  /**
+   * The established set is maintained by gameNetwork and passed here
+   * as a reference for some methods that need it.
+   *
+   * @param established
+   */
+  setEstablished(established: Set<Connection>): void {
+    this.established = established;
+  }
 
   setEdges(mapEdges: Connection[]): void {
     this.mapEdges = mapEdges;
@@ -80,5 +92,105 @@ export class Router {
     });
 
     return Array.from(connections);
+  }
+
+  processEdgeRestrictions(
+    cannotPass: Set<Connection>,
+    established: Set<Connection>,
+  ): void {
+    const restrictedEdges = this.getEdges().slice();
+
+    cannotPass.forEach((cannotPassEdge) => {
+      const index = restrictedEdges.indexOf(cannotPassEdge);
+      restrictedEdges.splice(index, 1);
+      const clone = cannotPassEdge.clone();
+      clone.weight = Infinity;
+      restrictedEdges.push(clone);
+    });
+
+    established.forEach((shouldPassEdge) => {
+      const index = restrictedEdges.indexOf(shouldPassEdge);
+      restrictedEdges.splice(index, 1);
+      const clone = shouldPassEdge.clone();
+      clone.weight = 0;
+      restrictedEdges.push(clone);
+    });
+    this.regenerateGraph(restrictedEdges);
+  }
+
+  getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
+    cities: string[],
+  ): Connection[] {
+    let newcities = this.findCitiesToInclude(cities);
+    while (newcities.length > cities.length) {
+      cities = newcities;
+      newcities = this.findCitiesToInclude(cities);
+    }
+
+    return this.getConnectionsOfMinSpanningTreeOfShortestRoutes(cities);
+  }
+
+  findCitiesToInclude(cities: string[]): string[] {
+    let bestConnections = this.getConnectionsOfMinSpanningTreeOfShortestRoutes(
+      cities,
+    );
+    let bestDistance = this.getRequiredNumOfTrains(bestConnections);
+    let bestPoints = this.getGainPoints([], bestConnections);
+    let bestCities = cities.slice();
+
+    const passing: Set<string> = new Set();
+    bestConnections.forEach((c) => {
+      passing.add(c.from);
+      passing.add(c.to);
+    });
+
+    const neighbors: Set<string> = new Set();
+    passing.forEach((city) => {
+      neighbors.add(city);
+      this.getEdges().forEach((conn) => {
+        if (conn.contains(city)) {
+          neighbors.add(conn.from);
+          neighbors.add(conn.to);
+        }
+      });
+    });
+
+    neighbors.forEach((city) => {
+      const tempCities = cities.slice();
+      tempCities.push(city);
+      const tempConnections = this.getConnectionsOfMinSpanningTreeOfShortestRoutes(
+        tempCities,
+      );
+      const tempDistance = this.getRequiredNumOfTrains(tempConnections);
+      const tempPoints = this.getGainPoints([], tempConnections);
+
+      if (
+        tempDistance > 0 &&
+        (tempDistance < bestDistance ||
+          (tempDistance == bestDistance && tempPoints > bestPoints))
+      ) {
+        bestDistance = tempDistance;
+        bestConnections = tempConnections;
+        bestPoints = tempPoints;
+        bestCities = tempCities;
+      }
+    });
+
+    return bestCities;
+  }
+
+  getRequiredNumOfTrains(connections: Connection[]): number {
+    return Connection.getTrains(
+      connections.filter((c) => !this.established.has(c)),
+    );
+  }
+
+  getGainPoints(tickets: Ticket[], connections: Connection[]): number {
+    const ticketPoints = Ticket.getPoints(tickets);
+    const linePoints = connections
+      .filter((c) => !this.established.has(c))
+      .map((c) => c.getPoints())
+      .reduce((sum, x) => sum + x, 0);
+    return ticketPoints + linePoints;
   }
 }
