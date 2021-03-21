@@ -18,12 +18,14 @@ test('getConnectionForPath', () => {
       from: 'Phoenix',
       to: 'Los Angeles',
       weight: 3,
+      trains: 3,
       color1: 'Gray',
     },
     {
       from: 'Phoenix',
       to: 'Denver',
       weight: 5,
+      trains: 5,
       color1: 'White',
     },
   ]);
@@ -90,7 +92,7 @@ test('established connections reduce train number', () => {
   gameNetwork.addEstablished(connection);
 
   expect(gameNetwork.getAvailableTrains()).toEqual(
-    Constants.TOTAL_TRAINS - connection.weight,
+    Constants.TOTAL_TRAINS - connection.trains,
   );
 });
 

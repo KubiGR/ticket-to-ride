@@ -41,7 +41,7 @@ export class GameNetwork {
       );
     this.established.add(edge);
     this.router.processEdgeRestrictions(this.cannotPass, this.established);
-    this.availableTrains -= edge.weight;
+    this.availableTrains -= edge.trains;
     this.establishedPoints += edge.getPoints();
 
     this.opponentNetwork?.addCannotPass(edge);
@@ -109,7 +109,7 @@ export class GameNetwork {
       );
     this.established.delete(edge);
     this.router.processEdgeRestrictions(this.cannotPass, this.established);
-    this.availableTrains += edge.weight;
+    this.availableTrains += edge.trains;
     this.establishedPoints -= edge.getPoints();
 
     this.opponentNetwork?.removeCannotPass(edge);
