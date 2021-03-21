@@ -1,5 +1,3 @@
-import { Route } from 'model/route';
-
 export class Ticket {
   from: string;
   to: string;
@@ -9,17 +7,6 @@ export class Ticket {
     this.from = from;
     this.to = to;
     this.points = points;
-  }
-
-  completedBy(route: Route): boolean {
-    let fromCity = false;
-    let toCity = false;
-    for (let i = 0; i < route.connections.length; i++) {
-      if (route.connections[i].contains(this.from)) fromCity = true;
-      if (route.connections[i].contains(this.to)) toCity = true;
-      if (fromCity && toCity) return true;
-    }
-    return false;
   }
 
   static getCities(tickets: Ticket[]): string[] {
@@ -33,5 +20,9 @@ export class Ticket {
 
   static getPoints(tickets: Ticket[]): number {
     return tickets.map((t) => t.points).reduce((sum, p) => sum + p, 0);
+  }
+
+  toString(): string {
+    return 'Ticket: ' + this.points + 'p. : ' + this.from + '->' + this.to;
   }
 }

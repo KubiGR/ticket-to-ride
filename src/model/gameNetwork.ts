@@ -4,6 +4,8 @@ import { kruskal } from 'kruskal-mst';
 import { Connection } from './connection';
 import { Constants } from './constants';
 import { Ticket } from './ticket';
+import { getUSATicketsFromJSON } from './usaTickets';
+import { TicketReport } from './ticketReport';
 
 export class GameNetwork {
   private graph!: FloydWarshall<string>;
@@ -11,6 +13,7 @@ export class GameNetwork {
   private established: Set<Connection> = new Set();
   private usaEdges!: Connection[];
   private tickets!: Ticket[];
+  private ticketReports: TicketReport[] = [];
 
   private availableTrains = Constants.TOTAL_TRAINS;
   private establishedPoints = 0;
@@ -42,6 +45,57 @@ export class GameNetwork {
     this.processEdgeRestrictions();
     this.availableTrains -= edge.weight;
     this.establishedPoints += edge.getPoints();
+    this.generateTicketReports();
+    this.consoleReports();
+  }
+
+  consoleReports(): void {
+    console.log('====== TICKET REPORT =====');
+    this.ticketReports
+      .filter(TicketReport.filterFn)
+      .sort(TicketReport.compare)
+      .forEach((t) => {
+        const percentage = t.completionPercentage();
+        if (t.remainingConnections < 2 || percentage > 0.5) {
+          console.log(
+            t.ticket.toString() +
+              ': ' +
+              (percentage * 100).toFixed(0) +
+              '% needs ' +
+              t.remainingTrains +
+              ' train(s) in ' +
+              t.remainingConnections +
+              ' connection(s).',
+          );
+        }
+      });
+  }
+
+  generateTicketReports(): void {
+    this.ticketReports = [];
+    const connections = Array.from(this.established);
+    getUSATicketsFromJSON().forEach((t) => {
+      const ticketConns = this.getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
+        Ticket.getCities([t]),
+      );
+      let completed = 0;
+      ticketConns.forEach((c) => {
+        if (connections.includes(c)) {
+          completed++;
+        }
+      });
+      const requiredTrains = this.getRequiredNumOfTrains(ticketConns);
+
+      const ticketReport = new TicketReport(
+        t,
+        ticketConns.length - completed,
+        requiredTrains,
+        completed,
+        ticketConns.length,
+      );
+
+      this.ticketReports.push(ticketReport);
+    });
   }
 
   removeEstablished(edge: Connection): void {
@@ -150,7 +204,6 @@ export class GameNetwork {
     while (newcities.length > cities.length) {
       cities = newcities;
       newcities = this.findCitiesToInclude(cities);
-      console.log(cities);
     }
 
     return this.getConnectionsOfMinSpanningTreeOfShortestRoutes(cities);
