@@ -9,6 +9,7 @@ export class MapStore {
   shouldPassConnections: Connection[] = [];
 
   constructor() {
+    this.gameNetwork.createOpponent();
     makeAutoObservable(this);
   }
 
@@ -17,14 +18,14 @@ export class MapStore {
       this.selectedCities,
     );
 
-    console.log(
-      'Available trains: ' +
-        (this.gameNetwork.getAvailableTrains() -
-          this.gameNetwork.getRequiredNumOfTrains(connectionsArray)) +
-        '\nTotal Points    : ' +
-        (this.gameNetwork.getPoints() +
-          this.gameNetwork.getGainPoints([], connectionsArray)),
-    );
+    // console.log(
+    //   'Available trains: ' +
+    //     (this.gameNetwork.getAvailableTrains() -
+    //       this.gameNetwork.getRequiredNumOfTrains(connectionsArray)) +
+    //     '\nTotal Points    : ' +
+    //     (this.gameNetwork.getPoints() +
+    //       this.gameNetwork.getGainPoints([], connectionsArray)),
+    // );
 
     const connectionTypeSelectionMap = connectionsArray.reduce((acc, cur) => {
       acc.set(cur, ['selected']);

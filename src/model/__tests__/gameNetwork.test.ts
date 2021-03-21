@@ -300,3 +300,20 @@ test('getOpt should return a route between Calgary and Helena when Vancouver is 
   );
   expect(connections.length).toBe(1);
 });
+
+test('Add and remove cannot pass', () => {
+  const gameNetwork = new GameNetwork();
+  gameNetwork.addCannotPass(gameNetwork.getConnection('Vancouver', 'Calgary'));
+  let connections = gameNetwork.getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
+    ['Calgary', 'Vancouver'],
+  );
+  expect(connections.length).toBe(2);
+  gameNetwork.removeCannotPass(
+    gameNetwork.getConnection('Vancouver', 'Calgary'),
+  );
+  connections = gameNetwork.getOptConnectionsOfMinSpanningTreeOfShortestRoutes([
+    'Calgary',
+    'Vancouver',
+  ]);
+  expect(connections.length).toBe(1);
+});
