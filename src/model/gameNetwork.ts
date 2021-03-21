@@ -6,8 +6,10 @@ import { Constants } from './constants';
 import { Ticket } from './ticket';
 import { getUSATicketsFromJSON } from './usaTickets';
 import { TicketReport } from './ticketReport';
+import { Router } from './router';
 
 export class GameNetwork {
+  private router: Router = new Router();
   private graph!: FloydWarshall<string>;
   private cannotPass: Set<Connection> = new Set();
   private established: Set<Connection> = new Set();
@@ -31,17 +33,11 @@ export class GameNetwork {
   }
 
   private parseConnections(): void {
-    this.mapEdges = usaMap.getConnections();
-    this.graph = new FloydWarshall(this.mapEdges, false);
+    this.router.setEdges(usaMap.getConnections());
   }
 
   getConnection(from: string, to: string): Connection {
-    for (let i = 0; i < this.mapEdges.length; i++) {
-      const connection = this.mapEdges[i];
-      if (from != to && connection.contains(from) && connection.contains(to))
-        return connection;
-    }
-    throw new Error('Connection not found: ' + from + ', ' + to);
+    return this.router.getConnection(from, to);
   }
 
   addEstablished(edge: Connection): void {
@@ -151,7 +147,7 @@ export class GameNetwork {
   }
 
   processEdgeRestrictions(): void {
-    const restrictedEdges = this.mapEdges.slice();
+    const restrictedEdges = this.router.getEdges().slice();
 
     this.cannotPass.forEach((cannotPassEdge) => {
       const index = restrictedEdges.indexOf(cannotPassEdge);
@@ -168,15 +164,15 @@ export class GameNetwork {
       clone.weight = 0;
       restrictedEdges.push(clone);
     });
-    this.graph = new FloydWarshall(restrictedEdges, false);
+    this.router.regenerateGraph(restrictedEdges);
   }
 
   getShortestPath(from: string, to: string): string[] {
-    return this.graph.getShortestPath(from, to);
+    return this.router.getShortestPath(from, to);
   }
 
   getShortestVisitingPath(cities: string[]): string[] {
-    return this.graph.getShortestVisitingPath(cities);
+    return this.router.getShortestVisitingPath(cities);
   }
 
   getConnectionsForPath(path: string[]): Connection[] {
@@ -191,30 +187,7 @@ export class GameNetwork {
   getConnectionsOfMinSpanningTreeOfShortestRoutes(
     cities: string[],
   ): Connection[] {
-    const graph = this.graph; // for editor!!
-
-    const kruskalEdges: Edge<string>[] = [];
-    for (let i = 0; i < cities.length; i++) {
-      for (let j = i + 1; j < cities.length; j++) {
-        const distance = graph.getShortestDistance(cities[i], cities[j]);
-        if (distance === Infinity) return [];
-        kruskalEdges.push({
-          from: cities[i],
-          to: cities[j],
-          weight: distance,
-        });
-      }
-    }
-    const connections: Set<Connection> = new Set();
-    kruskal(kruskalEdges).forEach((solutionEdge) => {
-      this.getConnectionsForPath(
-        graph.getShortestPath(solutionEdge.from, solutionEdge.to),
-      ).forEach((c) => {
-        connections.add(c);
-      });
-    });
-
-    return Array.from(connections);
+    return this.router.getConnectionsOfMinSpanningTreeOfShortestRoutes(cities);
   }
 
   getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
@@ -246,7 +219,7 @@ export class GameNetwork {
     const neighbors: Set<string> = new Set();
     passing.forEach((city) => {
       neighbors.add(city);
-      this.mapEdges.forEach((conn) => {
+      this.router.getEdges().forEach((conn) => {
         if (conn.contains(city)) {
           neighbors.add(conn.from);
           neighbors.add(conn.to);
