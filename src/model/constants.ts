@@ -12,7 +12,7 @@ export abstract class Constants {
    * Max 0.39: keep all the routes still in positive numbers
    * Any value beyond this make longer routes having negative distance.
    *
-   * weight = dinstance - POINT_IMPORTANCE * points
+   * weight = distance - POINT_IMPORTANCE * points
    */
   static readonly POINT_IMPORTANCE = 0.0;
 }

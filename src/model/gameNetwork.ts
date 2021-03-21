@@ -1,10 +1,9 @@
 import { usaMap } from 'model/usaMap';
-import { Connection } from './connection';
-import { Constants } from './constants';
-import { Ticket } from './ticket';
-import { getUSATicketsFromJSON } from './usaTickets';
-import { TicketReport } from './ticketReport';
-import { Router } from './router';
+import { Connection } from 'model/connection';
+import { Constants } from 'model/constants';
+import { Ticket } from 'model/ticket';
+import { TicketReport } from 'model/ticketReport';
+import { Router } from 'model/router';
 
 export class GameNetwork {
   private router: Router = new Router();
@@ -89,7 +88,7 @@ export class GameNetwork {
   generateTicketReports(): void {
     this.ticketReports = [];
     const connections = Array.from(this.established);
-    getUSATicketsFromJSON().forEach((t) => {
+    usaMap.getTickets().forEach((t) => {
       const ticketConns = this.router.getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
         Ticket.getCities([t]),
       );
