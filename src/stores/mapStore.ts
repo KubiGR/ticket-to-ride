@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, reaction } from 'mobx';
 import { GameNetwork } from 'model/gameNetwork';
 import { Connection } from 'model/connection';
 import { Ticket } from 'model/ticket';
@@ -10,15 +10,32 @@ export class MapStore {
   selectedCities: string[] = [];
   selectedTickets: Ticket[] = [];
   cannotPassConnections: Connection[] = [];
-  shouldPassConnections: Connection[] = [];
+  establishedConnections: Connection[] = [];
+  connectionsArray: Connection[] = [];
 
   constructor() {
+    makeAutoObservable(this);
     this.gameNetwork.createOpponent();
     this.gameNetwork.setPointImportance(0.19);
-    makeAutoObservable(this);
+
+    reaction(
+      () => [
+        this.selectedTickets.length,
+        this.establishedConnections.length,
+        this.cannotPassConnections.length,
+      ],
+      () => {
+        this.connectionsArray = this.gameNetwork
+          .getRouting()
+          .getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
+            this.ticketsCities,
+          );
+      },
+    );
   }
 
   get connectionTypeSelectionMap(): Map<Connection, string[]> {
+    console.log(this.connectionsArray);
     const connectionTypeSelectionMap = this.connectionsArray.reduce(
       (acc, cur) => {
         acc.set(cur, ['selected']);
@@ -35,7 +52,7 @@ export class MapStore {
       }
     });
 
-    this.shouldPassConnections.forEach((shouldPassConnection) => {
+    this.establishedConnections.forEach((shouldPassConnection) => {
       if (connectionTypeSelectionMap.get(shouldPassConnection)) {
         connectionTypeSelectionMap.get(shouldPassConnection).push('shouldPass');
       } else {
@@ -45,11 +62,12 @@ export class MapStore {
     return connectionTypeSelectionMap;
   }
 
-  get connectionsArray(): Connection[] {
-    return this.gameNetwork
-      .getRouting()
-      .getOptConnectionsOfMinSpanningTreeOfShortestRoutes(this.ticketsCities);
-  }
+  // get connectionsArray(): Connection[] {
+  //   console.log(this.ticketsCities);
+  //   return this.gameNetwork
+  //     .getRouting()
+  //     .getOptConnectionsOfMinSpanningTreeOfShortestRoutes(this.ticketsCities);
+  // }
 
   get availableTrainsCount(): number {
     return (
@@ -134,7 +152,7 @@ export class MapStore {
     if (this.cannotPassConnections?.some((e) => e.isEqual(con))) {
       this.removeCannotPassConnection(con);
     }
-    if (!this.shouldPassConnections?.some((e) => e.isEqual(con))) {
+    if (!this.establishedConnections?.some((e) => e.isEqual(con))) {
       this.addEstablishedConnection(con);
     } else {
       this.removeEstablishedConnection(con);
@@ -142,7 +160,7 @@ export class MapStore {
   }
 
   toggleCannotPassConnection(con: Connection): void {
-    if (this.shouldPassConnections?.some((e) => e.isEqual(con))) {
+    if (this.establishedConnections?.some((e) => e.isEqual(con))) {
       this.removeEstablishedConnection(con);
     }
     if (!this.cannotPassConnections?.some((e) => e.isEqual(con))) {
@@ -153,12 +171,12 @@ export class MapStore {
   }
 
   removeEstablishedConnection(con: Connection): void {
-    removeItemOnce(this.shouldPassConnections, con);
+    removeItemOnce(this.establishedConnections, con);
     this.gameNetwork.removeEstablished(con);
   }
 
   addEstablishedConnection(con: Connection): void {
-    this.shouldPassConnections.push(con);
+    this.establishedConnections.push(con);
     this.gameNetwork.addEstablished(con);
   }
 
