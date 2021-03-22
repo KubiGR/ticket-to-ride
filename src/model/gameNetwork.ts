@@ -1,7 +1,6 @@
 import { usaMap } from 'model/usaMap';
 import { Connection } from './connection';
 import { Constants } from './constants';
-import { Ticket } from './ticket';
 import { TicketReport } from './ticketReport';
 import { Routing } from './routing';
 
@@ -25,6 +24,10 @@ export class GameNetwork {
 
   getTicketReports(): TicketReport[] {
     return this.ticketReports;
+  }
+
+  getOpponentNetwork(): GameNetwork | undefined {
+    return this.opponentNetwork;
   }
 
   createOpponent(): void {
@@ -110,22 +113,26 @@ export class GameNetwork {
 
   private generateTicketReports(): void {
     this.ticketReports = [];
-    const connections = Array.from(this.established);
     usaMap.getTickets().forEach((t) => {
       const ticketConns = this.router.getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(
         [t],
       );
       let completed = 0;
       ticketConns.forEach((c) => {
-        if (connections.includes(c)) {
+        if (this.established.has(c)) {
           completed++;
         }
       });
+
+      const remainingConnections = ticketConns.filter((conn) => {
+        return !this.established.has(conn);
+      });
+
       const requiredTrains = this.router.getRequiredNumOfTrains(ticketConns);
 
       const ticketReport = new TicketReport(
         t,
-        ticketConns.length - completed,
+        remainingConnections,
         requiredTrains,
         completed,
         ticketConns.length,
@@ -143,7 +150,7 @@ export class GameNetwork {
       .sort(TicketReport.compare)
       .forEach((t) => {
         const percentage = t.completionPercentage();
-        if (t.remainingConnections < 2 || percentage > 0.5) {
+        if (t.remainingConnections.length < 2 || percentage > 0.5) {
           console.log(
             t.ticket.toString() +
               ': ' +
@@ -151,7 +158,7 @@ export class GameNetwork {
               '% needs ' +
               t.remainingTrains +
               ' train(s) in ' +
-              t.remainingConnections +
+              t.remainingConnections.length +
               ' connection(s).',
           );
         }

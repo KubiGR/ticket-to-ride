@@ -1,17 +1,18 @@
+import { Connection } from './connection';
 import { Ticket } from './ticket';
 
 export class TicketReport {
   constructor(
     public ticket: Ticket,
-    public remainingConnections: number,
+    public remainingConnections: Connection[],
     public remainingTrains: number,
-    public completedConnections: number,
-    public totalConnections: number,
+    public completedConnectionsNum: number,
+    public totalConnectionsNum: number,
     public reachable: boolean,
   ) {}
 
   completionPercentage(): number {
-    return this.completedConnections / this.totalConnections;
+    return this.completedConnectionsNum / this.totalConnectionsNum;
   }
 
   static compare(t1: TicketReport, t2: TicketReport): number {
@@ -23,7 +24,7 @@ export class TicketReport {
     return (
       t.reachable &&
       (t.remainingTrains < 7 ||
-        t.remainingConnections < 3 ||
+        t.remainingConnections.length < 3 ||
         t.completionPercentage() > 0.4)
     );
   }
