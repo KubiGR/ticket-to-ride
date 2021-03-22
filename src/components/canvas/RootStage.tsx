@@ -23,9 +23,12 @@ export const RootStage = observer(() => {
   const mapStore = useMapStore();
 
   const drawCitiesArray = usaCities.map((city) => {
-    let isCitySelected = false;
+    let cityColor = 'green';
     if (mapStore.selectedCities.includes(city.name)) {
-      isCitySelected = true;
+      cityColor = 'orange';
+    }
+    if (mapStore.ticketsCities.includes(city.name)) {
+      cityColor = 'blue';
     }
     return (
       <Circle
@@ -34,7 +37,7 @@ export const RootStage = observer(() => {
         y={mapWidth * city.posY}
         radius={cityFillRadius}
         opacity={0.5}
-        fill={isCitySelected ? 'blue' : 'green'}
+        fill={cityColor}
         onClick={() => mapStore.toggleSelectedCity(city.name)}
       />
     );

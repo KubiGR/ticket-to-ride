@@ -21,7 +21,7 @@ export class MapStore {
   get connectionTypeSelectionMap(): Map<Connection, string[]> {
     const connectionsArray = this.gameNetwork
       .getRouter()
-      .getOptConnectionsOfMinSpanningTreeOfShortestRoutes(this.selectedCities);
+      .getOptConnectionsOfMinSpanningTreeOfShortestRoutes(this.ticketsCities);
 
     console.log(
       'Available trains: ' +
@@ -68,11 +68,23 @@ export class MapStore {
       .filter((el) => !this.selectedTickets.includes(el));
   }
 
+  get ticketsCities(): string[] {
+    return this.selectedTickets.reduce((acc, cur) => {
+      if (!acc.includes(cur.from)) {
+        acc.push(cur.from);
+      }
+      if (!acc.includes(cur.to)) {
+        acc.push(cur.to);
+      }
+      return acc;
+    }, [] as string[]);
+  }
+
   addTicket(ticket: Ticket): void {
     this.selectedTickets.push(ticket);
     [ticket.from, ticket.to].forEach((city) => {
-      if (!this.selectedCities.includes(city)) {
-        this.selectedCities.push(city);
+      if (!this.ticketsCities.includes(city)) {
+        this.ticketsCities.push(city);
       }
     });
   }

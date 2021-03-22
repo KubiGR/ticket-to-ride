@@ -13,7 +13,12 @@ const TicketList = observer(
       >{`${ticket.from} - ${ticket.to} . ${ticket.points}`}</li>
     ));
 
-    return <ul>{ticketsDisplayList}</ul>;
+    return (
+      <>
+        <h4>Available Tickets</h4>
+        <ul>{ticketsDisplayList}</ul>
+      </>
+    );
   },
 );
 

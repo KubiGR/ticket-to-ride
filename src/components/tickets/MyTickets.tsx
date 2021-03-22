@@ -13,7 +13,12 @@ const MyTickets = observer(
       >{`${ticket.from} - ${ticket.to} . ${ticket.points}`}</li>
     ));
 
-    return <ul>{selectedTicketsJSX}</ul>;
+    return (
+      <>
+        <h4>Your Tickets</h4>
+        <ul>{selectedTicketsJSX}</ul>
+      </>
+    );
   },
 );
 
