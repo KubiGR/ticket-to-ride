@@ -4,13 +4,21 @@ body {
 
 .container {
   display: grid;
-  grid-template-areas: 'map tickets';
+  grid-template-columns: auto 300px;
+  grid-template-rows: 100px auto;
 }
 
 .map {
-  grid-area: map;
+  grid-column: 1 / span 1;
+  grid-row: 1 / span 2;
 }
 
 .tickets {
-  grid-area: tickets;
+  grid-column: 2 / span 1;
+  grid-row: 2 / span 1;
+}
+
+.player-info {
+  grid-column: 2 / span 1;
+  grid-row: 1 / span 1;
 }

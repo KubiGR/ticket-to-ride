@@ -161,7 +161,7 @@ export class GameNetwork {
     return this.establishedPoints;
   }
 
-  getRouter(): Routing {
+  getRouting(): Routing {
     return this.router;
   }
 }

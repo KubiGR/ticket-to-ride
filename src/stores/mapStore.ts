@@ -19,25 +19,13 @@ export class MapStore {
   }
 
   get connectionTypeSelectionMap(): Map<Connection, string[]> {
-    const connectionsArray = this.gameNetwork
-      .getRouter()
-      .getOptConnectionsOfMinSpanningTreeOfShortestRoutes(this.ticketsCities);
-
-    console.log(
-      'Available trains: ' +
-        (this.gameNetwork.getAvailableTrains() -
-          this.gameNetwork
-            .getRouter()
-            .getRequiredNumOfTrains(connectionsArray)) +
-        '\nTotal Points    : ' +
-        (this.gameNetwork.getPoints() +
-          this.gameNetwork.getRouter().getGainPoints([], connectionsArray)),
+    const connectionTypeSelectionMap = this.connectionsArray.reduce(
+      (acc, cur) => {
+        acc.set(cur, ['selected']);
+        return acc;
+      },
+      new Map(),
     );
-
-    const connectionTypeSelectionMap = connectionsArray.reduce((acc, cur) => {
-      acc.set(cur, ['selected']);
-      return acc;
-    }, new Map());
 
     this.cannotPassConnections.forEach((cannotPassConnection) => {
       if (connectionTypeSelectionMap.get(cannotPassConnection)) {
@@ -55,6 +43,30 @@ export class MapStore {
       }
     });
     return connectionTypeSelectionMap;
+  }
+
+  get connectionsArray(): Connection[] {
+    return this.gameNetwork
+      .getRouting()
+      .getOptConnectionsOfMinSpanningTreeOfShortestRoutes(this.ticketsCities);
+  }
+
+  get availableTrainsCount(): number {
+    return (
+      this.gameNetwork.getAvailableTrains() -
+      this.gameNetwork
+        .getRouting()
+        .getRequiredNumOfTrains(this.connectionsArray)
+    );
+  }
+
+  get totalPoints(): number {
+    return (
+      this.gameNetwork.getPoints() +
+      this.gameNetwork
+        .getRouting()
+        .getGainPoints(this.selectedTickets, this.connectionsArray)
+    );
   }
 
   get notSelectedTickets(): Ticket[] {
