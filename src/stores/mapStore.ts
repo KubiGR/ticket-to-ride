@@ -35,7 +35,6 @@ export class MapStore {
   }
 
   get connectionTypeSelectionMap(): Map<Connection, string[]> {
-    console.log(this.connectionsArray);
     const connectionTypeSelectionMap = this.connectionsArray.reduce(
       (acc, cur) => {
         acc.set(cur, ['selected']);
@@ -113,6 +112,7 @@ export class MapStore {
   addTicket(ticket: Ticket): void {
     this.selectedTickets.push(ticket);
     [ticket.from, ticket.to].forEach((city) => {
+      removeItemOnce(this.selectedCities, city);
       if (!this.ticketsCities.includes(city)) {
         this.ticketsCities.push(city);
       }
@@ -128,7 +128,7 @@ export class MapStore {
           ticket.to === ticketToRemove.from,
       )
     ) {
-      this.toggleSelectedCity(ticketToRemove.from);
+      removeItemOnce(this.selectedCities, ticketToRemove.from);
     }
     if (
       !this.selectedTickets.some(
@@ -136,7 +136,7 @@ export class MapStore {
           ticket.from === ticketToRemove.to || ticket.to === ticketToRemove.to,
       )
     ) {
-      this.toggleSelectedCity(ticketToRemove.to);
+      removeItemOnce(this.selectedCities, ticketToRemove.to);
     }
   }
 
