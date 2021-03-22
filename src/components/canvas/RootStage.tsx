@@ -10,7 +10,7 @@ import { useMapStore } from 'providers/MapStoreProvider';
 const mapHeight = 600;
 const mapWidth = mapHeight * 1.56;
 const lineStrokeSize = mapWidth * 0.012;
-const cityStrokeSize = mapWidth * 0.008;
+const cityStrokeSize = mapWidth * 0.015;
 const cityFillRadius = mapWidth * 0.008;
 // const getPointerPosition = (evt: any) => {
 //   console.info(
@@ -27,7 +27,7 @@ export const RootStage = observer(() => {
     let cityFill = 'green';
     let cityStroke;
     if (mapStore.selectedCities.includes(city.name)) {
-      cityStroke = 'black';
+      cityStroke = 'yellow';
     }
     if (mapStore.ticketsCities.includes(city.name)) {
       cityFill = 'blue';
@@ -131,8 +131,8 @@ export const RootStage = observer(() => {
     >
       <Layer>
         <MapImage width={mapWidth} height={mapHeight} />
-        {drawCitiesArray}
         {drawConnectionsArray}
+        {drawCitiesArray}
       </Layer>
     </Stage>
   );
