@@ -132,7 +132,6 @@ export class Routing {
   getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(
     tickets: Ticket[],
   ): Connection[] {
-    console.log(tickets);
     const reachableCities: Set<string> = new Set();
     tickets
       .filter((ticket) => {
@@ -241,12 +240,6 @@ export class Routing {
   }
 
   isCityReachable(from: string): boolean {
-    console.log(
-      'isCityReachable: ' +
-        this.mapEdges.filter((edge) => {
-          return edge.contains(from) && !this.cannotPass.has(edge);
-        }),
-    );
     return (
       this.mapEdges.filter((edge) => {
         return edge.contains(from) && !this.cannotPass.has(edge);

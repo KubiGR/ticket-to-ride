@@ -7,6 +7,7 @@ export class TicketReport {
     public remainingTrains: number,
     public completedConnections: number,
     public totalConnections: number,
+    public reachable: boolean,
   ) {}
 
   completionPercentage(): number {
@@ -20,9 +21,10 @@ export class TicketReport {
 
   static filterFn(t: TicketReport): boolean {
     return (
-      t.remainingTrains < 7 ||
-      t.remainingConnections < 3 ||
-      t.completionPercentage() > 0.4
+      t.reachable &&
+      (t.remainingTrains < 7 ||
+        t.remainingConnections < 3 ||
+        t.completionPercentage() > 0.4)
     );
   }
 }

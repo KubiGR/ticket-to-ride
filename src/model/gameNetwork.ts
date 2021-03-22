@@ -112,8 +112,8 @@ export class GameNetwork {
     this.ticketReports = [];
     const connections = Array.from(this.established);
     usaMap.getTickets().forEach((t) => {
-      const ticketConns = this.router.getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
-        Ticket.getCities([t]),
+      const ticketConns = this.router.getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(
+        [t],
       );
       let completed = 0;
       ticketConns.forEach((c) => {
@@ -129,6 +129,7 @@ export class GameNetwork {
         requiredTrains,
         completed,
         ticketConns.length,
+        ticketConns.length > 0,
       );
 
       this.ticketReports.push(ticketReport);
