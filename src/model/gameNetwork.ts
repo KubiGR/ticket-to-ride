@@ -53,12 +53,52 @@ export class GameNetwork {
         'addEstablished: ' + edge + ' is in ' + ' cannot pass list',
       );
     this.established.add(edge);
-    this.router.processEdgeRestrictions(this.cannotPass, this.established);
     this.availableTrains -= edge.trains;
     this.establishedPoints += edge.getPoints();
-
     this.opponentNetwork?.addCannotPass(edge);
 
+    this.updateRoutingAndReports();
+  }
+  removeEstablished(edge: Connection): void {
+    if (!this.established.has(edge))
+      throw new Error(
+        'removeEstablished: ' +
+          edge +
+          ' is in not in the ' +
+          ' established list',
+      );
+    this.established.delete(edge);
+    this.availableTrains += edge.trains;
+    this.establishedPoints -= edge.getPoints();
+    this.opponentNetwork?.removeCannotPass(edge);
+
+    this.updateRoutingAndReports();
+  }
+
+  addCannotPass(edge: Connection): void {
+    if (this.established.has(edge))
+      throw new Error(
+        'addCannotPass: ' + edge + ' is in ' + ' established list',
+      );
+    this.cannotPass.add(edge);
+    this.opponentNetwork?.addEstablished(edge);
+
+    this.updateRoutingAndReports();
+  }
+
+  removeCannotPass(edge: Connection): void {
+    if (!this.cannotPass.has(edge))
+      throw new Error(
+        'removeCannotPass: ' + edge + ' is not in ' + ' cannotPass list',
+      );
+    this.cannotPass.delete(edge);
+    this.opponentNetwork?.removeEstablished(edge);
+
+    this.updateRoutingAndReports();
+  }
+
+  private updateRoutingAndReports(): void {
+    this.router.processEdgeRestrictions(this.cannotPass, this.established);
     this.generateTicketReports();
     this.consoleReports();
   }
@@ -110,47 +150,6 @@ export class GameNetwork {
 
       this.ticketReports.push(ticketReport);
     });
-  }
-
-  removeEstablished(edge: Connection): void {
-    if (!this.established.has(edge))
-      throw new Error(
-        'removeEstablished: ' +
-          edge +
-          ' is in not in the ' +
-          ' established list',
-      );
-    this.established.delete(edge);
-    this.router.processEdgeRestrictions(this.cannotPass, this.established);
-    this.availableTrains += edge.trains;
-    this.establishedPoints -= edge.getPoints();
-
-    this.opponentNetwork?.removeCannotPass(edge);
-
-    this.generateTicketReports();
-    this.consoleReports();
-  }
-
-  addCannotPass(edge: Connection): void {
-    if (this.established.has(edge))
-      throw new Error(
-        'addCannotPass: ' + edge + ' is in ' + ' established list',
-      );
-    this.cannotPass.add(edge);
-    this.router.processEdgeRestrictions(this.cannotPass, this.established);
-
-    this.opponentNetwork?.addEstablished(edge);
-  }
-
-  removeCannotPass(edge: Connection): void {
-    if (!this.cannotPass.has(edge))
-      throw new Error(
-        'removeCannotPass: ' + edge + ' is not in ' + ' cannotPass list',
-      );
-    this.cannotPass.delete(edge);
-    this.router.processEdgeRestrictions(this.cannotPass, this.established);
-
-    this.opponentNetwork?.removeEstablished(edge);
   }
 
   getAvailableTrains(): number {
