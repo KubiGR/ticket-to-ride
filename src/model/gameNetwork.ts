@@ -19,6 +19,7 @@ export class GameNetwork {
 
   constructor() {
     this.router.setEstablished(this.established);
+    this.router.setCannotPass(this.cannotPass);
     this.parseConnections();
   }
 
