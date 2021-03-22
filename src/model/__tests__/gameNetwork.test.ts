@@ -3,11 +3,39 @@ import { GameNetwork } from 'model/gameNetwork';
 import { Ticket } from 'model/ticket';
 import { usaMap } from 'model/usaMap';
 
-test('getShortestPath no restrictions', () => {
-  const gameNetwork = new GameNetwork();
-  expect(
-    gameNetwork.getRouting().getShortestPath('Los Angeles', 'Denver'),
-  ).toEqual(['Los Angeles', 'Phoenix', 'Denver']);
+describe('getRouting().getShortestPath', () => {
+  test('with no restrictions', () => {
+    const gameNetwork = new GameNetwork();
+    expect(
+      gameNetwork.getRouting().getShortestPath('Los Angeles', 'Denver'),
+    ).toEqual(['Los Angeles', 'Phoenix', 'Denver']);
+  });
+
+  test('with established', () => {
+    const gameNetwork = new GameNetwork();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Los Angeles', 'El Paso');
+    gameNetwork.addEstablished(connection);
+
+    const path = gameNetwork
+      .getRouting()
+      .getShortestPath('Los Angeles', 'Denver');
+    expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
+  });
+
+  test('getShortestPath with established (inverse)', () => {
+    const gameNetwork = new GameNetwork();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('El Paso', 'Los Angeles');
+    gameNetwork.addEstablished(connection);
+
+    const path = gameNetwork
+      .getRouting()
+      .getShortestPath('Los Angeles', 'Denver');
+    expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
+  });
 });
 
 test('getConnectionForPath', () => {
@@ -51,7 +79,7 @@ test('addCannotPass error when in should pass', () => {
   }).toThrow();
 });
 
-test('addShouldPass error when in cannot pass', () => {
+test('addEstablished error when in cannot pass', () => {
   const gameNetwork = new GameNetwork();
   const connection = gameNetwork
     .getRouting()
@@ -61,32 +89,6 @@ test('addShouldPass error when in cannot pass', () => {
   expect(() => {
     gameNetwork.addEstablished(connection);
   }).toThrow();
-});
-
-test('getShortestPath with shouldPass', () => {
-  const gameNetwork = new GameNetwork();
-  const connection = gameNetwork
-    .getRouting()
-    .getConnection('Los Angeles', 'El Paso');
-  gameNetwork.addEstablished(connection);
-
-  const path = gameNetwork
-    .getRouting()
-    .getShortestPath('Los Angeles', 'Denver');
-  expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
-});
-
-test('getShortestPath with shouldPass (inverse)', () => {
-  const gameNetwork = new GameNetwork();
-  const connection = gameNetwork
-    .getRouting()
-    .getConnection('El Paso', 'Los Angeles');
-  gameNetwork.addEstablished(connection);
-
-  const path = gameNetwork
-    .getRouting()
-    .getShortestPath('Los Angeles', 'Denver');
-  expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
 });
 
 test('established connections reduce train number', () => {
