@@ -49,6 +49,19 @@ class USAMap {
   getTickets(): Ticket[] {
     return this.tickets;
   }
+
+  getTicket(from: string, to: string): Ticket {
+    for (let i = 0; i < this.tickets.length; i++) {
+      const ticket = this.tickets[i];
+      if (
+        (ticket.from === from && ticket.to === to) ||
+        (ticket.to === from && ticket.from === to)
+      ) {
+        return ticket;
+      }
+    }
+    throw new Error('Ticket not found: ' + from + ', ' + to);
+  }
 }
 
 export const usaMap = new USAMap();

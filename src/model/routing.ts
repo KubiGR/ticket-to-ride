@@ -7,6 +7,7 @@ export class Routing {
   private graph!: FloydWarshall<string>;
   private mapEdges: Connection[] = [];
   private established!: Set<Connection>;
+  private cannotPass!: Set<Connection>;
   private pointImportance = 0.0;
 
   /**
@@ -17,6 +18,10 @@ export class Routing {
    */
   setEstablished(established: Set<Connection>): void {
     this.established = established;
+  }
+
+  setCannotPass(cannotPass: Set<Connection>): void {
+    this.cannotPass = cannotPass;
   }
 
   setEdges(mapEdges: Connection[]): void {
@@ -124,6 +129,23 @@ export class Routing {
     this.graph = new FloydWarshall(restrictedEdges, false);
   }
 
+  getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(
+    tickets: Ticket[],
+  ): Connection[] {
+    const reachableCities: Set<string> = new Set();
+    tickets
+      .filter((ticket) => {
+        return this.isTicketReachable(ticket);
+      })
+      .forEach((ticket) => {
+        reachableCities.add(ticket.from);
+        reachableCities.add(ticket.to);
+      });
+    return this.getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
+      Array.from(reachableCities),
+    );
+  }
+
   getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
     cities: string[],
   ): Connection[] {
@@ -198,11 +220,30 @@ export class Routing {
   }
 
   getGainPoints(tickets: Ticket[], connections: Connection[]): number {
-    const ticketPoints = Ticket.getPoints(tickets);
+    const reachable = tickets.filter((ticket) =>
+      this.isTicketReachable(ticket),
+    );
+    const unreachable = tickets.filter(
+      (ticket) => !this.isTicketReachable(ticket),
+    );
+    const ticketPoints =
+      Ticket.getPoints(reachable) - Ticket.getPoints(unreachable);
     const linePoints = connections
       .filter((c) => !this.established.has(c))
       .map((c) => c.getPoints())
       .reduce((sum, x) => sum + x, 0);
     return ticketPoints + linePoints;
+  }
+
+  isTicketReachable(ticket: Ticket): boolean {
+    return this.isCityReachable(ticket.from) && this.isCityReachable(ticket.to);
+  }
+
+  isCityReachable(from: string): boolean {
+    return (
+      this.mapEdges.filter((edge) => {
+        return edge.contains(from) && !this.cannotPass.has(edge);
+      }).length > 0
+    );
   }
 }

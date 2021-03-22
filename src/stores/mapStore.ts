@@ -27,8 +27,8 @@ export class MapStore {
       () => {
         this.connectionsArray = this.gameNetwork
           .getRouting()
-          .getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
-            this.ticketsCities,
+          .getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(
+            this.selectedTickets,
           );
       },
     );
