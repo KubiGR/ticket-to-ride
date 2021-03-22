@@ -6,7 +6,7 @@ import { TicketReport } from './ticketReport';
 import { Routing } from './routing';
 
 export class GameNetwork {
-  private router: Routing = new Routing();
+  private routing: Routing = new Routing();
   private cannotPass: Set<Connection> = new Set();
   private established: Set<Connection> = new Set();
   private ticketReports: TicketReport[] = [];
@@ -18,7 +18,7 @@ export class GameNetwork {
   private name = 'Player';
 
   constructor() {
-    this.router.setEstablished(this.established);
+    this.routing.setEstablished(this.established);
     this.parseConnections();
   }
 
@@ -28,7 +28,7 @@ export class GameNetwork {
   }
 
   private parseConnections(): void {
-    this.router.setEdges(usaMap.getConnections());
+    this.routing.setEdges(usaMap.getConnections());
   }
 
   /**
@@ -43,8 +43,8 @@ export class GameNetwork {
    * @param parameter
    */
   setPointImportance(parameter: number): void {
-    this.router.setPointImportance(parameter);
-    this.opponentNetwork?.router.setPointImportance(parameter);
+    this.routing.setPointImportance(parameter);
+    this.opponentNetwork?.routing.setPointImportance(parameter);
   }
 
   addEstablished(edge: Connection): void {
@@ -53,7 +53,7 @@ export class GameNetwork {
         'addEstablished: ' + edge + ' is in ' + ' cannot pass list',
       );
     this.established.add(edge);
-    this.router.processEdgeRestrictions(this.cannotPass, this.established);
+    this.routing.processEdgeRestrictions(this.cannotPass, this.established);
     this.availableTrains -= edge.trains;
     this.establishedPoints += edge.getPoints();
 
@@ -89,7 +89,7 @@ export class GameNetwork {
     this.ticketReports = [];
     const connections = Array.from(this.established);
     usaMap.getTickets().forEach((t) => {
-      const ticketConns = this.router.getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
+      const ticketConns = this.routing.getOptConnectionsOfMinSpanningTreeOfShortestRoutes(
         Ticket.getCities([t]),
       );
       let completed = 0;
@@ -98,7 +98,7 @@ export class GameNetwork {
           completed++;
         }
       });
-      const requiredTrains = this.router.getRequiredNumOfTrains(ticketConns);
+      const requiredTrains = this.routing.getRequiredNumOfTrains(ticketConns);
 
       const ticketReport = new TicketReport(
         t,
@@ -121,7 +121,7 @@ export class GameNetwork {
           ' established list',
       );
     this.established.delete(edge);
-    this.router.processEdgeRestrictions(this.cannotPass, this.established);
+    this.routing.processEdgeRestrictions(this.cannotPass, this.established);
     this.availableTrains += edge.trains;
     this.establishedPoints -= edge.getPoints();
 
@@ -137,7 +137,7 @@ export class GameNetwork {
         'addCannotPass: ' + edge + ' is in ' + ' established list',
       );
     this.cannotPass.add(edge);
-    this.router.processEdgeRestrictions(this.cannotPass, this.established);
+    this.routing.processEdgeRestrictions(this.cannotPass, this.established);
 
     this.opponentNetwork?.addEstablished(edge);
   }
@@ -148,7 +148,7 @@ export class GameNetwork {
         'removeCannotPass: ' + edge + ' is not in ' + ' cannotPass list',
       );
     this.cannotPass.delete(edge);
-    this.router.processEdgeRestrictions(this.cannotPass, this.established);
+    this.routing.processEdgeRestrictions(this.cannotPass, this.established);
 
     this.opponentNetwork?.removeEstablished(edge);
   }
@@ -161,7 +161,7 @@ export class GameNetwork {
     return this.establishedPoints;
   }
 
-  getRouter(): Routing {
-    return this.router;
+  getRouting(): Routing {
+    return this.routing;
   }
 }

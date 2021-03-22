@@ -5,14 +5,14 @@ import { Ticket } from 'model/ticket';
 test('getShortestPath no restrictions', () => {
   const gameNetwork = new GameNetwork();
   expect(
-    gameNetwork.getRouter().getShortestPath('Los Angeles', 'Denver'),
+    gameNetwork.getRouting().getShortestPath('Los Angeles', 'Denver'),
   ).toEqual(['Los Angeles', 'Phoenix', 'Denver']);
 });
 
 test('getConnectionForPath', () => {
   const gameNetwork = new GameNetwork();
   const path = ['Los Angeles', 'Phoenix', 'Denver'];
-  const connections = gameNetwork.getRouter().getConnectionsForPath(path);
+  const connections = gameNetwork.getRouting().getConnectionsForPath(path);
   expect(connections).toEqual([
     {
       from: 'Phoenix',
@@ -34,14 +34,14 @@ test('getConnectionForPath', () => {
 test('getConnection  (not found)', () => {
   const gameNetwork = new GameNetwork();
   expect(() => {
-    gameNetwork.getRouter().getConnection('What', 'El Paso');
+    gameNetwork.getRouting().getConnection('What', 'El Paso');
   }).toThrow();
 });
 
 test('addCannotPass error when in should pass', () => {
   const gameNetwork = new GameNetwork();
   const connection = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnection('Los Angeles', 'El Paso');
   gameNetwork.addEstablished(connection);
 
@@ -53,7 +53,7 @@ test('addCannotPass error when in should pass', () => {
 test('addShouldPass error when in cannot pass', () => {
   const gameNetwork = new GameNetwork();
   const connection = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnection('Los Angeles', 'El Paso');
   gameNetwork.addCannotPass(connection);
 
@@ -65,29 +65,33 @@ test('addShouldPass error when in cannot pass', () => {
 test('getShortestPath with shouldPass', () => {
   const gameNetwork = new GameNetwork();
   const connection = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnection('Los Angeles', 'El Paso');
   gameNetwork.addEstablished(connection);
 
-  const path = gameNetwork.getRouter().getShortestPath('Los Angeles', 'Denver');
+  const path = gameNetwork
+    .getRouting()
+    .getShortestPath('Los Angeles', 'Denver');
   expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
 });
 
 test('getShortestPath with shouldPass (inverse)', () => {
   const gameNetwork = new GameNetwork();
   const connection = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnection('El Paso', 'Los Angeles');
   gameNetwork.addEstablished(connection);
 
-  const path = gameNetwork.getRouter().getShortestPath('Los Angeles', 'Denver');
+  const path = gameNetwork
+    .getRouting()
+    .getShortestPath('Los Angeles', 'Denver');
   expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
 });
 
 test('established connections reduce train number', () => {
   const gameNetwork = new GameNetwork();
   const connection = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnection('El Paso', 'Los Angeles');
   gameNetwork.addEstablished(connection);
 
@@ -98,25 +102,31 @@ test('established connections reduce train number', () => {
 
 test('getShortestPath with cannotPass 1', () => {
   const gameNetwork = new GameNetwork();
-  const connection = gameNetwork.getRouter().getConnection('Phoenix', 'Denver');
+  const connection = gameNetwork
+    .getRouting()
+    .getConnection('Phoenix', 'Denver');
   gameNetwork.addCannotPass(connection);
 
-  const path = gameNetwork.getRouter().getShortestPath('Los Angeles', 'Denver');
+  const path = gameNetwork
+    .getRouting()
+    .getShortestPath('Los Angeles', 'Denver');
   expect(path).toEqual(['Los Angeles', 'Phoenix', 'Santa Fe', 'Denver']);
 });
 
 test('getShortestPath with cannotPass 2', () => {
   const gameNetwork = new GameNetwork();
   const connection1 = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnection('Phoenix', 'Denver');
   const connection2 = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnection('Phoenix', 'Santa Fe');
   gameNetwork.addCannotPass(connection1);
   gameNetwork.addCannotPass(connection2);
 
-  const path = gameNetwork.getRouter().getShortestPath('Los Angeles', 'Denver');
+  const path = gameNetwork
+    .getRouting()
+    .getShortestPath('Los Angeles', 'Denver');
   expect(path).toEqual([
     'Los Angeles',
     'Las Vegas',
@@ -128,15 +138,15 @@ test('getShortestPath with cannotPass 2', () => {
 test('getShortestPath with cannotPass 2', () => {
   const gameNetwork = new GameNetwork();
   const connection1 = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnection('Vancouver', 'Calgary');
   const connection2 = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnection('Vancouver', 'Seattle');
   gameNetwork.addCannotPass(connection1);
   gameNetwork.addCannotPass(connection2);
 
-  const path = gameNetwork.getRouter().getShortestPath('Vancouver', 'Denver');
+  const path = gameNetwork.getRouting().getShortestPath('Vancouver', 'Denver');
   expect(path).toEqual([]);
 });
 
@@ -144,7 +154,7 @@ test('cities', () => {
   const gameNetwork = new GameNetwork();
   expect(
     gameNetwork
-      .getRouter()
+      .getRouting()
       .getShortestVisitingPath(['Denver', 'Los Angeles', 'Chicago']),
   ).toEqual(['Los Angeles', 'Phoenix', 'Denver', 'Omaha', 'Chicago']);
 });
@@ -153,7 +163,7 @@ test('getShortestPathArray of cities', () => {
   const gameNetwork = new GameNetwork();
   expect(
     gameNetwork
-      .getRouter()
+      .getRouting()
       .getShortestVisitingPath(['Calgary', 'Salt Lake City', 'Phoenix']),
   ).toEqual(['Calgary', 'Helena', 'Salt Lake City', 'Denver', 'Phoenix']);
 });
@@ -163,7 +173,7 @@ test('getShortestPathArray unknown cities', () => {
 
   expect(() => {
     gameNetwork
-      .getRouter()
+      .getRouting()
       .getShortestVisitingPath(['What?', 'Phoenix', 'Denver']);
   }).toThrow();
 });
@@ -171,7 +181,7 @@ test('getShortestPathArray unknown cities', () => {
 test('findSpanningTree', () => {
   const gameNetwork = new GameNetwork();
   const solution = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnectionsOfMinSpanningTreeOfShortestRoutes([
       'Winnipeg',
       'Duluth',
@@ -182,50 +192,52 @@ test('findSpanningTree', () => {
     ]);
   expect(
     solution.includes(
-      gameNetwork.getRouter().getConnection('Winnipeg', 'Duluth'),
-    ),
-  );
-  expect(
-    solution.includes(gameNetwork.getRouter().getConnection('Omaha', 'Duluth')),
-  );
-  expect(
-    solution.includes(
-      gameNetwork.getRouter().getConnection('Omaha', 'Kansas City'),
+      gameNetwork.getRouting().getConnection('Winnipeg', 'Duluth'),
     ),
   );
   expect(
     solution.includes(
-      gameNetwork.getRouter().getConnection('Kansas City', 'Oklahoma City'),
+      gameNetwork.getRouting().getConnection('Omaha', 'Duluth'),
     ),
   );
   expect(
     solution.includes(
-      gameNetwork.getRouter().getConnection('Duluth', 'Sault St. Marie'),
+      gameNetwork.getRouting().getConnection('Omaha', 'Kansas City'),
     ),
   );
   expect(
     solution.includes(
-      gameNetwork.getRouter().getConnection('Sault St. Marie', 'Toronto'),
+      gameNetwork.getRouting().getConnection('Kansas City', 'Oklahoma City'),
     ),
   );
   expect(
     solution.includes(
-      gameNetwork.getRouter().getConnection('Oklahoma City', 'El Paso'),
+      gameNetwork.getRouting().getConnection('Duluth', 'Sault St. Marie'),
     ),
   );
   expect(
     solution.includes(
-      gameNetwork.getRouter().getConnection('Oklahoma City', 'Dallas'),
+      gameNetwork.getRouting().getConnection('Sault St. Marie', 'Toronto'),
     ),
   );
   expect(
     solution.includes(
-      gameNetwork.getRouter().getConnection('Dallas', 'Houston'),
+      gameNetwork.getRouting().getConnection('Oklahoma City', 'El Paso'),
     ),
   );
   expect(
     solution.includes(
-      gameNetwork.getRouter().getConnection('Houston', 'New Orleans'),
+      gameNetwork.getRouting().getConnection('Oklahoma City', 'Dallas'),
+    ),
+  );
+  expect(
+    solution.includes(
+      gameNetwork.getRouting().getConnection('Dallas', 'Houston'),
+    ),
+  );
+  expect(
+    solution.includes(
+      gameNetwork.getRouting().getConnection('Houston', 'New Orleans'),
     ),
   );
 });
@@ -234,7 +246,7 @@ test('findSpanningTree throws unknown city', () => {
   const gameNetwork = new GameNetwork();
   expect(() => {
     gameNetwork
-      .getRouter()
+      .getRouting()
       .getConnectionsOfMinSpanningTreeOfShortestRoutes([
         'Duluth',
         'Oklahoma City',
@@ -256,15 +268,15 @@ test('Execution scenario for a ticket', () => {
   const tickets = [new Ticket('Calgary', 'Phoenix', 13)];
 
   const connections = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnectionsForPath(
       gameNetwork
-        .getRouter()
+        .getRouting()
         .getShortestVisitingPath(Ticket.getCities(tickets)),
     );
-  const points = gameNetwork.getRouter().getGainPoints(tickets, connections);
+  const points = gameNetwork.getRouting().getGainPoints(tickets, connections);
   expect(points).toBe(13 + 7 + 7 + 10);
-  const trains = gameNetwork.getRouter().getRequiredNumOfTrains(connections);
+  const trains = gameNetwork.getRouting().getRequiredNumOfTrains(connections);
   expect(trains).toBe(13);
 });
 
@@ -274,19 +286,19 @@ test('Execution scenario for a ticket and an established line not in the connect
   // const tickets = getUSATicketsFromJSON();
   const tickets = [new Ticket('Calgary', 'Phoenix', 13)];
   gameNetwork.addEstablished(
-    gameNetwork.getRouter().getConnection('Vancouver', 'Calgary'),
+    gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
   );
 
   const connections = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnectionsForPath(
       gameNetwork
-        .getRouter()
+        .getRouting()
         .getShortestVisitingPath(Ticket.getCities(tickets)),
     );
-  const points = gameNetwork.getRouter().getGainPoints(tickets, connections);
+  const points = gameNetwork.getRouting().getGainPoints(tickets, connections);
   expect(points).toBe(13 + 7 + 7 + 10);
-  const trains = gameNetwork.getRouter().getRequiredNumOfTrains(connections);
+  const trains = gameNetwork.getRouting().getRequiredNumOfTrains(connections);
   expect(trains).toBe(13);
 });
 
@@ -296,19 +308,19 @@ test('Execution scenario for a ticket and an established line WITHIN in the conn
   // const tickets = getUSATicketsFromJSON();
   const tickets = [new Ticket('Calgary', 'Phoenix', 13)];
   gameNetwork.addEstablished(
-    gameNetwork.getRouter().getConnection('Helena', 'Calgary'),
+    gameNetwork.getRouting().getConnection('Helena', 'Calgary'),
   );
 
   const connections = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnectionsForPath(
       gameNetwork
-        .getRouter()
+        .getRouting()
         .getShortestVisitingPath(Ticket.getCities(tickets)),
     );
-  const points = gameNetwork.getRouter().getGainPoints(tickets, connections);
+  const points = gameNetwork.getRouting().getGainPoints(tickets, connections);
   expect(points).toBe(13 + 0 + 7 + 10);
-  const trains = gameNetwork.getRouter().getRequiredNumOfTrains(connections);
+  const trains = gameNetwork.getRouting().getRequiredNumOfTrains(connections);
   expect(trains).toBe(9);
 });
 
@@ -323,17 +335,17 @@ test('Execution scenario for tickets', () => {
   ];
 
   const connections = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnectionsForPath(
       gameNetwork
-        .getRouter()
+        .getRouting()
         .getShortestVisitingPath(Ticket.getCities(tickets)),
     );
-  const points = gameNetwork.getRouter().getGainPoints(tickets, connections);
+  const points = gameNetwork.getRouting().getGainPoints(tickets, connections);
   expect(points).toBe(
     32 + 7 + 4 + 4 + 10 + 4 + 7 + 1 + 2 + 15 + 7 + 2 + 2 + 2 + 2,
   );
-  const trains = gameNetwork.getRouter().getRequiredNumOfTrains(connections);
+  const trains = gameNetwork.getRouting().getRequiredNumOfTrains(connections);
   expect(trains).toBe(43);
 });
 
@@ -349,32 +361,32 @@ test('Execution scenario for tickets with established connections', () => {
 
   // this connection exists and is part of the route
   gameNetwork.addEstablished(
-    gameNetwork.getRouter().getConnection('Boston', 'New York'),
+    gameNetwork.getRouting().getConnection('Boston', 'New York'),
   );
   const connections = gameNetwork
-    .getRouter()
+    .getRouting()
     .getConnectionsForPath(
       gameNetwork
-        .getRouter()
+        .getRouting()
         .getShortestVisitingPath(Ticket.getCities(tickets)),
     );
-  const points = gameNetwork.getRouter().getGainPoints(tickets, connections);
+  const points = gameNetwork.getRouting().getGainPoints(tickets, connections);
   expect(points).toBe(32 + 7 + 4 + 4 + 10 + 4 + 7 + 1 + 2 + 15 + 7 + 2 + 2 + 2);
-  const trains = gameNetwork.getRouter().getRequiredNumOfTrains(connections);
+  const trains = gameNetwork.getRouting().getRequiredNumOfTrains(connections);
   expect(trains).toBe(41); // two less trains needed
 });
 
 test('getOpt should return a route between Calgary and Helena when Vancouver is closed', () => {
   const gameNetwork = new GameNetwork();
   gameNetwork.addCannotPass(
-    gameNetwork.getRouter().getConnection('Vancouver', 'Calgary'),
+    gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
   );
   gameNetwork.addCannotPass(
-    gameNetwork.getRouter().getConnection('Vancouver', 'Seattle'),
+    gameNetwork.getRouting().getConnection('Vancouver', 'Seattle'),
   );
 
   const connections = gameNetwork
-    .getRouter()
+    .getRouting()
     .getOptConnectionsOfMinSpanningTreeOfShortestRoutes(['Calgary', 'Helena']);
   expect(connections.length).toBe(1);
 });
@@ -382,20 +394,20 @@ test('getOpt should return a route between Calgary and Helena when Vancouver is 
 test('Add and remove cannot pass', () => {
   const gameNetwork = new GameNetwork();
   gameNetwork.addCannotPass(
-    gameNetwork.getRouter().getConnection('Vancouver', 'Calgary'),
+    gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
   );
   let connections = gameNetwork
-    .getRouter()
+    .getRouting()
     .getOptConnectionsOfMinSpanningTreeOfShortestRoutes([
       'Calgary',
       'Vancouver',
     ]);
   expect(connections.length).toBe(2);
   gameNetwork.removeCannotPass(
-    gameNetwork.getRouter().getConnection('Vancouver', 'Calgary'),
+    gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
   );
   connections = gameNetwork
-    .getRouter()
+    .getRouting()
     .getOptConnectionsOfMinSpanningTreeOfShortestRoutes([
       'Calgary',
       'Vancouver',

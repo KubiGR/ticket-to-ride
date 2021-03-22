@@ -45,7 +45,7 @@ export const RootStage = observer(() => {
 
   const drawConnectionsArray = usaConnections.flatMap((con) => {
     const connectionId = mapStore.gameNetwork
-      .getRouter()
+      .getRouting()
       .getConnection(con.from, con.to);
     let connectionDrawColor = 'green';
     let connectionDrawOpacity = 0.0;
