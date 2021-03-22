@@ -23,6 +23,10 @@ export class GameNetwork {
     this.parseConnections();
   }
 
+  getTicketReports(): TicketReport[] {
+    return this.ticketReports;
+  }
+
   createOpponent(): void {
     this.opponentNetwork = new GameNetwork();
     this.opponentNetwork.name = 'Opponent';
