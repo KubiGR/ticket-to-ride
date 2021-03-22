@@ -103,29 +103,7 @@ export class GameNetwork {
     this.consoleReports();
   }
 
-  consoleReports(): void {
-    console.log('====== ' + this.name + ' TICKET REPORT =====');
-    this.ticketReports
-      .filter(TicketReport.filterFn)
-      .sort(TicketReport.compare)
-      .forEach((t) => {
-        const percentage = t.completionPercentage();
-        if (t.remainingConnections < 2 || percentage > 0.5) {
-          console.log(
-            t.ticket.toString() +
-              ': ' +
-              (percentage * 100).toFixed(0) +
-              '% needs ' +
-              t.remainingTrains +
-              ' train(s) in ' +
-              t.remainingConnections +
-              ' connection(s).',
-          );
-        }
-      });
-  }
-
-  generateTicketReports(): void {
+  private generateTicketReports(): void {
     this.ticketReports = [];
     const connections = Array.from(this.established);
     usaMap.getTickets().forEach((t) => {
@@ -150,6 +128,28 @@ export class GameNetwork {
 
       this.ticketReports.push(ticketReport);
     });
+  }
+
+  private consoleReports(): void {
+    console.log('====== ' + this.name + ' TICKET REPORT =====');
+    this.ticketReports
+      .filter(TicketReport.filterFn)
+      .sort(TicketReport.compare)
+      .forEach((t) => {
+        const percentage = t.completionPercentage();
+        if (t.remainingConnections < 2 || percentage > 0.5) {
+          console.log(
+            t.ticket.toString() +
+              ': ' +
+              (percentage * 100).toFixed(0) +
+              '% needs ' +
+              t.remainingTrains +
+              ' train(s) in ' +
+              t.remainingConnections +
+              ' connection(s).',
+          );
+        }
+      });
   }
 
   getAvailableTrains(): number {
