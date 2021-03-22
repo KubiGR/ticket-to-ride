@@ -53,39 +53,57 @@ export class GameNetwork {
         'addEstablished: ' + edge + ' is in ' + ' cannot pass list',
       );
     this.established.add(edge);
-    this.routing.processEdgeRestrictions(this.cannotPass, this.established);
     this.availableTrains -= edge.trains;
     this.establishedPoints += edge.getPoints();
-
     this.opponentNetwork?.addCannotPass(edge);
 
+    this.updateRoutingAndReports();
+  }
+  removeEstablished(edge: Connection): void {
+    if (!this.established.has(edge))
+      throw new Error(
+        'removeEstablished: ' +
+          edge +
+          ' is in not in the ' +
+          ' established list',
+      );
+    this.established.delete(edge);
+    this.availableTrains += edge.trains;
+    this.establishedPoints -= edge.getPoints();
+    this.opponentNetwork?.removeCannotPass(edge);
+
+    this.updateRoutingAndReports();
+  }
+
+  addCannotPass(edge: Connection): void {
+    if (this.established.has(edge))
+      throw new Error(
+        'addCannotPass: ' + edge + ' is in ' + ' established list',
+      );
+    this.cannotPass.add(edge);
+    this.opponentNetwork?.addEstablished(edge);
+
+    this.updateRoutingAndReports();
+  }
+
+  removeCannotPass(edge: Connection): void {
+    if (!this.cannotPass.has(edge))
+      throw new Error(
+        'removeCannotPass: ' + edge + ' is not in ' + ' cannotPass list',
+      );
+    this.cannotPass.delete(edge);
+    this.opponentNetwork?.removeEstablished(edge);
+
+    this.updateRoutingAndReports();
+  }
+
+  private updateRoutingAndReports(): void {
+    this.routing.processEdgeRestrictions(this.cannotPass, this.established);
     this.generateTicketReports();
     this.consoleReports();
   }
 
-  consoleReports(): void {
-    console.log('====== ' + this.name + ' TICKET REPORT =====');
-    this.ticketReports
-      .filter(TicketReport.filterFn)
-      .sort(TicketReport.compare)
-      .forEach((t) => {
-        const percentage = t.completionPercentage();
-        if (t.remainingConnections < 2 || percentage > 0.5) {
-          console.log(
-            t.ticket.toString() +
-              ': ' +
-              (percentage * 100).toFixed(0) +
-              '% needs ' +
-              t.remainingTrains +
-              ' train(s) in ' +
-              t.remainingConnections +
-              ' connection(s).',
-          );
-        }
-      });
-  }
-
-  generateTicketReports(): void {
+  private generateTicketReports(): void {
     this.ticketReports = [];
     const connections = Array.from(this.established);
     usaMap.getTickets().forEach((t) => {
@@ -112,45 +130,26 @@ export class GameNetwork {
     });
   }
 
-  removeEstablished(edge: Connection): void {
-    if (!this.established.has(edge))
-      throw new Error(
-        'removeEstablished: ' +
-          edge +
-          ' is in not in the ' +
-          ' established list',
-      );
-    this.established.delete(edge);
-    this.routing.processEdgeRestrictions(this.cannotPass, this.established);
-    this.availableTrains += edge.trains;
-    this.establishedPoints -= edge.getPoints();
-
-    this.opponentNetwork?.removeCannotPass(edge);
-
-    this.generateTicketReports();
-    this.consoleReports();
-  }
-
-  addCannotPass(edge: Connection): void {
-    if (this.established.has(edge))
-      throw new Error(
-        'addCannotPass: ' + edge + ' is in ' + ' established list',
-      );
-    this.cannotPass.add(edge);
-    this.routing.processEdgeRestrictions(this.cannotPass, this.established);
-
-    this.opponentNetwork?.addEstablished(edge);
-  }
-
-  removeCannotPass(edge: Connection): void {
-    if (!this.cannotPass.has(edge))
-      throw new Error(
-        'removeCannotPass: ' + edge + ' is not in ' + ' cannotPass list',
-      );
-    this.cannotPass.delete(edge);
-    this.routing.processEdgeRestrictions(this.cannotPass, this.established);
-
-    this.opponentNetwork?.removeEstablished(edge);
+  private consoleReports(): void {
+    console.log('====== ' + this.name + ' TICKET REPORT =====');
+    this.ticketReports
+      .filter(TicketReport.filterFn)
+      .sort(TicketReport.compare)
+      .forEach((t) => {
+        const percentage = t.completionPercentage();
+        if (t.remainingConnections < 2 || percentage > 0.5) {
+          console.log(
+            t.ticket.toString() +
+              ': ' +
+              (percentage * 100).toFixed(0) +
+              '% needs ' +
+              t.remainingTrains +
+              ' train(s) in ' +
+              t.remainingConnections +
+              ' connection(s).',
+          );
+        }
+      });
   }
 
   getAvailableTrains(): number {

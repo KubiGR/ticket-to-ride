@@ -10,6 +10,7 @@ import { useMapStore } from 'providers/MapStoreProvider';
 const mapHeight = 600;
 const mapWidth = mapHeight * 1.56;
 const lineStrokeSize = mapWidth * 0.012;
+const cityStrokeSize = mapWidth * 0.015;
 const cityFillRadius = mapWidth * 0.008;
 // const getPointerPosition = (evt: any) => {
 //   console.info(
@@ -23,12 +24,13 @@ export const RootStage = observer(() => {
   const mapStore = useMapStore();
 
   const drawCitiesArray = usaCities.map((city) => {
-    let cityColor = 'green';
+    let cityFill = 'green';
+    let cityStroke;
     if (mapStore.selectedCities.includes(city.name)) {
-      cityColor = 'orange';
+      cityStroke = 'yellow';
     }
     if (mapStore.ticketsCities.includes(city.name)) {
-      cityColor = 'blue';
+      cityFill = 'blue';
     }
     return (
       <Circle
@@ -36,8 +38,10 @@ export const RootStage = observer(() => {
         x={mapWidth * city.posX}
         y={mapWidth * city.posY}
         radius={cityFillRadius}
-        opacity={0.5}
-        fill={cityColor}
+        opacity={0.6}
+        fill={cityFill}
+        stroke={cityStroke}
+        strokeWidth={cityStrokeSize}
         onClick={() => mapStore.toggleSelectedCity(city.name)}
       />
     );
@@ -127,8 +131,8 @@ export const RootStage = observer(() => {
     >
       <Layer>
         <MapImage width={mapWidth} height={mapHeight} />
-        {drawCitiesArray}
         {drawConnectionsArray}
+        {drawCitiesArray}
       </Layer>
     </Stage>
   );
