@@ -5,7 +5,7 @@ import { TicketReport } from './ticketReport';
 import { Routing } from './routing';
 
 export class GameNetwork {
-  private router: Routing = new Routing();
+  private routing: Routing = new Routing();
   private cannotPass: Set<Connection> = new Set();
   private established: Set<Connection> = new Set();
   private ticketReports: TicketReport[] = [];
@@ -17,8 +17,8 @@ export class GameNetwork {
   private name = 'Player';
 
   constructor() {
-    this.router.setEstablished(this.established);
-    this.router.setCannotPass(this.cannotPass);
+    this.routing.setEstablished(this.established);
+    this.routing.setCannotPass(this.cannotPass);
     this.parseConnections();
   }
 
@@ -36,7 +36,7 @@ export class GameNetwork {
   }
 
   private parseConnections(): void {
-    this.router.setEdges(usaMap.getConnections());
+    this.routing.setEdges(usaMap.getConnections());
   }
 
   /**
@@ -51,8 +51,8 @@ export class GameNetwork {
    * @param parameter
    */
   setPointImportance(parameter: number): void {
-    this.router.setPointImportance(parameter);
-    this.opponentNetwork?.router.setPointImportance(parameter);
+    this.routing.setPointImportance(parameter);
+    this.opponentNetwork?.routing.setPointImportance(parameter);
   }
 
   addEstablished(edge: Connection): void {
@@ -106,7 +106,7 @@ export class GameNetwork {
   }
 
   private updateRoutingAndReports(): void {
-    this.router.processEdgeRestrictions(this.cannotPass, this.established);
+    this.routing.processEdgeRestrictions(this.cannotPass, this.established);
     this.generateTicketReports();
     this.consoleReports();
   }
@@ -114,7 +114,7 @@ export class GameNetwork {
   private generateTicketReports(): void {
     this.ticketReports = [];
     usaMap.getTickets().forEach((t) => {
-      const ticketConns = this.router.getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(
+      const ticketConns = this.routing.getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(
         [t],
       );
       let completed = 0;
@@ -128,7 +128,7 @@ export class GameNetwork {
         return !this.established.has(conn);
       });
 
-      const requiredTrains = this.router.getRequiredNumOfTrains(ticketConns);
+      const requiredTrains = this.routing.getRequiredNumOfTrains(ticketConns);
 
       const ticketReport = new TicketReport(
         t,
@@ -174,6 +174,6 @@ export class GameNetwork {
   }
 
   getRouting(): Routing {
-    return this.router;
+    return this.routing;
   }
 }
