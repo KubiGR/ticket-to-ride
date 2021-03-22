@@ -418,87 +418,93 @@ test('Add and remove cannot pass', () => {
   expect(connections.length).toBe(1);
 });
 
-test('reachable city', () => {
-  const gameNetwork = new GameNetwork();
-  gameNetwork.addCannotPass(
-    gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
-  );
+describe('getRouting().isCityReachable', () => {
+  test('reachable city', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.addCannotPass(
+      gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
+    );
 
-  expect(gameNetwork.getRouting().isCityReachable('Vancouver')).toBe(true);
+    expect(gameNetwork.getRouting().isCityReachable('Vancouver')).toBe(true);
+  });
+  test('not reachable city', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.addCannotPass(
+      gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
+    );
+    gameNetwork.addCannotPass(
+      gameNetwork.getRouting().getConnection('Vancouver', 'Seattle'),
+    );
+
+    expect(gameNetwork.getRouting().isCityReachable('Vancouver')).toBe(false);
+  });
 });
-test('not reachable city', () => {
-  const gameNetwork = new GameNetwork();
-  gameNetwork.addCannotPass(
-    gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
-  );
-  gameNetwork.addCannotPass(
-    gameNetwork.getRouting().getConnection('Vancouver', 'Seattle'),
-  );
 
-  expect(gameNetwork.getRouting().isCityReachable('Vancouver')).toBe(false);
+describe('.getRouting().isTicketReachable', () => {
+  test('not reachable Ticket', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.addCannotPass(
+      gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
+    );
+    gameNetwork.addCannotPass(
+      gameNetwork.getRouting().getConnection('Vancouver', 'Seattle'),
+    );
+
+    expect(
+      gameNetwork
+        .getRouting()
+        .isTicketReachable(usaMap.getTicket('Vancouver', 'Santa Fe')),
+    ).toBe(false);
+  });
+  test('reachable Ticket', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.addCannotPass(
+      gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
+    );
+
+    expect(
+      gameNetwork
+        .getRouting()
+        .isTicketReachable(usaMap.getTicket('Vancouver', 'Santa Fe')),
+    ).toBe(true);
+  });
 });
 
-test('not reachable Ticket', () => {
-  const gameNetwork = new GameNetwork();
-  gameNetwork.addCannotPass(
-    gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
-  );
-  gameNetwork.addCannotPass(
-    gameNetwork.getRouting().getConnection('Vancouver', 'Seattle'),
-  );
+describe('getRouting().getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets', () => {
+  test('1 Ticket with Not reachable city', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.addCannotPass(
+      gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
+    );
+    gameNetwork.addCannotPass(
+      gameNetwork.getRouting().getConnection('Vancouver', 'Seattle'),
+    );
 
-  expect(
-    gameNetwork
+    const connections = gameNetwork
       .getRouting()
-      .isTicketReachable(usaMap.getTicket('Vancouver', 'Santa Fe')),
-  ).toBe(false);
-});
-test('reachable Ticket', () => {
-  const gameNetwork = new GameNetwork();
-  gameNetwork.addCannotPass(
-    gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
-  );
+      .getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets([
+        usaMap.getTicket('Vancouver', 'Santa Fe'),
+      ]);
 
-  expect(
-    gameNetwork
+    expect(connections.length).toBe(0);
+  });
+
+  test('2 Tickets, one with a not reachable city, returns a route for the reachable ticket', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.addCannotPass(
+      gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
+    );
+    gameNetwork.addCannotPass(
+      gameNetwork.getRouting().getConnection('Vancouver', 'Seattle'),
+    );
+
+    const connections = gameNetwork
       .getRouting()
-      .isTicketReachable(usaMap.getTicket('Vancouver', 'Santa Fe')),
-  ).toBe(true);
-});
+      .getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets([
+        usaMap.getTicket('Vancouver', 'Santa Fe'),
+        usaMap.getTicket('Boston', 'Miami'),
+      ]);
 
-test('1 Ticket with Not reachable city', () => {
-  const gameNetwork = new GameNetwork();
-  gameNetwork.addCannotPass(
-    gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
-  );
-  gameNetwork.addCannotPass(
-    gameNetwork.getRouting().getConnection('Vancouver', 'Seattle'),
-  );
-
-  const connections = gameNetwork
-    .getRouting()
-    .getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets([
-      usaMap.getTicket('Vancouver', 'Santa Fe'),
-    ]);
-
-  expect(connections.length).toBe(0);
-});
-
-test('2 Tickets, one with a not reachable city, returns a route for the reachable ticket', () => {
-  const gameNetwork = new GameNetwork();
-  gameNetwork.addCannotPass(
-    gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
-  );
-  gameNetwork.addCannotPass(
-    gameNetwork.getRouting().getConnection('Vancouver', 'Seattle'),
-  );
-
-  const connections = gameNetwork
-    .getRouting()
-    .getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets([
-      usaMap.getTicket('Vancouver', 'Santa Fe'),
-      usaMap.getTicket('Boston', 'Miami'),
-    ]);
-
-  expect(connections.length > 0).toBe(true);
+    expect(connections.length > 0).toBe(true);
+  });
 });
