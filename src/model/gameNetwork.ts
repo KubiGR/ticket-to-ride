@@ -108,7 +108,7 @@ export class GameNetwork {
   private updateRoutingAndReports(): void {
     this.routing.processEdgeRestrictions(this.cannotPass, this.established);
     this.generateTicketReports();
-    this.consoleReports();
+    // this.consoleReports();
   }
 
   private generateTicketReports(): void {
