@@ -1,6 +1,6 @@
 import React from 'react';
 import { MapImage } from 'components/canvas/MapImage';
-import { Stage, Layer, Circle, Line } from 'react-konva';
+import { Stage, Layer, Circle, Line, Rect } from 'react-konva';
 
 import usaCities from 'data/usaCities.json';
 import usaConnections from 'data/usaConnections.json';
@@ -12,6 +12,7 @@ const mapWidth = mapHeight * 1.56;
 const lineStrokeSize = mapWidth * 0.012;
 const cityStrokeSize = mapWidth * 0.015;
 const cityFillRadius = mapWidth * 0.008;
+const rectWidth = mapWidth * 0.012;
 // const getPointerPosition = (evt: any) => {
 //   console.info(
 //     (evt.evt.layerX / mapWidth).toFixed(4) +
@@ -22,6 +23,27 @@ const cityFillRadius = mapWidth * 0.008;
 
 export const RootStage = observer(() => {
   const mapStore = useMapStore();
+
+  const drawImportantConnections = usaConnections.map((con) => {
+    const connectionId = mapStore.gameNetwork
+      .getRouting()
+      .getConnection(con.from, con.to);
+    if (mapStore.opponentImportantConnections.includes(connectionId)) {
+      if (con.symbol1) {
+        return (
+          <Rect
+            key={con.from + '-' + con.to}
+            x={mapWidth * con.symbol1[0]}
+            y={mapWidth * con.symbol1[1]}
+            width={rectWidth}
+            height={rectWidth}
+            fill={'orange'}
+            stroke={'black'}
+          />
+        );
+      }
+    }
+  });
 
   const drawCitiesArray = usaCities.map((city) => {
     let cityFill = 'green';
@@ -133,6 +155,7 @@ export const RootStage = observer(() => {
         <MapImage width={mapWidth} height={mapHeight} />
         {drawConnectionsArray}
         {drawCitiesArray}
+        {drawImportantConnections}
       </Layer>
     </Stage>
   );
