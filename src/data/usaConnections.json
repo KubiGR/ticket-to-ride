@@ -6,21 +6,24 @@
     "color1": "Gray",
     "color2": "Gray",
     "graphPoints1": [0.8575, 0.3526, 0.8027, 0.4003],
-    "graphPoints2": [0.8668, 0.3625, 0.8113, 0.411]
+    "graphPoints2": [0.8668, 0.3625, 0.8113, 0.411],
+    "symbol1": [0.86, 0.3846]
   },
   {
     "from": "Atlanta",
     "to": "Miami",
     "length": 5,
     "color1": "Blue",
-    "graphPoints1": [0.8048, 0.4281, 0.9217, 0.5734]
+    "graphPoints1": [0.8048, 0.4281, 0.9217, 0.5734],
+    "symbol1": [0.8654, 0.4829]
   },
   {
     "from": "Atlanta",
     "to": "Nashville",
     "length": 1,
     "color1": "Gray",
-    "graphPoints1": [0.7557, 0.3811, 0.7849, 0.4017]
+    "graphPoints1": [0.7557, 0.3811, 0.7849, 0.4017],
+    "symbol1": [0.7842, 0.3835]
   },
   {
     "from": "Boston",
@@ -29,7 +32,8 @@
     "color1": "Yellow",
     "color2": "Red",
     "graphPoints1": [0.9274, 0.1781, 0.9665, 0.1154],
-    "graphPoints2": [0.9387, 0.1852, 0.9772, 0.1225]
+    "graphPoints2": [0.9387, 0.1852, 0.9772, 0.1225],
+    "symbol1": [0.9647, 0.1645]
   },
   {
     "from": "Calgary",
@@ -51,7 +55,8 @@
       0.038,
       0.444,
       0.054
-    ]
+    ],
+    "symbol1": [0.3226, 0.0417]
   },
   {
     "from": "Calgary",
@@ -75,14 +80,16 @@
       0.3832,
       0.8996,
       0.4103
-    ]
+    ],
+    "symbol1": [0.9263, 0.3814]
   },
   {
     "from": "Charleston",
     "to": "Atlanta",
     "length": 2,
     "color1": "Gray",
-    "graphPoints1": [0.8141, 0.4217, 0.8882, 0.4259]
+    "graphPoints1": [0.8141, 0.4217, 0.8882, 0.4259],
+    "symbol1": [0.86, 0.4006]
   },
   {
     "from": "Charleston",
@@ -100,7 +107,8 @@
       0.5377,
       0.9359,
       0.5698
-    ]
+    ],
+    "symbol1": [0.9177, 0.4861]
   },
   {
     "from": "Chicago",
@@ -116,7 +124,8 @@
       0.2244,
       0.6795,
       0.2336
-    ]
+    ],
+    "symbol1": [0.6389, 0.2051]
   },
   {
     "from": "Chicago",
@@ -134,7 +143,8 @@
       0.1717,
       0.812,
       0.1481
-    ]
+    ],
+    "symbol1": [0.7618, 0.1912]
   },
   {
     "from": "Dallas",
@@ -143,14 +153,16 @@
     "color1": "Gray",
     "color2": "Gray",
     "graphPoints1": [0.5627, 0.5246, 0.5862, 0.552],
-    "graphPoints2": [0.5726, 0.5164, 0.5962, 0.5434]
+    "graphPoints2": [0.5726, 0.5164, 0.5962, 0.5434],
+    "symbol1": [0.5983, 0.5267]
   },
   {
     "from": "Dallas",
     "to": "Little Rock",
     "length": 2,
     "color1": "Gray",
-    "graphPoints1": [0.5769, 0.495, 0.6197, 0.4359]
+    "graphPoints1": [0.5769, 0.495, 0.6197, 0.4359],
+    "symbol1": [0.6058, 0.4744]
   },
   {
     "from": "Denver",
@@ -159,7 +171,8 @@
     "color1": "Red",
     "color2": "Yellow",
     "graphPoints1": [0.2593, 0.3134, 0.3654, 0.334],
-    "graphPoints2": [0.2564, 0.3262, 0.364, 0.3469]
+    "graphPoints2": [0.2564, 0.3262, 0.364, 0.3469],
+    "symbol1": [0.3013, 0.3066]
   },
   {
     "from": "El Paso",
@@ -181,14 +194,16 @@
       0.5791,
       0.5912,
       0.5662
-    ]
+    ],
+    "symbol1": [0.4797, 0.5705]
   },
   {
     "from": "El Paso",
     "to": "Dallas",
     "length": 4,
     "color1": "Red",
-    "graphPoints1": [0.3996, 0.5434, 0.5456, 0.5214]
+    "graphPoints1": [0.3996, 0.5434, 0.5456, 0.5214],
+    "symbol1": [0.484, 0.515]
   },
   {
     "from": "El Paso",
@@ -208,21 +223,24 @@
       0.4594,
       0.5285,
       0.4295
-    ]
+    ],
+    "symbol1": [0.4455, 0.484]
   },
   {
     "from": "El Paso",
     "to": "Santa Fe",
     "length": 2,
     "color1": "Gray",
-    "graphPoints1": [0.3725, 0.4558, 0.3689, 0.5292]
+    "graphPoints1": [0.3725, 0.4558, 0.3689, 0.5292],
+    "symbol1": [0.3825, 0.4882]
   },
   {
     "from": "El Paso",
     "to": "Phoenix",
     "length": 3,
     "color1": "Gray",
-    "graphPoints1": [0.2543, 0.5057, 0.3604, 0.537]
+    "graphPoints1": [0.2543, 0.5057, 0.3604, 0.537],
+    "symbol1": [0.312, 0.5064]
   },
   {
     "from": "El Paso",
@@ -244,28 +262,32 @@
       0.5534,
       0.3447,
       0.5442
-    ]
+    ],
+    "symbol1": [0.2158, 0.5662]
   },
   {
     "from": "Helena",
     "to": "Duluth",
     "length": 6,
     "color1": "Orange",
-    "graphPoints1": [0.3348, 0.188, 0.5577, 0.1852]
+    "graphPoints1": [0.3348, 0.188, 0.5577, 0.1852],
+    "symbol1": [0.4274, 0.1688]
   },
   {
     "from": "Helena",
     "to": "Omaha",
     "length": 5,
     "color1": "Red",
-    "graphPoints1": [0.3447, 0.203, 0.5164, 0.2728]
+    "graphPoints1": [0.3447, 0.203, 0.5164, 0.2728],
+    "symbol1": [0.4455, 0.2244]
   },
   {
     "from": "Helena",
     "to": "Denver",
     "length": 4,
     "color1": "Green",
-    "graphPoints1": [0.3262, 0.1994, 0.3818, 0.3362]
+    "graphPoints1": [0.3262, 0.1994, 0.3818, 0.3362],
+    "symbol1": [0.3718, 0.2746]
   },
   {
     "from": "Kansas City",
@@ -296,7 +318,8 @@
       0.344,
       0.5456,
       0.3291
-    ]
+    ],
+    "symbol1": [0.4583, 0.3355]
   },
   {
     "from": "Las Vegas",
@@ -312,21 +335,24 @@
       0.3689,
       0.2457,
       0.3319
-    ]
+    ],
+    "symbol1": [0.2447, 0.3868]
   },
   {
     "from": "Las Vegas",
     "to": "Los Angeles",
     "length": 2,
     "color1": "Gray",
-    "graphPoints1": [0.1225, 0.4786, 0.1389, 0.443, 0.1766, 0.4345]
+    "graphPoints1": [0.1225, 0.4786, 0.1389, 0.443, 0.1766, 0.4345],
+    "symbol1": [0.1207, 0.4348]
   },
   {
     "from": "Little Rock",
     "to": "Oklahoma City",
     "length": 2,
     "color1": "Gray",
-    "graphPoints1": [0.5506, 0.4245, 0.6225, 0.4224]
+    "graphPoints1": [0.5506, 0.4245, 0.6225, 0.4224],
+    "symbol1": [0.5791, 0.406]
   },
   {
     "from": "Montreal",
@@ -335,7 +361,8 @@
     "color1": "Gray",
     "color2": "Gray",
     "graphPoints1": [0.9074, 0.0591, 0.9644, 0.1054],
-    "graphPoints2": [0.916, 0.0491, 0.9722, 0.0954]
+    "graphPoints2": [0.916, 0.0491, 0.9722, 0.0954],
+    "symbol1": [0.9498, 0.0588]
   },
   {
     "from": "Montreal",
@@ -351,14 +378,16 @@
       0.0677,
       0.891,
       0.0527
-    ]
+    ],
+    "symbol1": [0.844, 0.0951]
   },
   {
     "from": "Montreal",
     "to": "New York",
     "length": 3,
     "color1": "Blue",
-    "graphPoints1": [0.896, 0.0634, 0.9138, 0.1724]
+    "graphPoints1": [0.896, 0.0634, 0.9138, 0.1724],
+    "symbol1": [0.9188, 0.1282]
   },
   {
     "from": "Nashville",
@@ -374,7 +403,8 @@
       0.4074,
       0.7422,
       0.3825
-    ]
+    ],
+    "symbol1": [0.6677, 0.4049]
   },
   {
     "from": "New Orleans",
@@ -396,7 +426,8 @@
       0.5605,
       0.9152,
       0.5883
-    ]
+    ],
+    "symbol1": [0.7895, 0.5374]
   },
   {
     "from": "New Orleans",
@@ -427,21 +458,24 @@
       0.4473,
       0.7977,
       0.4231
-    ]
+    ],
+    "symbol1": [0.7639, 0.4808]
   },
   {
     "from": "New Orleans",
     "to": "Little Rock",
     "length": 3,
     "color1": "Green",
-    "graphPoints1": [0.6895, 0.5349, 0.6382, 0.4359]
+    "graphPoints1": [0.6895, 0.5349, 0.6382, 0.4359],
+    "symbol1": [0.6752, 0.4776]
   },
   {
     "from": "New Orleans",
     "to": "Houston",
     "length": 2,
     "color1": "Gray",
-    "graphPoints1": [0.6125, 0.5548, 0.6852, 0.5442]
+    "graphPoints1": [0.6125, 0.5548, 0.6852, 0.5442],
+    "symbol1": [0.6271, 0.5374]
   },
   {
     "from": "Oklahoma City",
@@ -459,14 +493,16 @@
       0.4174,
       0.5228,
       0.4195
-    ]
+    ],
+    "symbol1": [0.4434, 0.3942]
   },
   {
     "from": "Oklahoma City",
     "to": "Santa Fe",
     "length": 3,
     "color1": "Blue",
-    "graphPoints1": [0.3875, 0.4473, 0.4979, 0.4338]
+    "graphPoints1": [0.3875, 0.4473, 0.4979, 0.4338],
+    "symbol1": [0.4209, 0.4562]
   },
   {
     "from": "Oklahoma City",
@@ -475,7 +511,8 @@
     "color1": "Gray",
     "color2": "Gray",
     "graphPoints1": [0.5513, 0.5057, 0.5413, 0.433],
-    "graphPoints2": [0.5641, 0.5043, 0.5541, 0.4316]
+    "graphPoints2": [0.5641, 0.5043, 0.5541, 0.4316],
+    "symbol1": [0.5694, 0.4594]
   },
   {
     "from": "Oklahoma City",
@@ -484,7 +521,8 @@
     "color1": "Gray",
     "color2": "Gray",
     "graphPoints1": [0.5349, 0.4124, 0.5563, 0.3426],
-    "graphPoints2": [0.5484, 0.4167, 0.5684, 0.3462]
+    "graphPoints2": [0.5484, 0.4167, 0.5684, 0.3462],
+    "symbol1": [0.5662, 0.3921]
   },
   {
     "from": "Omaha",
@@ -502,7 +540,8 @@
       0.2906,
       0.5256,
       0.2849
-    ]
+    ],
+    "symbol1": [0.4402, 0.3942]
   },
   {
     "from": "Omaha",
@@ -511,14 +550,16 @@
     "color1": "Gray",
     "color2": "Gray",
     "graphPoints1": [0.537, 0.2927, 0.5527, 0.3255],
-    "graphPoints2": [0.5484, 0.287, 0.5648, 0.3198]
+    "graphPoints2": [0.5484, 0.287, 0.5648, 0.3198],
+    "symbol1": [0.5694, 0.3045]
   },
   {
     "from": "Omaha",
     "to": "Chicago",
     "length": 4,
     "color1": "Blue",
-    "graphPoints1": [0.5484, 0.2799, 0.6104, 0.2365, 0.6845, 0.2479]
+    "graphPoints1": [0.5484, 0.2799, 0.6104, 0.2365, 0.6845, 0.2479],
+    "symbol1": [0.6036, 0.2543]
   },
   {
     "from": "Omaha",
@@ -527,14 +568,16 @@
     "color1": "Gray",
     "color2": "Gray",
     "graphPoints1": [0.5313, 0.2642, 0.5584, 0.1959],
-    "graphPoints2": [0.5442, 0.2692, 0.5705, 0.2009]
+    "graphPoints2": [0.5442, 0.2692, 0.5705, 0.2009],
+    "symbol1": [0.5214, 0.2265]
   },
   {
     "from": "Phoenix",
     "to": "Santa Fe",
     "length": 3,
     "color1": "Gray",
-    "graphPoints1": [0.2628, 0.4943, 0.3632, 0.4487]
+    "graphPoints1": [0.2628, 0.4943, 0.3632, 0.4487],
+    "symbol1": [0.312, 0.485]
   },
   {
     "from": "Phoenix",
@@ -550,7 +593,8 @@
       0.4836,
       0.239,
       0.4922
-    ]
+    ],
+    "symbol1": [0.1848, 0.4679]
   },
   {
     "from": "Phoenix",
@@ -570,7 +614,8 @@
       0.3697,
       0.3675,
       0.3583
-    ]
+    ],
+    "symbol1": [0.3077, 0.4103]
   },
   {
     "from": "Pittsburgh",
@@ -579,14 +624,16 @@
     "color1": "White",
     "color2": "Green",
     "graphPoints1": [0.8405, 0.2187, 0.9031, 0.1802],
-    "graphPoints2": [0.8476, 0.2301, 0.9095, 0.1923]
+    "graphPoints2": [0.8476, 0.2301, 0.9095, 0.1923],
+    "symbol1": [0.859, 0.1859]
   },
   {
     "from": "Pittsburgh",
     "to": "Toronto",
     "length": 2,
     "color1": "Gray",
-    "graphPoints1": [0.8234, 0.146, 0.8276, 0.2194]
+    "graphPoints1": [0.8234, 0.146, 0.8276, 0.2194],
+    "symbol1": [0.8355, 0.1763]
   },
   {
     "from": "Pittsburgh",
@@ -613,21 +660,24 @@
       0.2301,
       0.8191,
       0.2329
-    ]
+    ],
+    "symbol1": [0.7585, 0.2051]
   },
   {
     "from": "Pittsburgh",
     "to": "Washington",
     "length": 2,
     "color1": "Gray",
-    "graphPoints1": [0.849, 0.2422, 0.9138, 0.2764]
+    "graphPoints1": [0.849, 0.2422, 0.9138, 0.2764],
+    "symbol1": [0.8868, 0.2489]
   },
   {
     "from": "Pittsburgh",
     "to": "Raleigh",
     "length": 2,
     "color1": "Gray",
-    "graphPoints1": [0.8419, 0.255, 0.859, 0.3276]
+    "graphPoints1": [0.8419, 0.255, 0.859, 0.3276],
+    "symbol1": [0.8622, 0.297]
   },
   {
     "from": "Pittsburgh",
@@ -645,7 +695,8 @@
       0.2835,
       0.8298,
       0.2528
-    ]
+    ],
+    "symbol1": [0.7885, 0.3312]
   },
   {
     "from": "Raleigh",
@@ -661,7 +712,8 @@
       0.3383,
       0.8611,
       0.3405
-    ]
+    ],
+    "symbol1": [0.7991, 0.3248]
   },
   {
     "from": "Saint Louis",
@@ -670,28 +722,32 @@
     "color1": "Blue",
     "color2": "Purple",
     "graphPoints1": [0.5677, 0.3262, 0.641, 0.3241],
-    "graphPoints2": [0.5677, 0.3383, 0.641, 0.3365]
+    "graphPoints2": [0.5677, 0.3383, 0.641, 0.3365],
+    "symbol1": [0.5972, 0.3088]
   },
   {
     "from": "Saint Louis",
     "to": "Little Rock",
     "length": 2,
     "color1": "Gray",
-    "graphPoints1": [0.6318, 0.4152, 0.6489, 0.344]
+    "graphPoints1": [0.6318, 0.4152, 0.6489, 0.344],
+    "symbol1": [0.6506, 0.3878]
   },
   {
     "from": "Saint Louis",
     "to": "Nashville",
     "length": 2,
     "color1": "Gray",
-    "graphPoints1": [0.6588, 0.3519, 0.7286, 0.3739]
+    "graphPoints1": [0.6588, 0.3519, 0.7286, 0.3739],
+    "symbol1": [0.6998, 0.3515]
   },
   {
     "from": "Saint Louis",
     "to": "Pittsburgh",
     "length": 5,
     "color1": "Green",
-    "graphPoints1": [0.6603, 0.3376, 0.8219, 0.2443]
+    "graphPoints1": [0.6603, 0.3376, 0.8219, 0.2443],
+    "symbol1": [0.7201, 0.2853]
   },
   {
     "from": "Saint Louis",
@@ -700,7 +756,8 @@
     "color1": "White",
     "color2": "Green",
     "graphPoints1": [0.6425, 0.3184, 0.6823, 0.2564],
-    "graphPoints2": [0.6531, 0.3255, 0.693, 0.2635]
+    "graphPoints2": [0.6531, 0.3255, 0.693, 0.2635],
+    "symbol1": [0.6357, 0.2778]
   },
   {
     "from": "Salt Lake City",
@@ -722,14 +779,16 @@
       0.2749,
       0.2429,
       0.307
-    ]
+    ],
+    "symbol1": [0.1848, 0.2222]
   },
   {
     "from": "Salt Lake City",
     "to": "Helena",
     "length": 3,
     "color1": "Purple",
-    "graphPoints1": [0.2571, 0.2963, 0.3134, 0.2023]
+    "graphPoints1": [0.2571, 0.2963, 0.3134, 0.2023],
+    "symbol1": [0.2874, 0.2703]
   },
   {
     "from": "San Francisco",
@@ -756,7 +815,8 @@
       0.458,
       0.1125,
       0.4843
-    ]
+    ],
+    "symbol1": [0.0855, 0.4327]
   },
   {
     "from": "San Francisco",
@@ -791,7 +851,8 @@
       0.3383,
       0.047,
       0.3739
-    ]
+    ],
+    "symbol1": [0.047, 0.2799]
   },
   {
     "from": "San Francisco",
@@ -800,14 +861,16 @@
     "color1": "Orange",
     "color2": "White",
     "graphPoints1": [0.057, 0.3739, 0.2293, 0.317],
-    "graphPoints2": [0.0605, 0.386, 0.2329, 0.3291]
+    "graphPoints2": [0.0605, 0.386, 0.2329, 0.3291],
+    "symbol1": [0.1143, 0.3344]
   },
   {
     "from": "Santa Fe",
     "to": "Denver",
     "length": 2,
     "color1": "Gray",
-    "graphPoints1": [0.3739, 0.4366, 0.3775, 0.364]
+    "graphPoints1": [0.3739, 0.4366, 0.3775, 0.364],
+    "symbol1": [0.3846, 0.4113]
   },
   {
     "from": "Sault St. Marie",
@@ -827,21 +890,24 @@
       0.0427,
       0.8818,
       0.0427
-    ]
+    ],
+    "symbol1": [0.7735, 0.0449]
   },
   {
     "from": "Sault St. Marie",
     "to": "Duluth",
     "length": 3,
     "color1": "Gray",
-    "graphPoints1": [0.5876, 0.1674, 0.6902, 0.1232]
+    "graphPoints1": [0.5876, 0.1674, 0.6902, 0.1232],
+    "symbol1": [0.609, 0.1389]
   },
   {
     "from": "Sault St. Marie",
     "to": "Toronto",
     "length": 2,
     "color1": "Gray",
-    "graphPoints1": [0.7179, 0.1168, 0.7892, 0.1318]
+    "graphPoints1": [0.7179, 0.1168, 0.7892, 0.1318],
+    "symbol1": [0.6774, 0.1784]
   },
   {
     "from": "Seattle",
@@ -859,7 +925,8 @@
       0.0969,
       0.2137,
       0.0641
-    ]
+    ],
+    "symbol1": [0.1912, 0.1218]
   },
   {
     "from": "Seattle",
@@ -868,21 +935,24 @@
     "color1": "Gray",
     "color2": "Gray",
     "graphPoints1": [0.0648, 0.1339, 0.052, 0.166],
-    "graphPoints2": [0.0769, 0.1389, 0.0641, 0.1709]
+    "graphPoints2": [0.0769, 0.1389, 0.0641, 0.1709],
+    "symbol1": [0.0769, 0.1635]
   },
   {
     "from": "Seattle",
     "to": "Helena",
     "length": 6,
     "color1": "Yellow",
-    "graphPoints1": [0.0883, 0.141, 0.3063, 0.1909]
+    "graphPoints1": [0.0883, 0.141, 0.3063, 0.1909],
+    "symbol1": [0.0769, 0.1635]
   },
   {
     "from": "Toronto",
     "to": "Duluth",
     "length": 6,
     "color1": "Purple",
-    "graphPoints1": [0.5791, 0.1823, 0.7999, 0.1439]
+    "graphPoints1": [0.5791, 0.1823, 0.7999, 0.1439],
+    "symbol1": [0.6731, 0.1806]
   },
   {
     "from": "Vancouver",
@@ -891,14 +961,16 @@
     "color1": "Gray",
     "color2": "Gray",
     "graphPoints1": [0.07, 0.081, 0.071, 0.1163],
-    "graphPoints2": [0.084, 0.081, 0.084, 0.1163]
+    "graphPoints2": [0.084, 0.081, 0.084, 0.1163],
+    "symbol1": [0.0951, 0.0983]
   },
   {
     "from": "Vancouver",
     "to": "Calgary",
     "length": 3,
     "color1": "Gray",
-    "graphPoints1": [0.094, 0.065, 0.204, 0.052]
+    "graphPoints1": [0.094, 0.065, 0.204, 0.052],
+    "symbol1": [0.1271, 0.0427]
   },
   {
     "from": "Washington",
@@ -907,7 +979,8 @@
     "color1": "Orange",
     "color2": "Black",
     "graphPoints1": [0.9202, 0.198, 0.9245, 0.2707],
-    "graphPoints2": [0.933, 0.1966, 0.9373, 0.2699]
+    "graphPoints2": [0.933, 0.1966, 0.9373, 0.2699],
+    "symbol1": [0.9476, 0.234]
   },
   {
     "from": "Washington",
@@ -916,27 +989,31 @@
     "color1": "Gray",
     "color2": "Gray",
     "graphPoints1": [0.8711, 0.3405, 0.9188, 0.2842],
-    "graphPoints2": [0.8818, 0.349, 0.9288, 0.2927]
+    "graphPoints2": [0.8818, 0.349, 0.9288, 0.2927],
+    "symbol1": [0.9135, 0.3301]
   },
   {
     "from": "Winnipeg",
     "to": "Sault St. Marie",
     "length": 6,
     "color1": "Gray",
-    "graphPoints1": [0.4708, 0.0613, 0.6895, 0.1068]
+    "graphPoints1": [0.4708, 0.0613, 0.6895, 0.1068],
+    "symbol1": [0.5876, 0.0716]
   },
   {
     "from": "Winnipeg",
     "to": "Helena",
     "length": 4,
     "color1": "Blue",
-    "graphPoints1": [0.3348, 0.1759, 0.4387, 0.0712]
+    "graphPoints1": [0.3348, 0.1759, 0.4387, 0.0712],
+    "symbol1": [0.4049, 0.1261]
   },
   {
     "from": "Winnipeg",
     "to": "Duluth",
     "length": 4,
     "color1": "Black",
-    "graphPoints1": [0.5641, 0.1745, 0.4587, 0.0726]
+    "graphPoints1": [0.5641, 0.1745, 0.4587, 0.0726],
+    "symbol1": [0.5267, 0.1197]
   }
 ]
