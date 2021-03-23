@@ -4,6 +4,7 @@ import { Connection } from 'model/connection';
 import { Ticket } from 'model/ticket';
 import { removeItemOnce } from 'utils/helpers';
 import { usaMap } from 'model/usaMap';
+import { TicketReport } from '../model/ticketReport';
 
 export class MapStore {
   gameNetwork = new GameNetwork();
@@ -12,6 +13,8 @@ export class MapStore {
   cannotPassConnections: Connection[] = [];
   establishedConnections: Connection[] = [];
   connectionsArray: Connection[] = [];
+  ticketReports: TicketReport[] = [];
+  opponentTicketReports: TicketReport[] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -32,6 +35,42 @@ export class MapStore {
           );
       },
     );
+
+    reaction(
+      () => [
+        this.establishedConnections.length,
+        this.cannotPassConnections.length,
+      ],
+      () => {
+        this.ticketReports = this.gameNetwork
+          .getTicketReports()
+          .filter(
+            (ticketReport) =>
+              ticketReport.reachable &&
+              ticketReport.remainingConnections.length <= 2 &&
+              ticketReport.remainingTrains <= 12 &&
+              ticketReport.completionPercentage() >= 0.5,
+          );
+        const opponentNetwork = this.gameNetwork.getOpponentNetwork();
+        if (opponentNetwork) {
+          this.opponentTicketReports = opponentNetwork
+            .getTicketReports()
+            .filter(
+              (ticketReport) =>
+                ticketReport.reachable &&
+                ticketReport.remainingConnections.length <= 2 &&
+                ticketReport.remainingTrains <= 12 &&
+                ticketReport.completionPercentage() >= 0.5,
+            );
+        }
+      },
+    );
+  }
+
+  get opponentImportantConnections(): Connection[] {
+    return this.opponentTicketReports
+      .map((ticketReport) => ticketReport.remainingConnections)
+      .flat();
   }
 
   get connectionTypeSelectionMap(): Map<Connection, string[]> {

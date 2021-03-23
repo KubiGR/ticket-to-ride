@@ -58,7 +58,8 @@
     "to": "Helena",
     "length": 4,
     "color1": "Gray",
-    "graphPoints1": [0.2258, 0.0641, 0.3205, 0.1766]
+    "graphPoints1": [0.2258, 0.0641, 0.3205, 0.1766],
+    "symbol1": [0.2863, 0.11]
   },
   {
     "from": "Charleston",
