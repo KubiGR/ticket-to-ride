@@ -15,4 +15,11 @@ export abstract class Constants {
    * weight = distance - POINT_IMPORTANCE * points
    */
   static readonly POINT_IMPORTANCE = 0.0;
+
+  /**
+   * Ticket reporting threshold
+   */
+  static readonly REMAININING_CONNECTIONS_LEN = 2;
+  static readonly REMAINING_TRAINS = 12;
+  static readonly COMPLETION_PERC = 0.5;
 }

@@ -37,7 +37,7 @@ export class Connection implements Edge<string> {
     return clone;
   }
 
-  isEqual(other: Connection): boolean {
+  hasSameCities(other: Connection): boolean {
     return this.contains(other.from) && this.contains(other.to);
   }
 
@@ -70,6 +70,8 @@ export class Connection implements Edge<string> {
         return 15;
       }
     }
-    throw new Error('Should not be a trains value: ' + this.trains);
+    throw new Error(
+      'Connection can not have more than 6 trains: ' + this.trains,
+    );
   }
 }

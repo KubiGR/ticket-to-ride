@@ -5,6 +5,7 @@ import { Ticket } from 'model/ticket';
 import { removeItemOnce } from 'utils/helpers';
 import { usaMap } from 'model/usaMap';
 import { TicketReport } from '../model/ticketReport';
+import { Constants } from 'model/constants';
 
 export class MapStore {
   gameNetwork = new GameNetwork();
@@ -47,9 +48,10 @@ export class MapStore {
           .filter(
             (ticketReport) =>
               ticketReport.reachable &&
-              ticketReport.remainingConnections.length <= 2 &&
-              ticketReport.remainingTrains <= 12 &&
-              ticketReport.completionPercentage() >= 0.5,
+              ticketReport.remainingConnections.length <=
+                Constants.REMAININING_CONNECTIONS_LEN &&
+              ticketReport.remainingTrains <= Constants.REMAINING_TRAINS &&
+              ticketReport.completionPercentage() >= Constants.COMPLETION_PERC,
           );
         const opponentNetwork = this.gameNetwork.getOpponentNetwork();
         if (opponentNetwork) {
@@ -58,9 +60,11 @@ export class MapStore {
             .filter(
               (ticketReport) =>
                 ticketReport.reachable &&
-                ticketReport.remainingConnections.length <= 2 &&
-                ticketReport.remainingTrains <= 12 &&
-                ticketReport.completionPercentage() >= 0.5,
+                ticketReport.remainingConnections.length <=
+                  Constants.REMAININING_CONNECTIONS_LEN &&
+                ticketReport.remainingTrains <= Constants.REMAINING_TRAINS &&
+                ticketReport.completionPercentage() >=
+                  Constants.COMPLETION_PERC,
             );
         }
       },
@@ -68,6 +72,7 @@ export class MapStore {
   }
 
   get opponentImportantConnectionsWithPointsMap(): Map<Connection, number> {
+    console.log(this.opponentTicketReports);
     return this.opponentTicketReports.reduce((acc, cur) => {
       cur.remainingConnections.forEach((con) => {
         const connectionExistingPoints = acc.get(con) || 0;
@@ -213,10 +218,10 @@ export class MapStore {
   }
 
   toggleShouldPassConnection(con: Connection): void {
-    if (this.cannotPassConnections?.some((e) => e.isEqual(con))) {
+    if (this.cannotPassConnections?.some((e) => e.hasSameCities(con))) {
       this.removeCannotPassConnection(con);
     }
-    if (!this.establishedConnections?.some((e) => e.isEqual(con))) {
+    if (!this.establishedConnections?.some((e) => e.hasSameCities(con))) {
       this.addEstablishedConnection(con);
     } else {
       this.removeEstablishedConnection(con);
@@ -224,10 +229,10 @@ export class MapStore {
   }
 
   toggleCannotPassConnection(con: Connection): void {
-    if (this.establishedConnections?.some((e) => e.isEqual(con))) {
+    if (this.establishedConnections?.some((e) => e.hasSameCities(con))) {
       this.removeEstablishedConnection(con);
     }
-    if (!this.cannotPassConnections?.some((e) => e.isEqual(con))) {
+    if (!this.cannotPassConnections?.some((e) => e.hasSameCities(con))) {
       this.addCannotPassConnection(con);
     } else {
       this.removeCannotPassConnection(con);
