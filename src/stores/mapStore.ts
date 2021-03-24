@@ -67,7 +67,32 @@ export class MapStore {
     );
   }
 
+  get opponentImportantConnectionsWithPointsMap(): Map<Connection, number> {
+    return this.opponentTicketReports.reduce((acc, cur) => {
+      cur.remainingConnections.forEach((con) => {
+        const connectionExistingPoints = acc.get(con) || 0;
+        acc.set(con, connectionExistingPoints + cur.ticket.points);
+      });
+      return acc;
+    }, new Map<Connection, number>());
+  }
+
+  get opponentImportantConnectionsWithTicketsMap(): Map<Connection, Ticket[]> {
+    return this.opponentTicketReports.reduce((acc, cur) => {
+      cur.remainingConnections.forEach((con) => {
+        const ticketsForConnectionArray = acc.get(con);
+        if (ticketsForConnectionArray) {
+          ticketsForConnectionArray.push(cur.ticket);
+        } else {
+          acc.set(con, [cur.ticket]);
+        }
+      });
+      return acc;
+    }, new Map<Connection, Ticket[]>());
+  }
+
   get opponentImportantConnections(): Connection[] {
+    console.log(this.opponentTicketReports);
     return this.opponentTicketReports
       .map((ticketReport) => ticketReport.remainingConnections)
       .flat();

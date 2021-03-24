@@ -1,13 +1,13 @@
 import React from 'react';
 import { MapImage } from 'components/canvas/MapImage';
-import { Stage, Layer, Circle, Line, Rect } from 'react-konva';
+import { Stage, Layer, Circle, Line, Rect, Text, Group } from 'react-konva';
 
 import usaCities from 'data/usaCities.json';
 import usaConnections from 'data/usaConnections.json';
 import { observer } from 'mobx-react';
 import { useMapStore } from 'providers/MapStoreProvider';
 
-const mapHeight = 600;
+const mapHeight = 800;
 const mapWidth = mapHeight * 1.56;
 const lineStrokeSize = mapWidth * 0.012;
 const cityStrokeSize = mapWidth * 0.015;
@@ -28,18 +28,64 @@ export const RootStage = observer(() => {
     const connectionId = mapStore.gameNetwork
       .getRouting()
       .getConnection(con.from, con.to);
-    if (mapStore.opponentImportantConnections.includes(connectionId)) {
-      if (con.symbol1) {
+    if (
+      Array.from(
+        mapStore.opponentImportantConnectionsWithPointsMap.keys(),
+      ).includes(connectionId)
+    ) {
+      const totalConnectionPoints = mapStore.opponentImportantConnectionsWithPointsMap.get(
+        connectionId,
+      );
+      const opponentTicketsForConnect = mapStore.opponentImportantConnectionsWithTicketsMap.get(
+        connectionId,
+      );
+      if (totalConnectionPoints && totalConnectionPoints > 9) {
         return (
-          <Rect
+          <Group
             key={con.from + '-' + con.to}
-            x={mapWidth * con.symbol1[0]}
-            y={mapWidth * con.symbol1[1]}
-            width={rectWidth}
-            height={rectWidth}
-            fill={'orange'}
-            stroke={'black'}
-          />
+            onClick={() => console.log(opponentTicketsForConnect)}
+          >
+            <Rect
+              key={con.from + '-' + con.to + 'backgroundSymbol'}
+              x={mapWidth * con.symbol1[0]}
+              y={mapWidth * con.symbol1[1]}
+              width={rectWidth * 2.7}
+              height={rectWidth * 2}
+              fill={'orange'}
+              stroke={'black'}
+            />
+            <Text
+              key={con.from + '-' + con.to + 'textSymbol'}
+              x={mapWidth * con.symbol1[0] + rectWidth * 0.4}
+              y={mapWidth * con.symbol1[1] + rectWidth * 0.3}
+              text={totalConnectionPoints?.toString()}
+              fontSize={mapWidth * 0.02}
+            />
+          </Group>
+        );
+      } else {
+        return (
+          <Group
+            key={con.from + '-' + con.to}
+            onClick={() => console.log(opponentTicketsForConnect)}
+          >
+            <Rect
+              key={con.from + '-' + con.to + 'backgroundSymbol'}
+              x={mapWidth * con.symbol1[0]}
+              y={mapWidth * con.symbol1[1]}
+              width={rectWidth * 1.7}
+              height={rectWidth * 2}
+              fill={'orange'}
+              stroke={'black'}
+            />
+            <Text
+              key={con.from + '-' + con.to + 'textSymbol'}
+              x={mapWidth * con.symbol1[0] + rectWidth * 0.4}
+              y={mapWidth * con.symbol1[1] + rectWidth * 0.3}
+              text={totalConnectionPoints?.toString()}
+              fontSize={mapWidth * 0.02}
+            />
+          </Group>
         );
       }
     }
