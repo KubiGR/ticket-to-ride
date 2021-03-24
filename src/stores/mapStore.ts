@@ -43,6 +43,9 @@ export class MapStore {
         this.cannotPassConnections.length,
       ],
       () => {
+        // this.gameNetwork.getExpectedPointsDrawingTickets(100).then((value) => {
+        //   console.log('EXP POINTS', value);
+        // });
         this.ticketReports = this.gameNetwork
           .getTicketReports()
           .filter(

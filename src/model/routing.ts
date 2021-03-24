@@ -132,6 +132,7 @@ export class Routing {
   getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(
     tickets: Ticket[],
   ): Connection[] {
+    if (tickets.length == 0) return [];
     const reachableCities: Set<string> = new Set();
     tickets
       .filter((ticket) => {

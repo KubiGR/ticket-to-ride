@@ -1,4 +1,8 @@
-import { removeItemAll, removeItemOnce } from 'utils/helpers';
+import {
+  removeItemAll,
+  removeItemOnce,
+  getRandomCombinations,
+} from 'utils/helpers';
 
 describe('removeItemOnce', () => {
   test('returns the same array ref', () => {
@@ -43,5 +47,39 @@ describe('removeItemAll', () => {
     const arr: string[] = [];
     const act = removeItemAll(arr, 'b');
     expect(act).toEqual([]);
+  });
+});
+
+describe('getRandomCombinations', () => {
+  const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const sampleSize = 5;
+  const picked = 3;
+  const combs = getRandomCombinations(sampleSize, picked, arr);
+  test('returns an array of n random combinations of picked elements from the parameter array', () => {
+    expect(combs.length).toBe(sampleSize);
+  });
+
+  test('all elements of the array are arrays of size picked', () => {
+    combs.forEach((comb) => {
+      expect(comb.length).toBe(picked);
+    });
+  });
+
+  test('all returned combinatioons include elements of the parameter array', () => {
+    combs.forEach((comb) => {
+      comb.forEach((el) => {
+        expect(arr.includes(el)).toBe(true);
+      });
+    });
+  });
+
+  test('all returned combinations have each element only once', () => {
+    combs.forEach((comb) => {
+      for (let i = 0; i < comb.length - 1; i++) {
+        for (let j = i + 1; j < comb.length; j++) {
+          expect(comb[i] !== comb[j]).toBe(true);
+        }
+      }
+    });
   });
 });
