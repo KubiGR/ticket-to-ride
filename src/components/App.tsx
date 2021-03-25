@@ -3,6 +3,7 @@ import './App.css';
 import { RootStage } from 'components/canvas/RootStage';
 import TicketViewer from 'components/tickets/TicketViewer';
 import PlayerInfo from 'components/PlayerInfo';
+import ImportantConnectionsInfo from 'components/ImportantConnectionsInfo';
 
 const App = (): JSX.Element => {
   return (
@@ -17,6 +18,10 @@ const App = (): JSX.Element => {
 
       <div className="tickets">
         <TicketViewer />
+      </div>
+
+      <div className="important-connections-info">
+        <ImportantConnectionsInfo />
       </div>
     </div>
   );

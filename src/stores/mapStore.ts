@@ -1,4 +1,4 @@
-import { makeAutoObservable, reaction } from 'mobx';
+import { makeAutoObservable, observable, reaction } from 'mobx';
 import { GameNetwork } from 'model/gameNetwork';
 import { Connection } from 'model/connection';
 import { Ticket } from 'model/ticket';
@@ -16,6 +16,7 @@ export class MapStore {
   connectionsArray: Connection[] = [];
   ticketReports: TicketReport[] = [];
   opponentTicketReports: TicketReport[] = [];
+  impConTickets = observable.array<Ticket>();
 
   constructor() {
     makeAutoObservable(this);
@@ -261,5 +262,13 @@ export class MapStore {
   addCannotPassConnection(con: Connection): void {
     this.cannotPassConnections.push(con);
     this.gameNetwork.addCannotPass(con);
+  }
+
+  setImpConTickets(tickets: Ticket[]): void {
+    this.impConTickets.replace(tickets);
+  }
+
+  clearImpConTickets(): void {
+    this.impConTickets.clear();
   }
 }
