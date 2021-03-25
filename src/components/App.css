@@ -5,7 +5,7 @@ body {
 .container {
   display: grid;
   grid-template-columns: auto 300px;
-  grid-template-rows: 100px auto;
+  grid-template-rows: 100px 300px auto;
   gap: 10px;
 }
 
@@ -14,7 +14,13 @@ body {
   margin-right: 0;
   border: deeppink 5px dashed;
   grid-column: 1 / span 1;
-  grid-row: 1 / span 2;
+  grid-row: 1 / span 3;
+}
+
+.player-info {
+  border: deeppink 5px dashed;
+  grid-column: 2 / span 1;
+  grid-row: 1 / span 1;
 }
 
 .tickets {
@@ -23,8 +29,8 @@ body {
   grid-row: 2 / span 1;
 }
 
-.player-info {
+.important-connections-info {
   border: deeppink 5px dashed;
   grid-column: 2 / span 1;
-  grid-row: 1 / span 1;
+  grid-row: 3 / span 1;
 }

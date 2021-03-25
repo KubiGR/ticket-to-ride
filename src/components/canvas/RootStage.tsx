@@ -1,11 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { MapImage } from 'components/canvas/MapImage';
 import { Stage, Layer, Circle, Line, Rect, Text, Group } from 'react-konva';
 import usaCities from 'data/usaCities.json';
 import usaConnections from 'data/usaConnections.json';
 import { observer } from 'mobx-react';
 import { useMapStore } from 'providers/MapStoreProvider';
-import { Ticket } from 'model/ticket';
 import AnimatedCity from 'components/canvas/AnimatedCity';
 import Konva from 'konva';
 
@@ -26,11 +25,10 @@ const getPointerPosition = (evt: any) => {
 
 export const RootStage = observer(() => {
   const mapStore = useMapStore();
-  const [impConsTicketCities, setImpConTicketCities] = useState<Ticket[]>([]);
   const layerRef = useRef<Konva.Layer>(null);
 
   const highlightedCitiesFromImpCons = Array.from(
-    impConsTicketCities.reduce((acc, cur) => {
+    mapStore.impConTickets.slice().reduce((acc, cur) => {
       acc.add(cur.from);
       acc.add(cur.to);
       return acc;
@@ -71,9 +69,9 @@ export const RootStage = observer(() => {
           <Group
             key={con.from + '-' + con.to}
             onMouseEnter={() =>
-              setImpConTicketCities(opponentTicketsForConnect)
+              mapStore.setImpConTickets(opponentTicketsForConnect)
             }
-            onMouseLeave={() => setImpConTicketCities([])}
+            onMouseLeave={() => mapStore.clearImpConTickets()}
           >
             <Rect
               key={con.from + '-' + con.to + 'backgroundSymbol'}
