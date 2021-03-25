@@ -2,19 +2,18 @@ import React, { RefObject, useRef } from 'react';
 import Konva from 'konva';
 import { Circle } from 'react-konva';
 import usaCities from 'data/usaCities.json';
+import { UIConstants } from 'components/canvas/uiConstants';
 
 type AnimatedCityProps = {
-  mapWidth: number;
   cityName: string;
   layerRef: RefObject<Konva.Layer>;
 };
 export const AnimatedCity = ({
-  mapWidth,
   cityName,
   layerRef,
 }: AnimatedCityProps): JSX.Element => {
-  const cityFillRadius = mapWidth * 0.008;
-  const cityStrokeSize = mapWidth * 0.003;
+  const cityFillRadius = UIConstants.mapWidth * 0.008;
+  const cityStrokeSize = UIConstants.mapWidth * 0.003;
   const cityRef = useRef<Konva.Circle>(null);
   const anim = new Konva.Animation((frame) => {
     if (cityRef.current && frame) {
@@ -35,13 +34,13 @@ export const AnimatedCity = ({
       <Circle
         ref={cityRef}
         key={drawCity.name}
-        x={mapWidth * drawCity.posX}
-        y={mapWidth * drawCity.posY}
+        x={UIConstants.mapWidth * drawCity.posX}
+        y={UIConstants.mapWidth * drawCity.posY}
         radius={cityFillRadius}
         opacity={0.8}
         strokeWidth={cityStrokeSize}
-        stroke={'black'}
-        fill={'#e300a3'}
+        stroke={UIConstants.highlightedCityStrokeColor}
+        fill={UIConstants.highlightedCityColor}
       />
     );
   } else {
