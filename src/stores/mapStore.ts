@@ -102,7 +102,6 @@ export class MapStore {
   }
 
   get opponentImportantConnections(): Connection[] {
-    console.log(this.opponentTicketReports);
     return this.opponentTicketReports
       .map((ticketReport) => ticketReport.remainingConnections)
       .flat();
