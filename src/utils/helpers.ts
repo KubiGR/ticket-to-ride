@@ -17,3 +17,73 @@ export function removeItemAll<T>(array: T[], value: T): T[] {
   }
   return array;
 }
+
+export function getRandomCombinations<T>(
+  n: number,
+  size: number,
+  array: T[],
+): T[][] {
+  const combs: T[][] = [];
+  for (let i = 0; i < n; i++) {
+    const comb: T[] = [];
+    for (let j = 0; j < size; j++) {
+      let element: T;
+      do {
+        element = array[getRandomInt(array.length)];
+      } while (comb.includes(element));
+      comb.push(element);
+    }
+    combs.push(comb);
+  }
+  return combs;
+}
+
+function getRandomInt(max: number): number {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+export function minimumOfArray(numbers: number[]): number {
+  if (numbers.length == 0)
+    throw new Error('minimumOfArray:  array cannot be empty');
+  let minNumber = numbers[0];
+  for (let i = 1; i < numbers.length; i++) {
+    if (numbers[i] < minNumber) {
+      minNumber = numbers[i];
+    }
+  }
+  return minNumber;
+}
+
+/**
+ * Combinations
+ * https://cp-algorithms.com/combinatorics/generating_combinations.html#toc-tgt-1
+ */
+function gray_code(n: number): number {
+  return n ^ (n >> 1);
+}
+
+function count_bits(n: number): number {
+  let res = 0;
+  for (; n; n >>= 1) res += n & 1;
+  return res;
+}
+
+export function all_combinations(n: number, k: number): number[][] {
+  const combinations = [];
+  let combination = [];
+  for (let i = 0; i < 1 << n; i++) {
+    const cur = gray_code(i);
+    if (count_bits(cur) == k) {
+      for (let j = 0; j < n; j++) {
+        if (cur & (1 << j)) combination.push(j + 1);
+      }
+      combinations.push(combination.slice());
+      combination = [];
+    }
+  }
+  return combinations;
+}
+
+export function timeout(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

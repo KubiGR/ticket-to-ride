@@ -493,3 +493,155 @@ describe('getRouting().getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTick
     expect(connections.length > 0).toBe(true);
   });
 });
+
+describe('getExpectedPointsDrawingTickets', () => {
+  test('should return zero if no tracks on board', async () => {
+    const gameNetwork = new GameNetwork();
+    expect((await gameNetwork.getExpectedPointsDrawingTickets(10)) == 0).toBe(
+      true,
+    );
+  });
+  test('should return the expected points if a player draws tickets', async () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.addEstablished(
+      gameNetwork.getRouting().getConnection('Calgary', 'Helena'),
+    );
+    const points = await gameNetwork.getExpectedPointsDrawingTickets(10);
+    expect(points > 0).toBe(true);
+  });
+});
+
+describe('getExpectedPointsFromTickets', () => {
+  let gameNetwork: GameNetwork;
+
+  beforeEach(() => {
+    gameNetwork = new GameNetwork();
+  });
+
+  test('when no tickets are reachable should return minus the smallest points ', () => {
+    gameNetwork.addCannotPass(
+      gameNetwork.getRouting().getConnection('Vancouver', 'Calgary'),
+    );
+    gameNetwork.addCannotPass(
+      gameNetwork.getRouting().getConnection('Vancouver', 'Seattle'),
+    );
+    const tickets = [
+      usaMap.getTicket('Vancouver', 'Santa Fe'),
+      usaMap.getTicket('Vancouver', 'Montreal'),
+    ];
+    const points = gameNetwork.getExpectedPointsFromTickets(tickets);
+
+    expect(points).toBe(-13);
+  });
+  test('when all tickets are already completed should return their sum', () => {
+    gameNetwork.addEstablished(
+      gameNetwork.getRouting().getConnection('Calgary', 'Helena'),
+    );
+    gameNetwork.addEstablished(
+      gameNetwork.getRouting().getConnection('Salt Lake City', 'Helena'),
+    );
+    gameNetwork.addEstablished(
+      gameNetwork.getRouting().getConnection('Salt Lake City', 'Las Vegas'),
+    );
+    gameNetwork.addEstablished(
+      gameNetwork.getRouting().getConnection('Las Vegas', 'Los Angeles'),
+    );
+    const tickets = [
+      usaMap.getTicket('Calgary', 'Salt Lake City'),
+      usaMap.getTicket('Helena', 'Los Angeles'),
+    ];
+    const points = gameNetwork.getExpectedPointsFromTickets(tickets);
+
+    expect(points).toBe(15);
+  });
+
+  test('when a ticket can be completed count it', () => {
+    gameNetwork.addEstablished(
+      gameNetwork.getRouting().getConnection('Calgary', 'Helena'),
+    );
+    gameNetwork.addEstablished(
+      gameNetwork.getRouting().getConnection('Salt Lake City', 'Helena'),
+    );
+
+    const tickets = [
+      usaMap.getTicket('Calgary', 'Salt Lake City'),
+      usaMap.getTicket('Los Angeles', 'Miami'),
+      usaMap.getTicket('Vancouver', 'Montreal'),
+    ];
+    const points = gameNetwork.getExpectedPointsFromTickets(tickets);
+
+    expect(points > 7).toBe(true);
+  });
+
+  test('when a ticket cannot be completed due to trains it should not count', () => {
+    gameNetwork.addEstablished(
+      gameNetwork.getRouting().getConnection('Calgary', 'Helena'),
+    );
+    gameNetwork.addEstablished(
+      gameNetwork.getRouting().getConnection('Salt Lake City', 'Helena'),
+    );
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    gameNetwork.availableTrains = 3;
+    const tickets = [
+      usaMap.getTicket('Calgary', 'Salt Lake City'),
+      usaMap.getTicket('Los Angeles', 'Miami'),
+      usaMap.getTicket('Vancouver', 'Montreal'),
+    ];
+    const points = gameNetwork.getExpectedPointsFromTickets(tickets);
+
+    expect(points).toBe(7);
+  });
+});
+
+describe('selectTicketsToKeep', () => {
+  let gameNetwork: GameNetwork;
+
+  beforeEach(() => {
+    gameNetwork = new GameNetwork();
+  });
+  test('2 tickets possible out of 3, keep the most points', () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    gameNetwork.availableTrains = 15;
+
+    gameNetwork.addEstablished(
+      gameNetwork.getRouting().getConnection('Salt Lake City', 'Las Vegas'),
+    );
+    gameNetwork.addEstablished(
+      gameNetwork.getRouting().getConnection('Salt Lake City', 'Helena'),
+    );
+
+    const tickets = [
+      usaMap.getTicket('Calgary', 'Salt Lake City'),
+      usaMap.getTicket('Helena', 'Los Angeles'),
+      usaMap.getTicket('Seattle', 'Los Angeles'),
+    ];
+
+    const expected = [
+      usaMap.getTicket('Helena', 'Los Angeles'),
+      usaMap.getTicket('Seattle', 'Los Angeles'),
+    ];
+    const kept = gameNetwork.selectTicketsToKeep(tickets);
+    expect(kept).toEqual(expected);
+  });
+
+  test('keep all', () => {
+    gameNetwork.addEstablished(
+      gameNetwork.getRouting().getConnection('Salt Lake City', 'Las Vegas'),
+    );
+    gameNetwork.addEstablished(
+      gameNetwork.getRouting().getConnection('Salt Lake City', 'Helena'),
+    );
+
+    const tickets = [
+      usaMap.getTicket('Calgary', 'Salt Lake City'),
+      usaMap.getTicket('Helena', 'Los Angeles'),
+      usaMap.getTicket('Seattle', 'Los Angeles'),
+    ];
+
+    const kept = gameNetwork.selectTicketsToKeep(tickets);
+    expect(kept).toEqual(tickets);
+  });
+});

@@ -43,6 +43,11 @@ export class MapStore {
         this.cannotPassConnections.length,
       ],
       () => {
+        this.gameNetwork
+          .getExpectedPointsDrawingTickets(Constants.DRAW_TICKETS_SAMPLE_SIZE)
+          .then((value) => {
+            console.log('EXP POINTS', value);
+          });
         this.ticketReports = this.gameNetwork
           .getTicketReports()
           .filter(
@@ -69,6 +74,18 @@ export class MapStore {
         }
       },
     );
+
+    // reaction(
+    //   () => [this.establishedConnections.length],
+    //   () => {
+    //     (async () => {
+    //       const response = await this.gameNetwork.getExpectedPointsDrawingTickets(
+    //         100,
+    //       );
+    //       console.log('EXP POINTS', response);
+    //     })();
+    //   },
+    // );
   }
 
   get opponentImportantConnectionsWithPointsMap(): Map<Connection, number> {
