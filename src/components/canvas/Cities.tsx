@@ -1,5 +1,4 @@
 import React from 'react';
-import usaConnections from 'data/usaConnections.json';
 import { observer } from 'mobx-react';
 import { Circle } from 'react-konva';
 import { UIConstants } from './uiConstants';
@@ -10,13 +9,12 @@ type CitiesProps = { mapStore: MapStore };
 export const Cities = observer(
   ({ mapStore }: CitiesProps): JSX.Element => {
     const jsxCitiesArray = usaCities.map((city) => {
-      let cityFill = 'green';
-      let cityStroke;
+      let cityFill = UIConstants.defaultCityFillColor;
       if (mapStore.selectedCities.includes(city.name)) {
-        cityStroke = 'yellow';
+        cityFill = UIConstants.selectedCityStrokeColor;
       }
       if (mapStore.ticketsCities.includes(city.name)) {
-        cityFill = 'blue';
+        cityFill = UIConstants.ticketCityFillColor;
       }
       return (
         <Circle
@@ -24,10 +22,8 @@ export const Cities = observer(
           x={UIConstants.mapWidth * city.posX}
           y={UIConstants.mapWidth * city.posY}
           radius={UIConstants.cityFillRadius}
-          opacity={0.6}
+          opacity={0.8}
           fill={cityFill}
-          stroke={cityStroke}
-          strokeWidth={UIConstants.cityStrokeSize}
           onClick={() => mapStore.toggleSelectedCity(city.name)}
         />
       );
