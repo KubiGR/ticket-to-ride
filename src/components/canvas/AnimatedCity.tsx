@@ -1,24 +1,26 @@
 import React, { useRef } from 'react';
 import { observer } from 'mobx-react';
-import useImage from 'use-image';
 import Konva from 'konva';
 import { Circle, Layer } from 'react-konva';
 import usaCities from 'data/usaCities.json';
-import importantCityImage from 'assets/important-city.png';
 
 type AnimatedCityProps = { mapWidth: number; cityName: string };
 export const AnimatedCity = observer(
   ({ mapWidth, cityName }: AnimatedCityProps) => {
     const cityFillRadius = mapWidth * 0.008;
-    const [image] = useImage(importantCityImage);
+    const cityStrokeSize = mapWidth * 0.003;
     const cityRef = useRef<Konva.Circle>(null);
     const layerRef = useRef<Konva.Layer>(null);
     const anim = new Konva.Animation((frame) => {
       if (cityRef.current && frame) {
-        const angleDiff = (frame.timeDiff * 90) / 5000;
-        // const radiusDiff =
-        cityRef.current.rotate(angleDiff);
-        // cityRef.current.radius(Math.sin((frame.timeDiff * 2 * Math.PI) / 5000));
+        const amplitude = (cityFillRadius * (1.5 - 0.7)) / 2;
+        const period = 3000;
+        const radius =
+          amplitude * Math.sin((frame.time * 2 * Math.PI) / period) +
+          amplitude +
+          1 * cityFillRadius;
+        console.log(radius);
+        cityRef.current.radius(radius);
       }
     }, layerRef.current);
     anim.start();
@@ -32,15 +34,11 @@ export const AnimatedCity = observer(
             key={drawCity.name}
             x={mapWidth * drawCity.posX}
             y={mapWidth * drawCity.posY}
-            radius={cityFillRadius * 2}
-            opacity={1}
-            fillPatternImage={image}
-            fillPatternRepeat={'no-repeat'}
-            fillPatternScale={{
-              x: mapWidth * 0.00004,
-              y: mapWidth * 0.00004,
-            }}
-            fillPatternOffset={{ x: mapWidth * 0.013, y: mapWidth * 0.013 }}
+            radius={cityFillRadius}
+            opacity={0.8}
+            strokeWidth={cityStrokeSize}
+            stroke={'black'}
+            fill={'#e300a3'}
           />
         </Layer>
       );
