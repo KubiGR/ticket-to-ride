@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { MapImage } from 'components/canvas/MapImage';
 import { Stage, Layer, Circle, Line, Rect, Text, Group } from 'react-konva';
-
 import usaCities from 'data/usaCities.json';
 import usaConnections from 'data/usaConnections.json';
 import { observer } from 'mobx-react';
 import { useMapStore } from 'providers/MapStoreProvider';
+import { Ticket } from 'model/ticket';
+import Konva from 'konva';
+import AnimatedCity from 'components/canvas/AnimatedCity';
 
 const mapHeight = 800;
 const mapWidth = mapHeight * 1.56;
@@ -13,16 +15,38 @@ const lineStrokeSize = mapWidth * 0.012;
 const cityStrokeSize = mapWidth * 0.015;
 const cityFillRadius = mapWidth * 0.008;
 const rectWidth = mapWidth * 0.012;
-// const getPointerPosition = (evt: any) => {
-//   console.info(
-//     (evt.evt.layerX / mapWidth).toFixed(4) +
-//       ', ' +
-//       (evt.evt.layerY / mapWidth).toFixed(4),
-//   );
-// };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getPointerPosition = (evt: any) => {
+  console.info(
+    (evt.evt.layerX / mapWidth).toFixed(4) +
+      ', ' +
+      (evt.evt.layerY / mapWidth).toFixed(4),
+  );
+};
 
 export const RootStage = observer(() => {
   const mapStore = useMapStore();
+  const [impConsTicketCities, setImpConTicketCities] = useState<Ticket[]>([]);
+  const cityRef = useRef<Konva.Circle>(null);
+  const layerRef = useRef<Konva.Layer>(null);
+  const anim = new Konva.Animation((frame) => {
+    if (cityRef.current && frame) {
+      const angleDiff = (frame.timeDiff * 90) / 5000;
+      console.log(angleDiff);
+      cityRef.current.rotate(angleDiff);
+    }
+  }, layerRef.current);
+  anim.start();
+
+  const highlightedCitiesFromImpCons = Array.from(
+    impConsTicketCities.reduce((acc, cur) => {
+      acc.add(cur.from);
+      acc.add(cur.to);
+      return acc;
+    }, new Set<string>()),
+  ).map((cityName) => (
+    <AnimatedCity key={cityName} mapWidth={mapWidth} cityName={cityName} />
+  ));
 
   const drawImportantConnections = usaConnections.map((con) => {
     const connectionId = mapStore.gameNetwork
@@ -39,54 +63,63 @@ export const RootStage = observer(() => {
       const opponentTicketsForConnect = mapStore.opponentImportantConnectionsWithTicketsMap.get(
         connectionId,
       );
-      if (totalConnectionPoints && totalConnectionPoints > 9) {
-        return (
-          <Group
-            key={con.from + '-' + con.to}
-            onClick={() => console.log(opponentTicketsForConnect)}
-          >
-            <Rect
-              key={con.from + '-' + con.to + 'backgroundSymbol'}
-              x={mapWidth * con.symbol1[0]}
-              y={mapWidth * con.symbol1[1]}
-              width={rectWidth * 2.7}
-              height={rectWidth * 2}
-              fill={'orange'}
-              stroke={'black'}
-            />
-            <Text
-              key={con.from + '-' + con.to + 'textSymbol'}
-              x={mapWidth * con.symbol1[0] + rectWidth * 0.4}
-              y={mapWidth * con.symbol1[1] + rectWidth * 0.3}
-              text={totalConnectionPoints?.toString()}
-              fontSize={mapWidth * 0.02}
-            />
-          </Group>
-        );
-      } else {
-        return (
-          <Group
-            key={con.from + '-' + con.to}
-            onClick={() => console.log(opponentTicketsForConnect)}
-          >
-            <Rect
-              key={con.from + '-' + con.to + 'backgroundSymbol'}
-              x={mapWidth * con.symbol1[0]}
-              y={mapWidth * con.symbol1[1]}
-              width={rectWidth * 1.7}
-              height={rectWidth * 2}
-              fill={'orange'}
-              stroke={'black'}
-            />
-            <Text
-              key={con.from + '-' + con.to + 'textSymbol'}
-              x={mapWidth * con.symbol1[0] + rectWidth * 0.4}
-              y={mapWidth * con.symbol1[1] + rectWidth * 0.3}
-              text={totalConnectionPoints?.toString()}
-              fontSize={mapWidth * 0.02}
-            />
-          </Group>
-        );
+
+      if (opponentTicketsForConnect) {
+        if (totalConnectionPoints && totalConnectionPoints > 9) {
+          return (
+            <Group
+              key={con.from + '-' + con.to}
+              onMouseEnter={() =>
+                setImpConTicketCities(opponentTicketsForConnect)
+              }
+              onMouseLeave={() => setImpConTicketCities([])}
+            >
+              <Rect
+                key={con.from + '-' + con.to + 'backgroundSymbol'}
+                x={mapWidth * con.symbol1[0]}
+                y={mapWidth * con.symbol1[1]}
+                width={rectWidth * 2.7}
+                height={rectWidth * 2}
+                fill={'orange'}
+                stroke={'black'}
+              />
+              <Text
+                key={con.from + '-' + con.to + 'textSymbol'}
+                x={mapWidth * con.symbol1[0] + rectWidth * 0.4}
+                y={mapWidth * con.symbol1[1] + rectWidth * 0.3}
+                text={totalConnectionPoints?.toString()}
+                fontSize={mapWidth * 0.02}
+              />
+            </Group>
+          );
+        } else {
+          return (
+            <Group
+              key={con.from + '-' + con.to}
+              onMouseEnter={() =>
+                setImpConTicketCities(opponentTicketsForConnect)
+              }
+              onMouseLeave={() => setImpConTicketCities([])}
+            >
+              <Rect
+                key={con.from + '-' + con.to + 'backgroundSymbol'}
+                x={mapWidth * con.symbol1[0]}
+                y={mapWidth * con.symbol1[1]}
+                width={rectWidth * 1.7}
+                height={rectWidth * 2}
+                fill={'orange'}
+                stroke={'black'}
+              />
+              <Text
+                key={con.from + '-' + con.to + 'textSymbol'}
+                x={mapWidth * con.symbol1[0] + rectWidth * 0.4}
+                y={mapWidth * con.symbol1[1] + rectWidth * 0.3}
+                text={totalConnectionPoints?.toString()}
+                fontSize={mapWidth * 0.02}
+              />
+            </Group>
+          );
+        }
       }
     }
   });
@@ -194,7 +227,7 @@ export const RootStage = observer(() => {
     <Stage
       width={mapWidth}
       height={mapHeight}
-      // onClick={(e) => getPointerPosition(e)}
+      onClick={(e) => getPointerPosition(e)}
       onContextMenu={(e) => e.evt.preventDefault()}
     >
       <Layer>
@@ -203,6 +236,7 @@ export const RootStage = observer(() => {
         {drawCitiesArray}
         {drawImportantConnections}
       </Layer>
+      {highlightedCitiesFromImpCons}
     </Stage>
   );
 });
