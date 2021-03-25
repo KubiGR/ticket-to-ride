@@ -11,6 +11,7 @@ import {
   removeItemOnce,
   timeout,
 } from 'utils/helpers';
+import { PlayerInfo } from './PlayerInfo';
 
 export class GameNetwork {
   private routing: Routing = new Routing();
@@ -21,11 +22,13 @@ export class GameNetwork {
   private availableTrains = Constants.TOTAL_TRAINS;
   private establishedPoints = 0;
 
-  private opponentNetwork: GameNetwork | undefined;
+  private opponentNetworks: GameNetwork[];
   private name = 'Player';
   private tickets: Ticket[] = [];
+  private playerInfo: PlayerInfo | undefined;
 
   constructor() {
+    this.opponentNetworks = [];
     this.routing.setEstablished(this.established);
     this.routing.setCannotPass(this.cannotPass);
     this.parseConnections();
@@ -35,13 +38,22 @@ export class GameNetwork {
     return this.ticketReports;
   }
 
-  getOpponentNetwork(): GameNetwork | undefined {
-    return this.opponentNetwork;
+  setPlayerInfo(playerInfo: PlayerInfo): void {
+    this.playerInfo = playerInfo;
   }
 
-  createOpponent(): void {
-    this.opponentNetwork = new GameNetwork();
-    this.opponentNetwork.name = 'Opponent';
+  getPlayerInfo(): PlayerInfo | undefined {
+    return this.playerInfo;
+  }
+
+  getOpponentNetwork(index = 0): GameNetwork | undefined {
+    return this.opponentNetworks[index];
+  }
+
+  createOpponent(): number {
+    const index = this.opponentNetworks.length;
+    this.opponentNetworks[index] = new GameNetwork();
+    return index;
   }
 
   addTicket(ticket: Ticket): void {
@@ -69,7 +81,9 @@ export class GameNetwork {
    */
   setPointImportance(parameter: number): void {
     this.routing.setPointImportance(parameter);
-    this.opponentNetwork?.routing.setPointImportance(parameter);
+    this.opponentNetworks.forEach((opp) => {
+      opp.setPointImportance(parameter);
+    });
   }
 
   addEstablished(edge: Connection): void {
@@ -80,7 +94,9 @@ export class GameNetwork {
     this.established.add(edge);
     this.availableTrains -= edge.trains;
     this.establishedPoints += edge.getPoints();
-    this.opponentNetwork?.addCannotPass(edge);
+    this.opponentNetworks.forEach((opp) => {
+      opp.addCannotPass(edge);
+    });
 
     this.updateRoutingAndReports();
   }
@@ -95,29 +111,32 @@ export class GameNetwork {
     this.established.delete(edge);
     this.availableTrains += edge.trains;
     this.establishedPoints -= edge.getPoints();
-    this.opponentNetwork?.removeCannotPass(edge);
-
+    this.opponentNetworks.forEach((opp) => {
+      opp.removeCannotPass(edge);
+    });
     this.updateRoutingAndReports();
   }
 
-  addCannotPass(edge: Connection): void {
+  addCannotPass(edge: Connection, index = 0): void {
     if (this.established.has(edge))
       throw new Error(
         'addCannotPass: ' + edge + ' is in ' + ' established list',
       );
     this.cannotPass.add(edge);
-    this.opponentNetwork?.addEstablished(edge);
+    const opp = this.opponentNetworks[index];
+    if (opp) opp.addEstablished(edge);
 
     this.updateRoutingAndReports();
   }
 
-  removeCannotPass(edge: Connection): void {
+  removeCannotPass(edge: Connection, index = 0): void {
     if (!this.cannotPass.has(edge))
       throw new Error(
         'removeCannotPass: ' + edge + ' is not in ' + ' cannotPass list',
       );
     this.cannotPass.delete(edge);
-    this.opponentNetwork?.removeEstablished(edge);
+    const opp = this.opponentNetworks[index];
+    if (opp) opp.removeEstablished(edge);
 
     this.updateRoutingAndReports();
   }
@@ -197,19 +216,11 @@ export class GameNetwork {
     // for each draw of 3 tickets from the available tickets
     // Producing all the combinations takes 18s. Too long. 4060 combinations (30, 3)
     // Take a random sample? N = 100 draws
-    const ticketsToDrawFrom = usaMap.getTickets().filter(
-      (t) =>
-        !this.tickets.includes(t) &&
-        ((ticket) => {
-          const opp = this.opponentNetwork;
-          if (opp)
-            return (
-              opp.getTicketReportForTicket(ticket).remainingConnections.length >
-              0
-            );
-          else return true;
-        })(t),
-    );
+    const ticketsToDrawFrom = usaMap
+      .getTickets()
+      .filter(
+        (t) => !this.tickets.includes(t) && !this.someOpponentsHaveCompleted(t),
+      );
     const pickedTickets = getRandomCombinations(sample, 3, ticketsToDrawFrom);
     let total = 0;
     for (let c = 0; c < pickedTickets.length; c++) {
@@ -217,6 +228,12 @@ export class GameNetwork {
       total += this.getExpectedPointsFromTickets(pickedTickets[c]);
     }
     return total / pickedTickets.length;
+  }
+
+  private someOpponentsHaveCompleted(t: Ticket): boolean {
+    return this.opponentNetworks.some(
+      (opp) => opp.getTicketReportForTicket(t).remainingConnections.length == 0,
+    );
   }
 
   //    keep ticket if already completed
