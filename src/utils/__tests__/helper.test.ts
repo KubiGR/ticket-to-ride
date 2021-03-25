@@ -2,6 +2,7 @@ import {
   removeItemAll,
   removeItemOnce,
   getRandomCombinations,
+  all_combinations,
 } from 'utils/helpers';
 
 describe('removeItemOnce', () => {
@@ -81,5 +82,24 @@ describe('getRandomCombinations', () => {
         }
       }
     });
+  });
+});
+
+describe('all_combinations', () => {
+  test.each([
+    [
+      3,
+      2,
+      [
+        [0, 1],
+        [1, 2],
+        [0, 2],
+      ],
+    ],
+    [3, 1, [[0], [1], [2]]],
+    [3, 0, [[]]],
+  ])('%i choose %i', (n, k, output) => {
+    console.log(output);
+    expect(all_combinations(n, k)).toEqual(output);
   });
 });

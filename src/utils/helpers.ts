@@ -64,18 +64,29 @@ function gray_code(n: number): number {
 
 function count_bits(n: number): number {
   let res = 0;
-  for (; n; n >>= 1) res += n & 1;
+  for (
+    ;
+    n;
+    n >>= 1 // n >>= 1, shift n one bit to the left
+  )
+    res += n & 1; // n & 1 === is the first bit 1?
   return res;
 }
 
 export function all_combinations(n: number, k: number): number[][] {
   const combinations = [];
   let combination = [];
-  for (let i = 0; i < 1 << n; i++) {
+  for (
+    let i = 0;
+    i < 1 << n; //    1 << n === power(2, n)
+    i++
+  ) {
     const cur = gray_code(i);
     if (count_bits(cur) == k) {
       for (let j = 0; j < n; j++) {
-        if (cur & (1 << j)) combination.push(j + 1);
+        if (cur & (1 << j))
+          // if the jth bit of cur is 1
+          combination.push(j);
       }
       combinations.push(combination.slice());
       combination = [];

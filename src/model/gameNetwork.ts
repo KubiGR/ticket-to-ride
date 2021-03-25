@@ -242,7 +242,7 @@ export class GameNetwork {
     while (len > 0) {
       const combs = all_combinations(tickets.length, len);
       combs.forEach((c) => {
-        combinations.push(c.map((index) => tickets[index - 1]));
+        combinations.push(c.map((index) => tickets[index]));
       });
       len--;
     }
