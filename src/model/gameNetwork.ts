@@ -187,10 +187,9 @@ export class GameNetwork {
     const ticketsToDrawFrom = usaMap.getTickets();
     const pickedTickets = getRandomCombinations(sample, 3, ticketsToDrawFrom);
     let total = 0;
-    await timeout(1);
     for (let c = 0; c < pickedTickets.length; c++) {
+      await timeout(0);
       total += this.getExpectedPointsFromTickets(pickedTickets[c]);
-      if (c % 100 == 0) await timeout(1);
     }
     return total / pickedTickets.length;
   }
