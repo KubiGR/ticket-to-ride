@@ -118,41 +118,44 @@ export class GameNetwork {
     // this.consoleReports();
   }
 
-  private getTicketReportsForTickets(tickets: Ticket[]): TicketReport[] {
-    const ticketReports: TicketReport[] = [];
-    tickets.forEach((t) => {
-      const ticketConns = this.routing.getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(
-        [t],
-      );
-      let completed = 0;
-      ticketConns.forEach((c) => {
-        if (this.established.has(c)) {
-          completed++;
-        }
-      });
+  private getTicketReportForTicket(t: Ticket): TicketReport {
+    const ticketConns = this.routing.getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(
+      [t],
+    );
 
-      const remainingConnections = ticketConns.filter((conn) => {
-        return !this.established.has(conn);
-      });
-
-      const requiredTrains = this.routing.getRequiredNumOfTrains(ticketConns);
-
-      const ticketReport = new TicketReport(
-        t,
-        remainingConnections,
-        requiredTrains,
-        completed,
-        ticketConns.length,
-        ticketConns.length > 0,
-      );
-
-      ticketReports.push(ticketReport);
+    const completedConnections = ticketConns.filter((conn) => {
+      return this.established.has(conn);
     });
-    return ticketReports;
+    const remainingConnections = ticketConns.filter((conn) => {
+      return !this.established.has(conn);
+    });
+
+    const requiredTrains = this.routing.getRequiredNumOfTrains(ticketConns);
+
+    const completedDifficuly = completedConnections
+      .map((conn) => conn.getDifficulty())
+      .reduce((sum, x) => sum + x, 0);
+    const totalDifficulty = ticketConns
+      .map((conn) => conn.getDifficulty())
+      .reduce((sum, x) => sum + x, 0);
+
+    const ticketReport = new TicketReport(
+      t,
+      remainingConnections,
+      requiredTrains,
+      completedConnections.length,
+      ticketConns.length,
+      completedDifficuly,
+      totalDifficulty,
+      ticketConns.length > 0,
+    );
+    return ticketReport;
   }
 
   private generateTicketReports(): void {
-    this.ticketReports = this.getTicketReportsForTickets(usaMap.getTickets());
+    this.ticketReports = usaMap
+      .getTickets()
+      .map((t) => this.getTicketReportForTicket(t));
   }
 
   private consoleReports(): void {
@@ -161,7 +164,7 @@ export class GameNetwork {
       .filter(TicketReport.filterFn)
       .sort(TicketReport.compare)
       .forEach((t) => {
-        const percentage = t.completionPercentage();
+        const percentage = t.connectionsCompletionRate();
         if (t.remainingConnections.length < 2 || percentage > 0.5) {
           console.log(
             t.ticket.toString() +
@@ -200,7 +203,7 @@ export class GameNetwork {
   //      calculate the expected points if keeping these tickets
   //      find the best among these
   getExpectedPointsFromTickets(tickets: Ticket[]): number {
-    const ticketReports = this.getTicketReportsForTickets(tickets);
+    const ticketReports = tickets.map((t) => this.getTicketReportForTicket(t));
     let points = 0;
     const achieveable = ticketReports.filter((t) => {
       return t.reachable && t.remainingTrains < this.availableTrains;
@@ -213,7 +216,7 @@ export class GameNetwork {
     const rest: TicketReport[] = [];
     for (let i = 0; i < achieveable.length; i++) {
       const ticketReport = achieveable[i];
-      if (ticketReport.completionPercentage() == 1) {
+      if (ticketReport.remainingConnections.length === 0) {
         points += ticketReport.ticket.points;
         alreadyCompleted.push(ticketReport);
       } else {
@@ -229,7 +232,7 @@ export class GameNetwork {
     );
     points += keepTicketReport
       .map((tr) => {
-        return tr.ticket.points * tr.completionPercentage();
+        return tr.ticket.points * tr.difficultyCompletionRate();
       })
       .reduce((sum, p) => sum + p, 0);
 

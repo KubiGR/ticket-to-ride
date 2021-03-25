@@ -76,3 +76,14 @@ describe('getPoints', () => {
     }).toThrow();
   });
 });
+
+describe('getDifficulty', () => {
+  test('non-gray connections have difficulty equal to their points', () => {
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Black);
+    expect(connection1.getDifficulty()).toBe(connection1.getPoints());
+  });
+  test('gray commections have half difficulty', () => {
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Gray);
+    expect(connection1.getDifficulty()).toBe(connection1.getPoints() / 2);
+  });
+});

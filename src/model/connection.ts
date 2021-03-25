@@ -74,4 +74,10 @@ export class Connection implements Edge<string> {
       'Connection can not have more than 6 trains: ' + this.trains,
     );
   }
+
+  getDifficulty(): number {
+    let factor = 1;
+    if (this.color1 === TrackColor.Gray) factor = 0.5;
+    return factor * this.getPoints();
+  }
 }
