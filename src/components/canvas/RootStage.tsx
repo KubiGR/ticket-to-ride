@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { MapImage } from 'components/canvas/MapImage';
 import { Stage, Layer, Circle, Line, Rect, Text, Group } from 'react-konva';
 import usaCities from 'data/usaCities.json';
@@ -7,6 +7,7 @@ import { observer } from 'mobx-react';
 import { useMapStore } from 'providers/MapStoreProvider';
 import { Ticket } from 'model/ticket';
 import AnimatedCity from 'components/canvas/AnimatedCity';
+import Konva from 'konva';
 
 const mapHeight = 800;
 const mapWidth = mapHeight * 1.56;
@@ -26,6 +27,16 @@ const getPointerPosition = (evt: any) => {
 export const RootStage = observer(() => {
   const mapStore = useMapStore();
   const [impConsTicketCities, setImpConTicketCities] = useState<Ticket[]>([]);
+  const cityRef = useRef<Konva.Circle>(null);
+  const layerRef = useRef<Konva.Layer>(null);
+  const anim = new Konva.Animation((frame) => {
+    if (cityRef.current && frame) {
+      const angleDiff = (frame.timeDiff * 90) / 5000;
+      console.log(angleDiff);
+      cityRef.current.rotate(angleDiff);
+    }
+  }, layerRef.current);
+  anim.start();
 
   const highlightedCitiesFromImpCons = Array.from(
     impConsTicketCities.reduce((acc, cur) => {
@@ -34,7 +45,12 @@ export const RootStage = observer(() => {
       return acc;
     }, new Set<string>()),
   ).map((cityName) => (
-    <AnimatedCity key={cityName} mapWidth={mapWidth} cityName={cityName} />
+    <AnimatedCity
+      key={cityName}
+      mapWidth={mapWidth}
+      cityName={cityName}
+      layerRef={layerRef}
+    />
   ));
 
   const drawImportantConnections = usaConnections.map((con) => {
@@ -225,7 +241,7 @@ export const RootStage = observer(() => {
         {drawCitiesArray}
         {drawImportantConnections}
       </Layer>
-      {highlightedCitiesFromImpCons}
+      <Layer ref={layerRef}>{highlightedCitiesFromImpCons}</Layer>
     </Stage>
   );
 });
