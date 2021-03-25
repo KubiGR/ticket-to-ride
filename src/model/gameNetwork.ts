@@ -8,6 +8,7 @@ import {
   all_combinations,
   getRandomCombinations,
   minimumOfArray,
+  removeItemOnce,
   timeout,
 } from 'utils/helpers';
 
@@ -22,6 +23,7 @@ export class GameNetwork {
 
   private opponentNetwork: GameNetwork | undefined;
   private name = 'Player';
+  private tickets: Ticket[] = [];
 
   constructor() {
     this.routing.setEstablished(this.established);
@@ -40,6 +42,14 @@ export class GameNetwork {
   createOpponent(): void {
     this.opponentNetwork = new GameNetwork();
     this.opponentNetwork.name = 'Opponent';
+  }
+
+  addTicket(ticket: Ticket): void {
+    this.tickets.push(ticket);
+  }
+
+  removeTicket(ticketToRemove: Ticket): void {
+    removeItemOnce(this.tickets, ticketToRemove);
   }
 
   private parseConnections(): void {
@@ -187,7 +197,10 @@ export class GameNetwork {
     // for each draw of 3 tickets from the available tickets
     // Producing all the combinations takes 18s. Too long. 4060 combinations (30, 3)
     // Take a random sample? N = 100 draws
-    const ticketsToDrawFrom = usaMap.getTickets();
+    console.log(this.tickets);
+    const ticketsToDrawFrom = usaMap
+      .getTickets()
+      .filter((t) => !this.tickets.includes(t));
     const pickedTickets = getRandomCombinations(sample, 3, ticketsToDrawFrom);
     let total = 0;
     for (let c = 0; c < pickedTickets.length; c++) {

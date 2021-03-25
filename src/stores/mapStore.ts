@@ -183,6 +183,7 @@ export class MapStore {
   }
 
   addTicket(ticket: Ticket): void {
+    this.gameNetwork.addTicket(ticket);
     this.selectedTickets.push(ticket);
     [ticket.from, ticket.to].forEach((city) => {
       removeItemOnce(this.selectedCities, city);
@@ -193,6 +194,7 @@ export class MapStore {
   }
 
   removeTicket(ticketToRemove: Ticket): void {
+    this.gameNetwork.removeTicket(ticketToRemove);
     removeItemOnce(this.selectedTickets, ticketToRemove);
     if (
       !this.selectedTickets.some(
