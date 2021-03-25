@@ -83,3 +83,7 @@ export function all_combinations(n: number, k: number): number[][] {
   }
   return combinations;
 }
+
+export function timeout(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

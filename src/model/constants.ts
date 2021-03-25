@@ -22,4 +22,6 @@ export abstract class Constants {
   static readonly REMAININING_CONNECTIONS_LEN = 2;
   static readonly REMAINING_TRAINS = 12;
   static readonly COMPLETION_PERC = 0.5;
+
+  static readonly DRAW_TICKETS_SAMPLE_SIZE = 100;
 }

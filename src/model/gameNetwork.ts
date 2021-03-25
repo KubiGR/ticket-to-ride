@@ -8,6 +8,7 @@ import {
   all_combinations,
   getRandomCombinations,
   minimumOfArray,
+  timeout,
 } from 'utils/helpers';
 
 export class GameNetwork {
@@ -185,10 +186,12 @@ export class GameNetwork {
     // Take a random sample? N = 100 draws
     const ticketsToDrawFrom = usaMap.getTickets();
     const pickedTickets = getRandomCombinations(sample, 3, ticketsToDrawFrom);
-
-    const total = pickedTickets
-      .map((comb) => this.getExpectedPointsFromTickets(comb))
-      .reduce((sum, x) => sum + x, 0);
+    let total = 0;
+    await timeout(1);
+    for (let c = 0; c < pickedTickets.length; c++) {
+      total += this.getExpectedPointsFromTickets(pickedTickets[c]);
+      if (c % 100 == 0) await timeout(1);
+    }
     return total / pickedTickets.length;
   }
 
