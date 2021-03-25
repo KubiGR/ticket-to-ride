@@ -56,7 +56,8 @@ export class MapStore {
               ticketReport.remainingConnections.length <=
                 Constants.REMAININING_CONNECTIONS_LEN &&
               ticketReport.remainingTrains <= Constants.REMAINING_TRAINS &&
-              ticketReport.completionPercentage() >= Constants.COMPLETION_PERC,
+              ticketReport.connectionsCompletionRate() >=
+                Constants.COMPLETION_PERC,
           );
         const opponentNetwork = this.gameNetwork.getOpponentNetwork();
         if (opponentNetwork) {
@@ -68,7 +69,7 @@ export class MapStore {
                 ticketReport.remainingConnections.length <=
                   Constants.REMAININING_CONNECTIONS_LEN &&
                 ticketReport.remainingTrains <= Constants.REMAINING_TRAINS &&
-                ticketReport.completionPercentage() >=
+                ticketReport.connectionsCompletionRate() >=
                   Constants.COMPLETION_PERC,
             );
         }

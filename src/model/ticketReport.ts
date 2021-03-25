@@ -8,11 +8,17 @@ export class TicketReport {
     public remainingTrains: number,
     public completedConnectionsNum: number,
     public totalConnectionsNum: number,
+    public completedDifficulty: number,
+    public totalDifficulty: number,
     public reachable: boolean,
   ) {}
 
-  completionPercentage(): number {
+  connectionsCompletionRate(): number {
     return this.completedConnectionsNum / this.totalConnectionsNum;
+  }
+
+  difficultyCompletionRate(): number {
+    return this.completedDifficulty / this.totalDifficulty;
   }
 
   static compare(t1: TicketReport, t2: TicketReport): number {
@@ -25,7 +31,7 @@ export class TicketReport {
       t.reachable &&
       (t.remainingTrains < 7 ||
         t.remainingConnections.length < 3 ||
-        t.completionPercentage() > 0.4)
+        t.connectionsCompletionRate() > 0.4)
     );
   }
 }
