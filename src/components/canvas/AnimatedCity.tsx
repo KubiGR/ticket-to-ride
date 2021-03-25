@@ -16,8 +16,9 @@ export const AnimatedCity = observer(
     const anim = new Konva.Animation((frame) => {
       if (cityRef.current && frame) {
         const angleDiff = (frame.timeDiff * 90) / 5000;
-        console.log(angleDiff);
+        // const radiusDiff =
         cityRef.current.rotate(angleDiff);
+        // cityRef.current.radius(Math.sin((frame.timeDiff * 2 * Math.PI) / 5000));
       }
     }, layerRef.current);
     anim.start();

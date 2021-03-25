@@ -74,22 +74,9 @@ export class MapStore {
         }
       },
     );
-
-    // reaction(
-    //   () => [this.establishedConnections.length],
-    //   () => {
-    //     (async () => {
-    //       const response = await this.gameNetwork.getExpectedPointsDrawingTickets(
-    //         100,
-    //       );
-    //       console.log('EXP POINTS', response);
-    //     })();
-    //   },
-    // );
   }
 
   get opponentImportantConnectionsWithPointsMap(): Map<Connection, number> {
-    console.log(this.opponentTicketReports);
     return this.opponentTicketReports.reduce((acc, cur) => {
       cur.remainingConnections.forEach((con) => {
         const connectionExistingPoints = acc.get(con) || 0;
