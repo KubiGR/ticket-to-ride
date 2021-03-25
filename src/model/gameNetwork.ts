@@ -197,10 +197,19 @@ export class GameNetwork {
     // for each draw of 3 tickets from the available tickets
     // Producing all the combinations takes 18s. Too long. 4060 combinations (30, 3)
     // Take a random sample? N = 100 draws
-    console.log(this.tickets);
-    const ticketsToDrawFrom = usaMap
-      .getTickets()
-      .filter((t) => !this.tickets.includes(t));
+    const ticketsToDrawFrom = usaMap.getTickets().filter(
+      (t) =>
+        !this.tickets.includes(t) &&
+        ((ticket) => {
+          const opp = this.opponentNetwork;
+          if (opp)
+            return (
+              opp.getTicketReportForTicket(ticket).remainingConnections.length >
+              0
+            );
+          else return true;
+        })(t),
+    );
     const pickedTickets = getRandomCombinations(sample, 3, ticketsToDrawFrom);
     let total = 0;
     for (let c = 0; c < pickedTickets.length; c++) {
