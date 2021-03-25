@@ -20,7 +20,8 @@ export class MapStore {
 
   constructor() {
     makeAutoObservable(this);
-    this.gameNetwork.createOpponent();
+    const opponentIndex = this.gameNetwork.createOpponent();
+    console.log(opponentIndex);
     this.gameNetwork.setPointImportance(0.19);
 
     reaction(
