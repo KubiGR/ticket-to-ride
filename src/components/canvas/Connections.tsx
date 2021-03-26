@@ -1,13 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import usaConnections from 'data/usaConnections.json';
 import { observer } from 'mobx-react';
 import { Line } from 'react-konva';
 import { UIConstants } from './uiConstants';
 import { MapStore } from 'stores/mapStore';
 
+const handleKeyInput = (
+  evt: KeyboardEvent,
+  setSelectedOpponentIndex: React.Dispatch<React.SetStateAction<number>>,
+) => {
+  switch (evt.key) {
+    case '1':
+      setSelectedOpponentIndex(0);
+      break;
+    case '2':
+      setSelectedOpponentIndex(1);
+      break;
+    case '3':
+      setSelectedOpponentIndex(2);
+      break;
+    case '4':
+      setSelectedOpponentIndex(3);
+      break;
+    case '5':
+      setSelectedOpponentIndex(4);
+      break;
+  }
+};
+
 type ConnectionsProps = { mapStore: MapStore };
 export const Connections = observer(
   ({ mapStore }: ConnectionsProps): JSX.Element => {
+    const [selectedOpponentIndex, setSelectedOpponentIndex] = useState(0);
+    useEffect(() => {
+      document.addEventListener('keydown', (evt) =>
+        handleKeyInput(evt, setSelectedOpponentIndex),
+      );
+
+      return () => {
+        document.removeEventListener('keydown', (evt) =>
+          handleKeyInput(evt, setSelectedOpponentIndex),
+        );
+      };
+    }, []);
     const jsxConnectionsArray = usaConnections.flatMap((con) => {
       const connectionId = mapStore.gameNetwork
         .getRouting()
@@ -23,7 +58,19 @@ export const Connections = observer(
           connectionDrawOpacity = 1;
         }
         if (connectionType.includes('0')) {
-          connectionDrawColor = UIConstants.cannotPassConnectionColor;
+          connectionDrawColor = UIConstants.opponent1PassConnectionColor;
+          connectionDrawOpacity = 1;
+        }
+        if (connectionType.includes('1')) {
+          connectionDrawColor = UIConstants.opponent2PassConnectionColor;
+          connectionDrawOpacity = 1;
+        }
+        if (connectionType.includes('2')) {
+          connectionDrawColor = UIConstants.opponent3PassConnectionColor;
+          connectionDrawOpacity = 1;
+        }
+        if (connectionType.includes('3')) {
+          connectionDrawColor = UIConstants.opponent4PassConnectionColor;
           connectionDrawOpacity = 1;
         }
         if (connectionType.includes('shouldPass')) {
@@ -43,10 +90,13 @@ export const Connections = observer(
             stroke={connectionDrawColor}
             opacity={connectionDrawOpacity}
             onClick={(e) => {
-              if (e.evt.button === 0) {
-                mapStore.toggleCannotPassConnection(connectionId, 0);
-              } else if (e.evt.button === 2) {
-                mapStore.toggleShouldPassConnection(connectionId, 0);
+              if (e.evt.button === 2) {
+                mapStore.toggleCannotPassConnection(
+                  connectionId,
+                  selectedOpponentIndex,
+                );
+              } else if (e.evt.button === 0) {
+                mapStore.toggleEstablishedConnection(connectionId);
               }
             }}
           />,
@@ -62,10 +112,13 @@ export const Connections = observer(
             stroke={connectionDrawColor}
             opacity={connectionDrawOpacity}
             onClick={(e) => {
-              if (e.evt.button === 0) {
-                mapStore.toggleCannotPassConnection(connectionId, 0);
-              } else if (e.evt.button === 2) {
-                mapStore.toggleShouldPassConnection(connectionId, 0);
+              if (e.evt.button === 2) {
+                mapStore.toggleCannotPassConnection(
+                  connectionId,
+                  selectedOpponentIndex,
+                );
+              } else if (e.evt.button === 0) {
+                mapStore.toggleEstablishedConnection(connectionId);
               }
             }}
           />,
@@ -78,10 +131,13 @@ export const Connections = observer(
             stroke={connectionDrawColor}
             opacity={connectionDrawOpacity}
             onClick={(e) => {
-              if (e.evt.button === 0) {
-                mapStore.toggleCannotPassConnection(connectionId, 0);
-              } else if (e.evt.button === 2) {
-                mapStore.toggleShouldPassConnection(connectionId, 0);
+              if (e.evt.button === 2) {
+                mapStore.toggleCannotPassConnection(
+                  connectionId,
+                  selectedOpponentIndex,
+                );
+              } else if (e.evt.button === 0) {
+                mapStore.toggleEstablishedConnection(connectionId);
               }
             }}
           />,
