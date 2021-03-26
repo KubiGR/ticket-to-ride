@@ -23,7 +23,7 @@ class USAMap {
         d.length,
         TrackColor[d.color1 as keyof typeof TrackColor],
       );
-      if (d.color2) {
+      if (d.color2 !== undefined) {
         connection.color2 = TrackColor[d.color2 as keyof typeof TrackColor];
       }
       connections.push(connection);

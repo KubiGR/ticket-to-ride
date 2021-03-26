@@ -1,3 +1,4 @@
+import { Connection } from 'model/connection';
 import { Constants } from 'model/constants';
 import { GameNetwork } from 'model/gameNetwork';
 import { Ticket } from 'model/ticket';
@@ -14,8 +15,9 @@ describe('opponent', () => {
     const gameNetwork = new GameNetwork();
     gameNetwork.createOpponent();
 
-    const opponent = gameNetwork.getOpponentNetwork();
-    if (opponent) expect(opponent.getOpponentNetwork()).toBeUndefined();
+    expect(
+      gameNetwork.getOpponentNetwork()?.getOpponentNetwork(),
+    ).toBeUndefined();
   });
 });
 
@@ -84,20 +86,24 @@ test('getConnection  (not found)', () => {
 });
 
 describe('addCannotPass/established restrictions', () => {
-  test('addCannotPass error when in should pass', () => {
-    const gameNetwork = new GameNetwork();
-    const connection = gameNetwork
+  let gameNetwork: GameNetwork;
+  let LA_ElPaso: Connection;
+  beforeEach(() => {
+    gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    LA_ElPaso = gameNetwork
       .getRouting()
       .getConnection('Los Angeles', 'El Paso');
-    gameNetwork.addEstablished(connection);
+  });
+  test('addCannotPass error when in should pass', () => {
+    gameNetwork.addEstablished(LA_ElPaso);
 
     expect(() => {
-      gameNetwork.addCannotPass(connection);
+      gameNetwork.addCannotPass(LA_ElPaso);
     }).toThrow();
   });
 
   test('addEstablished error when in cannot pass', () => {
-    const gameNetwork = new GameNetwork();
     const connection = gameNetwork
       .getRouting()
       .getConnection('Los Angeles', 'El Paso');
@@ -109,7 +115,6 @@ describe('addCannotPass/established restrictions', () => {
   });
 
   test('established connections reduce train number', () => {
-    const gameNetwork = new GameNetwork();
     const connection = gameNetwork
       .getRouting()
       .getConnection('El Paso', 'Los Angeles');
@@ -497,12 +502,16 @@ describe('getRouting().getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTick
 describe('getExpectedPointsDrawingTickets', () => {
   test('should return zero if no tracks on board', async () => {
     const gameNetwork = new GameNetwork();
+
+    gameNetwork.createOpponent();
     expect((await gameNetwork.getExpectedPointsDrawingTickets(10)) == 0).toBe(
       true,
     );
   });
   test('should return the expected points if a player draws tickets', async () => {
     const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+
     gameNetwork.addEstablished(
       gameNetwork.getRouting().getConnection('Calgary', 'Helena'),
     );

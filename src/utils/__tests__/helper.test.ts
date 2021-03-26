@@ -3,6 +3,7 @@ import {
   removeItemOnce,
   getRandomCombinations,
   all_combinations,
+  minimumOfArray,
 } from 'utils/helpers';
 
 describe('removeItemOnce', () => {
@@ -99,7 +100,15 @@ describe('all_combinations', () => {
     [3, 1, [[0], [1], [2]]],
     [3, 0, [[]]],
   ])('%i choose %i', (n, k, output) => {
-    console.log(output);
     expect(all_combinations(n, k)).toEqual(output);
+  });
+});
+
+describe('minimumOfArray', () => {
+  test('returns the minimum elements of a number array', () => {
+    expect(minimumOfArray([3, 2, 5])).toBe(2);
+  });
+  test('returns undefined if the array is empty', () => {
+    expect(minimumOfArray([3, 2, 5])).toBeUndefined;
   });
 });

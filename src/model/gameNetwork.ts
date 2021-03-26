@@ -22,16 +22,15 @@ export class GameNetwork {
   private availableTrains = Constants.TOTAL_TRAINS;
   private establishedPoints = 0;
 
-  private opponentNetworks: GameNetwork[];
+  private opponentNetworks: GameNetwork[] | undefined;
   private name = 'Player';
   private tickets: Ticket[] = [];
   private playerInfo: PlayerInfo | undefined;
 
   constructor() {
-    this.opponentNetworks = [];
     this.routing.setEstablished(this.established);
     this.routing.setCannotPass(this.cannotPass);
-    this.parseConnections();
+    this.routing.setEdges(usaMap.getConnections());
   }
 
   getTicketReports(): TicketReport[] {
@@ -47,10 +46,16 @@ export class GameNetwork {
   }
 
   getOpponentNetwork(index = 0): GameNetwork | undefined {
+    if (this.opponentNetworks === undefined) return undefined;
+    if (index >= this.opponentNetworks.length)
+      throw new Error('getOpponentNetwork: no opponent with index: ' + index);
     return this.opponentNetworks[index];
   }
 
   createOpponent(): number {
+    if (this.opponentNetworks === undefined) {
+      this.opponentNetworks = [];
+    }
     const index = this.opponentNetworks.length;
     this.opponentNetworks[index] = new GameNetwork();
     return index;
@@ -62,10 +67,6 @@ export class GameNetwork {
 
   removeTicket(ticketToRemove: Ticket): void {
     removeItemOnce(this.tickets, ticketToRemove);
-  }
-
-  private parseConnections(): void {
-    this.routing.setEdges(usaMap.getConnections());
   }
 
   /**
@@ -81,7 +82,7 @@ export class GameNetwork {
    */
   setPointImportance(parameter: number): void {
     this.routing.setPointImportance(parameter);
-    this.opponentNetworks.forEach((opp) => {
+    this.opponentNetworks?.forEach((opp) => {
       opp.setPointImportance(parameter);
     });
   }
@@ -94,7 +95,7 @@ export class GameNetwork {
     this.established.add(edge);
     this.availableTrains -= edge.trains;
     this.establishedPoints += edge.getPoints();
-    this.opponentNetworks.forEach((opp) => {
+    this.opponentNetworks?.forEach((opp) => {
       opp.addCannotPass(edge);
     });
 
@@ -111,32 +112,42 @@ export class GameNetwork {
     this.established.delete(edge);
     this.availableTrains += edge.trains;
     this.establishedPoints -= edge.getPoints();
-    this.opponentNetworks.forEach((opp) => {
+    this.opponentNetworks?.forEach((opp) => {
       opp.removeCannotPass(edge);
     });
     this.updateRoutingAndReports();
   }
 
   addCannotPass(edge: Connection, index = 0): void {
+    if (
+      this.opponentNetworks !== undefined &&
+      index >= this.opponentNetworks.length
+    )
+      throw new Error('addCannotPass: no opponent with index: ' + index);
     if (this.established.has(edge))
       throw new Error(
         'addCannotPass: ' + edge + ' is in ' + ' established list',
       );
     this.cannotPass.add(edge);
-    const opp = this.opponentNetworks[index];
-    if (opp) opp.addEstablished(edge);
+    if (this.opponentNetworks !== undefined)
+      this.opponentNetworks[index].addEstablished(edge);
 
     this.updateRoutingAndReports();
   }
 
   removeCannotPass(edge: Connection, index = 0): void {
+    if (
+      this.opponentNetworks !== undefined &&
+      index >= this.opponentNetworks.length
+    )
+      throw new Error('removeCannotPass: no opponent with index: ' + index);
     if (!this.cannotPass.has(edge))
       throw new Error(
         'removeCannotPass: ' + edge + ' is not in ' + ' cannotPass list',
       );
     this.cannotPass.delete(edge);
-    const opp = this.opponentNetworks[index];
-    if (opp) opp.removeEstablished(edge);
+    if (this.opponentNetworks !== undefined)
+      this.opponentNetworks[index].removeEstablished(edge);
 
     this.updateRoutingAndReports();
   }
@@ -216,6 +227,10 @@ export class GameNetwork {
     // for each draw of 3 tickets from the available tickets
     // Producing all the combinations takes 18s. Too long. 4060 combinations (30, 3)
     // Take a random sample? N = 100 draws
+    if (this.opponentNetworks === undefined)
+      throw new Error(
+        'getExpectedPointsDrawingTickets: cannot be called by opponents!',
+      );
     const ticketsToDrawFrom = usaMap
       .getTickets()
       .filter(
@@ -231,6 +246,10 @@ export class GameNetwork {
   }
 
   private someOpponentsHaveCompleted(t: Ticket): boolean {
+    if (this.opponentNetworks === undefined)
+      throw new Error(
+        'someOpponentsHaveCompleted: cannot be called by opponents!',
+      );
     return this.opponentNetworks.some(
       (opp) => opp.getTicketReportForTicket(t).remainingConnections.length == 0,
     );
