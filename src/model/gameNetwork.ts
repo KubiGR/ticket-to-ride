@@ -46,8 +46,10 @@ export class GameNetwork {
   }
 
   getOpponentNetwork(index = 0): GameNetwork | undefined {
-    if (this.opponentNetworks !== undefined)
-      return this.opponentNetworks[index];
+    if (this.opponentNetworks === undefined) return undefined;
+    if (index >= this.opponentNetworks.length)
+      throw new Error('getOpponentNetwork: no opponent with index: ' + index);
+    return this.opponentNetworks[index];
   }
 
   createOpponent(): number {
