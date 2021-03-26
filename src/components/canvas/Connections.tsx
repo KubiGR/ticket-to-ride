@@ -22,7 +22,7 @@ export const Connections = observer(
           connectionDrawColor = UIConstants.bestRouteConnectionColor;
           connectionDrawOpacity = 1;
         }
-        if (connectionType.includes('cannotPass')) {
+        if (connectionType.includes('0')) {
           connectionDrawColor = UIConstants.cannotPassConnectionColor;
           connectionDrawOpacity = 1;
         }
@@ -44,9 +44,9 @@ export const Connections = observer(
             opacity={connectionDrawOpacity}
             onClick={(e) => {
               if (e.evt.button === 0) {
-                mapStore.toggleCannotPassConnection(connectionId);
+                mapStore.toggleCannotPassConnection(connectionId, 0);
               } else if (e.evt.button === 2) {
-                mapStore.toggleShouldPassConnection(connectionId);
+                mapStore.toggleShouldPassConnection(connectionId, 0);
               }
             }}
           />,
@@ -63,9 +63,9 @@ export const Connections = observer(
             opacity={connectionDrawOpacity}
             onClick={(e) => {
               if (e.evt.button === 0) {
-                mapStore.toggleCannotPassConnection(connectionId);
+                mapStore.toggleCannotPassConnection(connectionId, 0);
               } else if (e.evt.button === 2) {
-                mapStore.toggleShouldPassConnection(connectionId);
+                mapStore.toggleShouldPassConnection(connectionId, 0);
               }
             }}
           />,
@@ -79,15 +79,16 @@ export const Connections = observer(
             opacity={connectionDrawOpacity}
             onClick={(e) => {
               if (e.evt.button === 0) {
-                mapStore.toggleCannotPassConnection(connectionId);
+                mapStore.toggleCannotPassConnection(connectionId, 0);
               } else if (e.evt.button === 2) {
-                mapStore.toggleShouldPassConnection(connectionId);
+                mapStore.toggleShouldPassConnection(connectionId, 0);
               }
             }}
           />,
         ];
       }
     });
+
     return <>{jsxConnectionsArray}</>;
   },
 );

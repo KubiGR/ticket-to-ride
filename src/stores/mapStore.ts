@@ -11,24 +11,25 @@ export class MapStore {
   gameNetwork = new GameNetwork();
   selectedCities: string[] = [];
   selectedTickets: Ticket[] = [];
-  cannotPassConnections: Connection[] = [];
+  allOpponentsCannotPassConnections: Connection[][] = [[]];
   establishedConnections: Connection[] = [];
   connectionsArray: Connection[] = [];
   ticketReports: TicketReport[] = [];
-  opponentTicketReports: TicketReport[] = [];
+  opponentTicketReports: TicketReport[][] = [[]];
   impConTickets = observable.array<Ticket>();
 
   constructor() {
     makeAutoObservable(this);
-    const opponentIndex = this.gameNetwork.createOpponent();
-    console.log(opponentIndex);
+    for (let i = 0; i < 5; i++) {
+      this.gameNetwork.createOpponent();
+    }
     this.gameNetwork.setPointImportance(0.19);
 
     reaction(
       () => [
         this.selectedTickets.length,
         this.establishedConnections.length,
-        this.cannotPassConnections.length,
+        this.allOpponentsCannotPassConnections.some((con) => con.length !== 0),
       ],
       () => {
         this.connectionsArray = this.gameNetwork
@@ -42,7 +43,7 @@ export class MapStore {
     reaction(
       () => [
         this.establishedConnections.length,
-        this.cannotPassConnections.length,
+        this.allOpponentsCannotPassConnections.some((con) => con.length !== 0),
       ],
       () => {
         this.gameNetwork
@@ -61,26 +62,32 @@ export class MapStore {
               ticketReport.connectionsCompletionRate() >=
                 Constants.COMPLETION_PERC,
           );
-        const opponentNetwork = this.gameNetwork.getOpponentNetwork();
-        if (opponentNetwork) {
-          this.opponentTicketReports = opponentNetwork
-            .getTicketReports()
-            .filter(
-              (ticketReport) =>
-                ticketReport.reachable &&
-                ticketReport.remainingConnections.length <=
-                  Constants.REMAININING_CONNECTIONS_LEN &&
-                ticketReport.remainingTrains <= Constants.REMAINING_TRAINS &&
-                ticketReport.connectionsCompletionRate() >=
-                  Constants.COMPLETION_PERC,
-            );
+        for (let i = 0; i < 5; i++) {
+          const opponentNetwork = this.gameNetwork.getOpponentNetwork(i);
+          if (opponentNetwork) {
+            this.opponentTicketReports[
+              i
+            ] = opponentNetwork
+              .getTicketReports()
+              .filter(
+                (ticketReport) =>
+                  ticketReport.reachable &&
+                  ticketReport.remainingConnections.length <=
+                    Constants.REMAININING_CONNECTIONS_LEN &&
+                  ticketReport.remainingTrains <= Constants.REMAINING_TRAINS &&
+                  ticketReport.connectionsCompletionRate() >=
+                    Constants.COMPLETION_PERC,
+              );
+          }
         }
       },
     );
   }
 
-  get opponentImportantConnectionsWithPointsMap(): Map<Connection, number> {
-    return this.opponentTicketReports.reduce((acc, cur) => {
+  getOpponentImportantConnectionsWithPointsMap(
+    index: number,
+  ): Map<Connection, number> {
+    return this.opponentTicketReports[index].reduce((acc, cur) => {
       cur.remainingConnections.forEach((con) => {
         const connectionExistingPoints = acc.get(con) || 0;
         acc.set(con, connectionExistingPoints + cur.ticket.points);
@@ -89,8 +96,10 @@ export class MapStore {
     }, new Map<Connection, number>());
   }
 
-  get opponentImportantConnectionsWithTicketsMap(): Map<Connection, Ticket[]> {
-    return this.opponentTicketReports.reduce((acc, cur) => {
+  getOpponentImportantConnectionsWithTicketsMap(
+    index: number,
+  ): Map<Connection, Ticket[]> {
+    return this.opponentTicketReports[index].reduce((acc, cur) => {
       cur.remainingConnections.forEach((con) => {
         const ticketsForConnectionArray = acc.get(con);
         if (ticketsForConnectionArray) {
@@ -103,9 +112,9 @@ export class MapStore {
     }, new Map<Connection, Ticket[]>());
   }
 
-  get opponentImportantConnections(): Connection[] {
+  getOpponentImportantConnections(index: number): Connection[] {
     return this.opponentTicketReports
-      .map((ticketReport) => ticketReport.remainingConnections)
+      .map((ticketReport) => ticketReport[index].remainingConnections)
       .flat();
   }
 
@@ -118,13 +127,17 @@ export class MapStore {
       new Map(),
     );
 
-    this.cannotPassConnections.forEach((cannotPassConnection) => {
-      if (connectionTypeSelectionMap.get(cannotPassConnection)) {
-        connectionTypeSelectionMap.get(cannotPassConnection).push('cannotPass');
-      } else {
-        connectionTypeSelectionMap.set(cannotPassConnection, ['cannotPass']);
-      }
-    });
+    this.allOpponentsCannotPassConnections.forEach(
+      (cannotPassConnections, index) => {
+        cannotPassConnections.forEach((con) => {
+          if (connectionTypeSelectionMap.get(con)) {
+            connectionTypeSelectionMap.get(con).push(index.toString());
+          } else {
+            connectionTypeSelectionMap.set(con, [index.toString()]);
+          }
+        });
+      },
+    );
 
     this.establishedConnections.forEach((shouldPassConnection) => {
       if (connectionTypeSelectionMap.get(shouldPassConnection)) {
@@ -135,13 +148,6 @@ export class MapStore {
     });
     return connectionTypeSelectionMap;
   }
-
-  // get connectionsArray(): Connection[] {
-  //   console.log(this.ticketsCities);
-  //   return this.gameNetwork
-  //     .getRouting()
-  //     .getOptConnectionsOfMinSpanningTreeOfShortestRoutes(this.ticketsCities);
-  // }
 
   get availableTrainsCount(): number {
     return (
@@ -225,9 +231,13 @@ export class MapStore {
     }
   }
 
-  toggleShouldPassConnection(con: Connection): void {
-    if (this.cannotPassConnections?.some((e) => e.hasSameCities(con))) {
-      this.removeCannotPassConnection(con);
+  toggleShouldPassConnection(con: Connection, index: number): void {
+    if (
+      this.allOpponentsCannotPassConnections[index]?.some((e) =>
+        e.hasSameCities(con),
+      )
+    ) {
+      this.removeCannotPassConnection(con, index);
     }
     if (!this.establishedConnections?.some((e) => e.hasSameCities(con))) {
       this.addEstablishedConnection(con);
@@ -236,14 +246,18 @@ export class MapStore {
     }
   }
 
-  toggleCannotPassConnection(con: Connection): void {
+  toggleCannotPassConnection(con: Connection, index: number): void {
     if (this.establishedConnections?.some((e) => e.hasSameCities(con))) {
       this.removeEstablishedConnection(con);
     }
-    if (!this.cannotPassConnections?.some((e) => e.hasSameCities(con))) {
-      this.addCannotPassConnection(con);
+    if (
+      !this.allOpponentsCannotPassConnections[index]?.some((e) =>
+        e.hasSameCities(con),
+      )
+    ) {
+      this.addCannotPassConnection(con, index);
     } else {
-      this.removeCannotPassConnection(con);
+      this.removeCannotPassConnection(con, index);
     }
   }
 
@@ -257,13 +271,13 @@ export class MapStore {
     this.gameNetwork.addEstablished(con);
   }
 
-  removeCannotPassConnection(con: Connection): void {
-    removeItemOnce(this.cannotPassConnections, con);
+  removeCannotPassConnection(con: Connection, index: number): void {
+    removeItemOnce(this.allOpponentsCannotPassConnections[index], con);
     this.gameNetwork.removeCannotPass(con);
   }
 
-  addCannotPassConnection(con: Connection): void {
-    this.cannotPassConnections.push(con);
+  addCannotPassConnection(con: Connection, index: number): void {
+    this.allOpponentsCannotPassConnections[index].push(con);
     this.gameNetwork.addCannotPass(con);
   }
 

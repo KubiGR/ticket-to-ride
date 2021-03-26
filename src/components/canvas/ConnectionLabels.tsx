@@ -14,15 +14,15 @@ export const ConnectionLabels = observer(
         .getConnection(con.from, con.to);
       if (
         Array.from(
-          mapStore.opponentImportantConnectionsWithPointsMap.keys(),
+          mapStore.getOpponentImportantConnectionsWithPointsMap(0).keys(),
         ).includes(connectionId)
       ) {
-        const totalConnectionPoints = mapStore.opponentImportantConnectionsWithPointsMap.get(
-          connectionId,
-        );
-        const opponentTicketsForConnect = mapStore.opponentImportantConnectionsWithTicketsMap.get(
-          connectionId,
-        );
+        const totalConnectionPoints = mapStore
+          .getOpponentImportantConnectionsWithPointsMap(0)
+          .get(connectionId);
+        const opponentTicketsForConnect = mapStore
+          .getOpponentImportantConnectionsWithTicketsMap(0)
+          .get(connectionId);
 
         let rectWidthFactor;
         if (opponentTicketsForConnect) {
