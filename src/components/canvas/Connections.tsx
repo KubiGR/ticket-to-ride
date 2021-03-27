@@ -91,7 +91,7 @@ export const Connections = observer(
             opacity={connectionDrawOpacity}
             onClick={(e) => {
               if (e.evt.button === 2) {
-                mapStore.toggleCannotPassConnection(
+                mapStore.toggleOpponentConnection(
                   connectionId,
                   selectedOpponentIndex,
                 );
@@ -113,7 +113,7 @@ export const Connections = observer(
             opacity={connectionDrawOpacity}
             onClick={(e) => {
               if (e.evt.button === 2) {
-                mapStore.toggleCannotPassConnection(
+                mapStore.toggleOpponentConnection(
                   connectionId,
                   selectedOpponentIndex,
                 );
@@ -132,7 +132,7 @@ export const Connections = observer(
             opacity={connectionDrawOpacity}
             onClick={(e) => {
               if (e.evt.button === 2) {
-                mapStore.toggleCannotPassConnection(
+                mapStore.toggleOpponentConnection(
                   connectionId,
                   selectedOpponentIndex,
                 );

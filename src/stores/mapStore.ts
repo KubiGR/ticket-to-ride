@@ -244,13 +244,20 @@ export class MapStore {
     }
   }
 
-  toggleCannotPassConnection(con: Connection, index: number): void {
+  toggleOpponentConnection(con: Connection, index: number): void {
     if (this.establishedConnections?.some((e) => e.hasSameCities(con))) {
       this.removeEstablishedConnection(con);
     }
     if (
       !this.allOpponentsConnections[index]?.some((e) => e.hasSameCities(con))
     ) {
+      for (let i = 0; i < 5; i++) {
+        if (
+          this.allOpponentsConnections[i]?.some((e) => e.hasSameCities(con))
+        ) {
+          this.removeOpponentConnection(con, i);
+        }
+      }
       this.addOpponentConnection(con, index);
     } else {
       this.removeOpponentConnection(con, index);
