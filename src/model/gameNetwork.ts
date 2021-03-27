@@ -129,8 +129,13 @@ export class GameNetwork {
         'addCannotPass: ' + edge + ' is in ' + ' established list',
       );
     this.cannotPass.add(edge);
-    if (this.opponentNetworks !== undefined)
+    if (this.opponentNetworks !== undefined) {
       this.opponentNetworks[index].addEstablished(edge);
+      for (let opp = 0; opp < this.opponentNetworks.length; opp++) {
+        if (opp !== index)
+          this.opponentNetworks[opp].addCannotPass(edge, index);
+      }
+    }
 
     this.updateRoutingAndReports();
   }
@@ -146,8 +151,13 @@ export class GameNetwork {
         'removeCannotPass: ' + edge + ' is not in ' + ' cannotPass list',
       );
     this.cannotPass.delete(edge);
-    if (this.opponentNetworks !== undefined)
+    if (this.opponentNetworks !== undefined) {
       this.opponentNetworks[index].removeEstablished(edge);
+      for (let opp = 0; opp < this.opponentNetworks.length; opp++) {
+        if (opp !== index)
+          this.opponentNetworks[opp].removeCannotPass(edge, index);
+      }
+    }
 
     this.updateRoutingAndReports();
   }
