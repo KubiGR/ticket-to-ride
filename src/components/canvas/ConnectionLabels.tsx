@@ -11,10 +11,16 @@ export const ConnectionLabels = observer(
     console.log(mapStore.opponentTicketReports[0].slice());
     console.log(mapStore.opponentTicketReports[1].slice());
 
-    const jsxImportantConnections = usaConnections.map((con) => {
+    const jsxImportantConnections = usaConnections.flatMap((con) => {
       const connectionId = mapStore.gameNetwork
         .getRouting()
         .getConnection(con.from, con.to);
+
+      let countOfOpponentsHavingThisConnection = mapStore.getCountOfOpponentsForImportantConnection(
+        connectionId,
+      );
+
+      const labelsForConnection = [];
       for (let i = 0; i < 5; i++) {
         let labelFill;
         switch (i) {
@@ -36,6 +42,7 @@ export const ConnectionLabels = observer(
             mapStore.getOpponentImportantConnectionsWithPointsMap(i).keys(),
           ).includes(connectionId)
         ) {
+          countOfOpponentsHavingThisConnection--;
           const totalConnectionPoints = mapStore
             .getOpponentImportantConnectionsWithPointsMap(i)
             .get(connectionId);
@@ -50,17 +57,34 @@ export const ConnectionLabels = observer(
             } else {
               rectWidthFactor = 1.7;
             }
-            return (
+            labelsForConnection.push(
               <Group
-                key={con.from + '-' + con.to}
+                key={
+                  con.from +
+                  '-' +
+                  con.to +
+                  'group' +
+                  countOfOpponentsHavingThisConnection
+                }
                 onMouseEnter={() =>
                   mapStore.setImpConTickets(opponentTicketsForConnect)
                 }
                 onMouseLeave={() => mapStore.clearImpConTickets()}
               >
                 <Rect
-                  key={con.from + '-' + con.to + 'backgroundSymbol'}
-                  x={UIConstants.mapWidth * con.symbol1[0]}
+                  key={
+                    con.from +
+                    '-' +
+                    con.to +
+                    'backgroundSymbol' +
+                    countOfOpponentsHavingThisConnection
+                  }
+                  x={
+                    UIConstants.mapWidth * con.symbol1[0] +
+                    UIConstants.rectWidth *
+                      rectWidthFactor *
+                      countOfOpponentsHavingThisConnection
+                  }
                   y={UIConstants.mapWidth * con.symbol1[1]}
                   width={UIConstants.rectWidth * rectWidthFactor}
                   height={UIConstants.rectWidth * 2}
@@ -68,10 +92,19 @@ export const ConnectionLabels = observer(
                   stroke={'black'}
                 />
                 <Text
-                  key={con.from + '-' + con.to + 'textSymbol'}
+                  key={
+                    con.from +
+                    '-' +
+                    con.to +
+                    'textSymbol' +
+                    countOfOpponentsHavingThisConnection
+                  }
                   x={
                     UIConstants.mapWidth * con.symbol1[0] +
-                    UIConstants.rectWidth * 0.4
+                    UIConstants.rectWidth * 0.4 +
+                    UIConstants.rectWidth *
+                      rectWidthFactor *
+                      countOfOpponentsHavingThisConnection
                   }
                   y={
                     UIConstants.mapWidth * con.symbol1[1] +
@@ -82,11 +115,12 @@ export const ConnectionLabels = observer(
                   fontSize={UIConstants.mapWidth * 0.02}
                   fill={'white'}
                 />
-              </Group>
+              </Group>,
             );
           }
         }
       }
+      return labelsForConnection;
     });
     return <>{jsxImportantConnections}</>;
   },
