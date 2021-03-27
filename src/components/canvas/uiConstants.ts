@@ -6,8 +6,11 @@ export abstract class UIConstants {
   static readonly cityFillRadius = UIConstants.mapWidth * 0.008;
   static readonly rectWidth = UIConstants.mapWidth * 0.012;
   static readonly bestRouteConnectionColor = '#7d85ff';
-  static readonly cannotPassConnectionColor = '#ff5959';
-  static readonly establishedConnectionColor = '#4551ff';
+  static readonly opponent1PassConnectionColor = '#c40d00';
+  static readonly opponent2PassConnectionColor = '#3c00ff';
+  static readonly opponent3PassConnectionColor = '#d2d900';
+  static readonly opponent4PassConnectionColor = '#292929';
+  static readonly establishedConnectionColor = '#087016';
   static readonly defaultCityFillColor = '#087016';
   static readonly ticketCityFillColor = '#245096';
   static readonly selectedCityStrokeColor = '#9cad00';

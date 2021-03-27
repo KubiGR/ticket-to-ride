@@ -11,7 +11,7 @@ import {
   removeItemOnce,
   timeout,
 } from 'utils/helpers';
-import { PlayerInfo } from './PlayerInfo';
+import { PlayerInfo } from './playerInfo';
 
 export class GameNetwork {
   private routing: Routing = new Routing();
