@@ -86,6 +86,21 @@ export class MapStore {
     );
   }
 
+  getCountOfOpponentsForImportantConnection(con: Connection): number {
+    let count = 0;
+    this.opponentTicketReports.forEach((opponentTicketReports) => {
+      if (
+        opponentTicketReports.some((ticketReport) =>
+          ticketReport.remainingConnections.some((remainingCon) =>
+            remainingCon.hasSameCities(con),
+          ),
+        )
+      )
+        count++;
+    });
+    return count;
+  }
+
   getOpponentImportantConnectionsWithPointsMap(
     index: number,
   ): Map<Connection, number> {
