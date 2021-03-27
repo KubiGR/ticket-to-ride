@@ -53,6 +53,7 @@ export class MapStore {
           .then((value) => {
             console.log('EXP POINTS', value);
           });
+
         this.ticketReports = this.gameNetwork
           .getTicketReports()
           .filter(
@@ -64,6 +65,7 @@ export class MapStore {
               ticketReport.connectionsCompletionRate() >=
                 Constants.COMPLETION_PERC,
           );
+
         for (let i = 0; i < 5; i++) {
           const opponentNetwork = this.gameNetwork.getOpponentNetwork(i);
           if (opponentNetwork) {
@@ -117,6 +119,30 @@ export class MapStore {
     index: number,
   ): Map<Connection, Ticket[]> {
     return this.opponentTicketReports[index].reduce((acc, cur) => {
+      cur.remainingConnections.forEach((con) => {
+        const ticketsForConnectionArray = acc.get(con);
+        if (ticketsForConnectionArray) {
+          ticketsForConnectionArray.push(cur.ticket);
+        } else {
+          acc.set(con, [cur.ticket]);
+        }
+      });
+      return acc;
+    }, new Map<Connection, Ticket[]>());
+  }
+
+  getImportantConnectionsWithPointsMap(): Map<Connection, number> {
+    return this.ticketReports.reduce((acc, cur) => {
+      cur.remainingConnections.forEach((con) => {
+        const connectionExistingPoints = acc.get(con) || 0;
+        acc.set(con, connectionExistingPoints + cur.ticket.points);
+      });
+      return acc;
+    }, new Map<Connection, number>());
+  }
+
+  getImportantConnectionsWithTicketsMap(): Map<Connection, Ticket[]> {
+    return this.ticketReports.reduce((acc, cur) => {
       cur.remainingConnections.forEach((con) => {
         const ticketsForConnectionArray = acc.get(con);
         if (ticketsForConnectionArray) {
