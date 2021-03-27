@@ -8,11 +8,29 @@ import { MapStore } from 'stores/mapStore';
 type ConnectionLabelsProps = { mapStore: MapStore };
 export const ConnectionLabels = observer(
   ({ mapStore }: ConnectionLabelsProps): JSX.Element => {
+    console.log(mapStore.opponentTicketReports[0].slice());
+    console.log(mapStore.opponentTicketReports[1].slice());
+
     const jsxImportantConnections = usaConnections.map((con) => {
       const connectionId = mapStore.gameNetwork
         .getRouting()
         .getConnection(con.from, con.to);
       for (let i = 0; i < 5; i++) {
+        let labelFill;
+        switch (i) {
+          case 0:
+            labelFill = UIConstants.opponent1PassConnectionColor;
+            break;
+          case 1:
+            labelFill = UIConstants.opponent2PassConnectionColor;
+            break;
+          case 2:
+            labelFill = UIConstants.opponent3PassConnectionColor;
+            break;
+          case 3:
+            labelFill = UIConstants.opponent4PassConnectionColor;
+            break;
+        }
         if (
           Array.from(
             mapStore.getOpponentImportantConnectionsWithPointsMap(i).keys(),
@@ -46,7 +64,7 @@ export const ConnectionLabels = observer(
                   y={UIConstants.mapWidth * con.symbol1[1]}
                   width={UIConstants.rectWidth * rectWidthFactor}
                   height={UIConstants.rectWidth * 2}
-                  fill={'orange'}
+                  fill={labelFill}
                   stroke={'black'}
                 />
                 <Text
@@ -59,8 +77,10 @@ export const ConnectionLabels = observer(
                     UIConstants.mapWidth * con.symbol1[1] +
                     UIConstants.rectWidth * 0.3
                   }
+                  fontFamily={'monospace'}
                   text={totalConnectionPoints?.toString()}
                   fontSize={UIConstants.mapWidth * 0.02}
+                  fill={'white'}
                 />
               </Group>
             );

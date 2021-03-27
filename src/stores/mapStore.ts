@@ -82,7 +82,6 @@ export class MapStore {
               );
           }
         }
-        this.opponentTicketReports.map((arr) => console.log(arr.slice()));
       },
     );
   }
@@ -116,8 +115,8 @@ export class MapStore {
   }
 
   getOpponentImportantConnections(index: number): Connection[] {
-    return this.opponentTicketReports
-      .map((ticketReport) => ticketReport[index].remainingConnections)
+    return this.opponentTicketReports[index]
+      .map((ticketReport) => ticketReport.remainingConnections)
       .flat();
   }
 
@@ -270,18 +269,12 @@ export class MapStore {
 
   removeOpponentConnection(con: Connection, index: number): void {
     removeItemOnce(this.allOpponentsConnections[index], con);
-    const opponentNetwork = this.gameNetwork.getOpponentNetwork(index);
-    if (opponentNetwork) {
-      opponentNetwork.removeCannotPass(con);
-    }
+    this.gameNetwork.removeCannotPass(con, index);
   }
 
   addOpponentConnection(con: Connection, index: number): void {
     this.allOpponentsConnections[index].push(con);
-    const opponentNetwork = this.gameNetwork.getOpponentNetwork(index);
-    if (opponentNetwork) {
-      opponentNetwork.addCannotPass(con);
-    }
+    this.gameNetwork.addCannotPass(con, index);
   }
 
   setImpConTickets(tickets: Ticket[]): void {
