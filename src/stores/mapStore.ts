@@ -6,6 +6,7 @@ import { removeItemOnce } from 'utils/helpers';
 import { usaMap } from 'model/usaMap';
 import { TicketReport } from '../model/ticketReport';
 import { Constants } from 'model/constants';
+import { cardsForConnections, printTC } from 'model/cards';
 
 export class MapStore {
   gameNetwork = new GameNetwork();
@@ -39,6 +40,8 @@ export class MapStore {
           .getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(
             this.selectedTickets,
           );
+        console.log('CARDS NEEDED');
+        console.log(printTC(cardsForConnections(this.connectionsArray)));
       },
     );
 
