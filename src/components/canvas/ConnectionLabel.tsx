@@ -98,8 +98,6 @@ const ConnectionLabel = ({
               </>,
             );
           }
-          console.log(labelArray);
-
           previousPlayerPoints.push(points);
         }
       }
