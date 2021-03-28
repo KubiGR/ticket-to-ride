@@ -8,8 +8,9 @@ export class CardReport {
   private summary: Map<string, MinMax> = new Map();
   private details: TC = [];
 
-  constructor(conn: Connection[]) {
-    this.details = cardsForConnections(conn);
+  constructor(connections: Connection[], established: Connection[]) {
+    const needed = connections.filter((c) => !established.includes(c));
+    this.details = cardsForConnections(needed);
     this.createSummary();
   }
 
