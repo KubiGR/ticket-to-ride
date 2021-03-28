@@ -248,9 +248,9 @@ export class GameNetwork {
       );
     const pickedTickets = getRandomCombinations(sample, 3, ticketsToDrawFrom);
     let total = 0;
-    for (let c = 0; c < pickedTickets.length; c++) {
+    for (const pickedTicket of pickedTickets) {
       await timeout(0);
-      total += this.getExpectedPointsFromTickets(pickedTickets[c]);
+      total += this.getExpectedPointsFromTickets(pickedTicket);
     }
     return total / pickedTickets.length;
   }
@@ -282,8 +282,7 @@ export class GameNetwork {
 
     const alreadyCompleted: TicketReport[] = [];
     const rest: TicketReport[] = [];
-    for (let i = 0; i < achieveable.length; i++) {
-      const ticketReport = achieveable[i];
+    for (const ticketReport of achieveable) {
       if (ticketReport.remainingConnections.length === 0) {
         points += ticketReport.ticket.points;
         alreadyCompleted.push(ticketReport);
@@ -320,8 +319,7 @@ export class GameNetwork {
 
     let maxPoints = 0;
     let maxCombination: Ticket[] = [];
-    for (let i = 0; i < combinations.length; i++) {
-      const combTickets = combinations[i];
+    for (const combTickets of combinations) {
       const combConns = this.routing.getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(
         combTickets,
       );
