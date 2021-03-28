@@ -50,6 +50,14 @@ test.skip('San Francisco Atlanta connections', () => {
   console.log(printTC(cardsForConnections(conns)));
 });
 
+test('Calgary Salt Lake City', () => {
+  const g = new GameNetwork().getRouting();
+  const conns = g.getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets([
+    usaMap.getTicket('Calgary', 'Salt Lake City'),
+  ]);
+  expect(printTC(cardsForConnections(conns))).toBe('(3) Purple   (4) Gray   ');
+});
+
 test.skip('all usa tickets connections', () => {
   const g = new GameNetwork().getRouting();
   const conns = g.getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(

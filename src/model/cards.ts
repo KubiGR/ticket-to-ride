@@ -64,12 +64,13 @@ export function printTC(tc: TC): string {
       } else {
         if (tgc < min) {
           min = tgc;
-        } else if (tgc > max) {
+        }
+        if (tgc > max) {
           max = tgc;
         }
       }
     });
-    if (max != 0)
+    if (min != Infinity)
       if (min === max) {
         if (min != 0) s += '(' + min + ') ' + c + '   ';
       } else s += min + '-' + max + ' ' + c + '   ';
