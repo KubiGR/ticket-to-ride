@@ -33,7 +33,7 @@ export const ConnectionLabelList = observer(
     connections.forEach((con) => {
       jsxImportantConnections.push(
         <ConnectionLabel
-          key={con.from + '-' + con.to + 'group'}
+          key={con.from + '-' + con.to + 'connectionLabels'}
           con={con}
           mapStore={mapStore}
           mapOfPlayersWithTicketsOfConnection={

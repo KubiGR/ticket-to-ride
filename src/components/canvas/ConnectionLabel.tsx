@@ -18,11 +18,11 @@ const ConnectionLabel = ({
   mapOfPlayersWithTicketsOfConnection,
 }: ConnectionLabelProps): JSX.Element => {
   const labelArray: JSX.Element[] = [];
-  const ticketsForConnection: Set<Ticket> = new Set();
   const jsonCon = getConnectionFromJson(con);
   const previousPlayerPoints: number[] = [];
   for (let i = 0; i < 5; i++) {
     if (Array.from(mapOfPlayersWithTicketsOfConnection.keys()).includes(i)) {
+      const ticketsForConnection: Set<Ticket> = new Set();
       const points = mapOfPlayersWithTicketsOfConnection
         .get(i)
         ?.reduce((acc, cur) => {
@@ -38,7 +38,12 @@ const ConnectionLabel = ({
       });
       if (points) {
         if (i === 0) {
-          const playerConnectionLabels = createLabelForPlayer(con, points);
+          const playerConnectionLabels = createLabelForPlayer(
+            con,
+            points,
+            ticketsForConnection,
+            mapStore,
+          );
           if (playerConnectionLabels) {
             labelArray.push(playerConnectionLabels);
           }
@@ -69,9 +74,14 @@ const ConnectionLabel = ({
           }
           if (jsonCon) {
             labelArray.push(
-              <>
+              <Group
+                key={con.from + '-' + con.to + 'opponentGroup' + i}
+                onMouseEnter={() =>
+                  mapStore.setImpConTickets(Array.from(ticketsForConnection))
+                }
+                onMouseLeave={() => mapStore.clearImpConTickets()}
+              >
                 <Rect
-                  key={con.from + '-' + con.to + 'backgroundSymbol' + i}
                   x={UIConstants.mapWidth * jsonCon.symbol1[0] + addToX}
                   y={UIConstants.mapWidth * jsonCon.symbol1[1]}
                   width={UIConstants.rectWidth * rectWidthFactor}
@@ -80,7 +90,6 @@ const ConnectionLabel = ({
                   // stroke={'black'}
                 />
                 <Text
-                  key={con.from + '-' + con.to + 'textSymbol' + i}
                   x={
                     UIConstants.mapWidth * jsonCon.symbol1[0] +
                     UIConstants.rectWidth * 0.4 +
@@ -95,7 +104,7 @@ const ConnectionLabel = ({
                   fontSize={UIConstants.mapWidth * 0.02}
                   fill={'white'}
                 />
-              </>,
+              </Group>,
             );
           }
           previousPlayerPoints.push(points);
@@ -103,29 +112,27 @@ const ConnectionLabel = ({
       }
     }
   }
-  return (
-    <Group
-      onMouseEnter={() =>
-        mapStore.setImpConTickets(Array.from(ticketsForConnection))
-      }
-      onMouseLeave={() => mapStore.clearImpConTickets()}
-    >
-      {labelArray}
-    </Group>
-  );
+  return <>{labelArray}</>;
 };
 
 const createLabelForPlayer = (
   con: Connection,
   points: number,
+  ticketsForConnection: Set<Ticket>,
+  mapStore: MapStore,
 ): JSX.Element | undefined => {
   const rectWidthFactor = points > 9 ? 2.7 : 1.7;
   const jsonCon = getConnectionFromJson(con);
   if (!jsonCon) return;
   return (
-    <>
+    <Group
+      key={con.from + '-' + con.to + 'playerGroup'}
+      onMouseEnter={() =>
+        mapStore.setImpConTickets(Array.from(ticketsForConnection))
+      }
+      onMouseLeave={() => mapStore.clearImpConTickets()}
+    >
       <Rect
-        key={con.from + '-' + con.to + 'backgroundSymbol' + 'player'}
         x={UIConstants.mapWidth * jsonCon.symbol1[0]}
         y={
           UIConstants.mapWidth * jsonCon.symbol1[1] + UIConstants.rectWidth * 2
@@ -136,7 +143,6 @@ const createLabelForPlayer = (
         // stroke={'black'}
       />
       <Text
-        key={con.from + '-' + con.to + 'textSymbol' + 'player'}
         x={
           UIConstants.mapWidth * jsonCon.symbol1[0] +
           UIConstants.rectWidth * 0.4
@@ -151,7 +157,7 @@ const createLabelForPlayer = (
         fontSize={UIConstants.mapWidth * 0.02}
         fill={'white'}
       />
-    </>
+    </Group>
   );
 };
 
