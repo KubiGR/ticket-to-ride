@@ -3,12 +3,10 @@ import { cardColors } from './trackColor';
 
 export type TC = Map<string, number>[];
 
-const colors = cardColors;
-
 export function makeTC(len: number, color1: string, color2 = ''): TC {
-  if (!colors.includes(color1))
+  if (!cardColors.includes(color1))
     throw new Error('makeTC Unknown color1: ' + color1);
-  if (color2 !== '' && !colors.includes(color2))
+  if (color2 !== '' && !cardColors.includes(color2))
     throw new Error('makeTC Unknown color2: ' + color2);
   if (color2 === '') return [new Map([[color1, len]])];
   else return [new Map([[color1, len]]), new Map([[color2, len]])];
@@ -20,7 +18,7 @@ export function add(c1: TC, c2: TC): TC {
   c1.forEach((t1) => {
     c2.forEach((t2) => {
       const t: Map<string, number> = new Map();
-      colors.forEach((c) => {
+      cardColors.forEach((c) => {
         const total = addMap(t1, t2, c);
         if (total != 0) t.set(c, addMap(t1, t2, c));
       });
@@ -45,7 +43,7 @@ function addMap(
 
 export function printTC(tc: TC): string {
   let s = '';
-  colors.forEach((c) => {
+  cardColors.forEach((c) => {
     let min = Infinity;
     let max = 0;
     tc.forEach((t) => {

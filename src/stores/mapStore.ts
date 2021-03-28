@@ -7,6 +7,7 @@ import { usaMap } from 'model/usaMap';
 import { TicketReport } from '../model/ticketReport';
 import { Constants } from 'model/constants';
 import { cardsForConnections, printTC } from 'model/cards';
+import { CardReport } from 'model/cardReport';
 
 export class MapStore {
   gameNetwork = new GameNetwork();
@@ -41,7 +42,8 @@ export class MapStore {
             this.selectedTickets,
           );
         console.log('CARDS NEEDED');
-        console.log(printTC(cardsForConnections(this.connectionsArray)));
+        const cr = new CardReport(this.connectionsArray);
+        console.log(cr.summaryString());
       },
     );
 
