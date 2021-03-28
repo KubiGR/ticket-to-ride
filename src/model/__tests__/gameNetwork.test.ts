@@ -4,20 +4,59 @@ import { GameNetwork } from 'model/gameNetwork';
 import { Ticket } from 'model/ticket';
 import { usaMap } from 'model/usaMap';
 
-describe('opponent', () => {
-  test('is created', () => {
+describe('createOpponent', () => {
+  test('returns the index of the opponent', () => {
+    const gameNetwork = new GameNetwork();
+    expect(gameNetwork.createOpponent()).toBe(0);
+  });
+  test('next createOpponent returns the index of the next opponent', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    expect(gameNetwork.createOpponent()).toBe(1);
+  });
+  test('creates an opponent. Opponent is returned by getOpponentNetwork', () => {
     const gameNetwork = new GameNetwork();
     gameNetwork.createOpponent();
 
     expect(gameNetwork.getOpponentNetwork()).toBeTruthy();
   });
-  test('has no opponent defined (to avoid infinite recursion)', () => {
+  test('opponent has no opponent defined (to avoid infinite recursion)', () => {
     const gameNetwork = new GameNetwork();
     gameNetwork.createOpponent();
 
     expect(
       gameNetwork.getOpponentNetwork()?.getOpponentNetwork(),
     ).toBeUndefined();
+  });
+});
+
+describe('opponent index not found', () => {
+  test('thrown by getOpponentNetwork', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    expect(() => {
+      gameNetwork.getOpponentNetwork(1);
+    }).toThrow();
+  });
+  test('thrown by addCannotPass', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Los Angeles', 'El Paso');
+    expect(() => {
+      gameNetwork.addCannotPass(connection, 1);
+    }).toThrow();
+  });
+  test('thrown by addCannotPass', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Los Angeles', 'El Paso');
+    expect(() => {
+      gameNetwork.removeCannotPass(connection, 1);
+    }).toThrow();
   });
 });
 
