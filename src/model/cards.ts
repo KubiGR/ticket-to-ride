@@ -1,18 +1,9 @@
 import { Connection } from './connection';
+import { cardColors } from './trackColor';
 
 export type TC = Map<string, number>[];
 
-const colors: string[] = [
-  'Red',
-  'Black',
-  'Green',
-  'Yellow',
-  'Blue',
-  'Orange',
-  'White',
-  'Purple',
-  'Gray',
-];
+const colors = cardColors;
 
 export function makeTC(len: number, color1: string, color2 = ''): TC {
   if (!colors.includes(color1))

@@ -9,3 +9,5 @@ export enum TrackColor {
   Gray = 'Gray',
   Green = 'Green',
 }
+
+export const cardColors: readonly string[] = Object.keys(TrackColor);
