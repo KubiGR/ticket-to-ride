@@ -22,9 +22,6 @@ const handleKeyInput = (
     case '4':
       setSelectedOpponentIndex(3);
       break;
-    case '5':
-      setSelectedOpponentIndex(4);
-      break;
   }
 };
 
