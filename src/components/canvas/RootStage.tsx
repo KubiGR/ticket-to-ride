@@ -7,7 +7,7 @@ import Konva from 'konva';
 import Connections from 'components/canvas/Connections';
 import { UIConstants } from 'components/canvas/uiConstants';
 import Cities from 'components/canvas/Cities';
-import ConnectionLabels from './ConnectionLabels';
+import ConnectionLabelList from './ConnectionLabelList';
 import AnimatedCities from './AnimatedCities';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -34,7 +34,7 @@ export const RootStage = observer(() => {
         <MapImage width={UIConstants.mapWidth} height={UIConstants.mapHeight} />
         <Connections mapStore={mapStore} />
         <Cities mapStore={mapStore} />
-        <ConnectionLabels mapStore={mapStore} />
+        <ConnectionLabelList mapStore={mapStore} />
       </Layer>
       <Layer ref={animationLayerRef}>
         <AnimatedCities
