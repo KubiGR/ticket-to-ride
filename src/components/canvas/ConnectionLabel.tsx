@@ -33,7 +33,8 @@ const ConnectionLabel = ({
           }
         }, 0);
       mapOfPlayersWithTicketsOfConnection.get(i)?.forEach((ticketReport) => {
-        ticketsForConnection.add(ticketReport.ticket);
+        if (ticketReport.remainingConnections.includes(con))
+          ticketsForConnection.add(ticketReport.ticket);
       });
       if (points) {
         if (i === 0) {
@@ -97,6 +98,8 @@ const ConnectionLabel = ({
               </>,
             );
           }
+          console.log(labelArray);
+
           previousPlayerPoints.push(points);
         }
       }
