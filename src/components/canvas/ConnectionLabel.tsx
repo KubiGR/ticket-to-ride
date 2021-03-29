@@ -37,21 +37,21 @@ const ConnectionLabel = ({
           ticketsForConnection.add(ticketReport.ticket);
       });
       if (points) {
+        const rectWidthFactor = points > 9 ? 2.4 : 1.6;
         if (i === 0) {
           const playerConnectionLabels = createLabelForPlayer(
             con,
             points,
             ticketsForConnection,
             mapStore,
+            rectWidthFactor,
           );
           if (playerConnectionLabels) {
             labelArray.push(playerConnectionLabels);
           }
         } else {
-          const rectWidthFactor = points > 9 ? 2.7 : 1.7;
           const addToX = previousPlayerPoints.reduce((acc, cur) => {
             if (cur) {
-              const rectWidthFactor = cur > 9 ? 2.7 : 1.7;
               return (acc += UIConstants.rectWidth * rectWidthFactor);
             } else {
               return acc;
@@ -85,7 +85,7 @@ const ConnectionLabel = ({
                   x={UIConstants.mapWidth * jsonCon.symbol1[0] + addToX}
                   y={UIConstants.mapWidth * jsonCon.symbol1[1]}
                   width={UIConstants.rectWidth * rectWidthFactor}
-                  height={UIConstants.rectWidth * 2}
+                  height={UIConstants.rectWidth * 1.8}
                   fill={labelFill}
                   // stroke={'black'}
                 />
@@ -97,11 +97,11 @@ const ConnectionLabel = ({
                   }
                   y={
                     UIConstants.mapWidth * jsonCon.symbol1[1] +
-                    UIConstants.rectWidth * 0.3
+                    UIConstants.rectWidth * 0.25
                   }
                   fontFamily={'monospace'}
                   text={points.toString()}
-                  fontSize={UIConstants.mapWidth * 0.02}
+                  fontSize={UIConstants.mapWidth * 0.015}
                   fill={'white'}
                 />
               </Group>,
@@ -120,8 +120,8 @@ const createLabelForPlayer = (
   points: number,
   ticketsForConnection: Set<Ticket>,
   mapStore: MapStore,
+  rectWidthFactor: number,
 ): JSX.Element | undefined => {
-  const rectWidthFactor = points > 9 ? 2.7 : 1.7;
   const jsonCon = getConnectionFromJson(con);
   if (!jsonCon) return;
   return (
@@ -138,7 +138,7 @@ const createLabelForPlayer = (
           UIConstants.mapWidth * jsonCon.symbol1[1] + UIConstants.rectWidth * 2
         }
         width={UIConstants.rectWidth * rectWidthFactor}
-        height={UIConstants.rectWidth * 2}
+        height={UIConstants.rectWidth * 1.8}
         fill={UIConstants.establishedConnectionColor}
         // stroke={'black'}
       />
@@ -154,7 +154,7 @@ const createLabelForPlayer = (
         }
         fontFamily={'monospace'}
         text={points.toString()}
-        fontSize={UIConstants.mapWidth * 0.02}
+        fontSize={UIConstants.mapWidth * 0.015}
         fill={'white'}
       />
     </Group>
