@@ -2,7 +2,7 @@ import React, { RefObject, useRef } from 'react';
 import Konva from 'konva';
 import { Circle } from 'react-konva';
 import usaCities from 'data/usaCities.json';
-import { UIConstants } from 'components/canvas/uiConstants';
+import UIConstants from 'components/canvas/uiConstants';
 
 type AnimatedCityProps = {
   cityName: string;

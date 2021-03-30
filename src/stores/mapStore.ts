@@ -7,9 +7,11 @@ import { usaMap } from 'model/usaMap';
 import { TicketReport } from '../model/ticketReport';
 import { Constants } from 'model/constants';
 import { CardReport } from 'model/cardReport';
+import UIConstants from 'components/canvas/uiConstants';
 
 export class MapStore {
   gameNetwork = new GameNetwork();
+  uiConstants = new UIConstants();
   selectedCities: string[] = [];
   selectedTickets: Ticket[] = [];
   allOpponentsConnections: Connection[][] = [];
