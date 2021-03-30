@@ -1,11 +1,18 @@
 import { observer } from 'mobx-react';
 import { useMapStore } from 'providers/MapStoreProvider';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { HexColorPicker } from 'react-colorful';
 
 const PlayerInfo = observer(
   (): JSX.Element => {
     const mapStore = useMapStore();
+    const innerRef = useRef<HTMLDivElement>(null);
     const player0ColorButtonRef = useRef<HTMLDivElement>(null);
     const player1ColorButtonRef = useRef<HTMLDivElement>(null);
     const player2ColorButtonRef = useRef<HTMLDivElement>(null);
@@ -55,6 +62,24 @@ const PlayerInfo = observer(
         mapStore.uiConstants.opponent4PassConnectionColor,
       ],
     );
+
+    const clickListener = useCallback(
+      (e: MouseEvent) => {
+        if (innerRef.current && !innerRef.current.contains(e.target as Node)) {
+          if (showColorPicker) {
+            setShowColorPicker(false);
+          }
+        }
+      },
+      [showColorPicker],
+    );
+
+    useEffect(() => {
+      document.addEventListener('click', clickListener);
+      return () => {
+        document.removeEventListener('click', clickListener);
+      };
+    }, [clickListener]);
 
     useEffect(() => {
       const timeoutId = setInterval(() => {
@@ -115,21 +140,23 @@ const PlayerInfo = observer(
           />
         ))}
         {showColorPicker ? (
-          <HexColorPicker
-            style={{
-              position: 'absolute',
-              left: playerColorBoxesInfo[
-                colorToChange
-              ].playerColorButtonRef.current?.getBoundingClientRect().x,
-              top: playerColorBoxesInfo[
-                colorToChange
-              ].playerColorButtonRef.current?.getBoundingClientRect().bottom,
-            }}
-            color={playerColorBoxesInfo[colorToChange].color}
-            onChange={(color) => {
-              mapStore.uiConstants.setConnectionColor(colorToChange, color);
-            }}
-          />
+          <div ref={innerRef}>
+            <HexColorPicker
+              style={{
+                position: 'absolute',
+                left: playerColorBoxesInfo[
+                  colorToChange
+                ].playerColorButtonRef.current?.getBoundingClientRect().x,
+                top: playerColorBoxesInfo[
+                  colorToChange
+                ].playerColorButtonRef.current?.getBoundingClientRect().bottom,
+              }}
+              color={playerColorBoxesInfo[colorToChange].color}
+              onChange={(color) => {
+                mapStore.uiConstants.setConnectionColor(colorToChange, color);
+              }}
+            />
+          </div>
         ) : null}
       </>
     );
