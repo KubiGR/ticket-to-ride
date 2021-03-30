@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import usaConnections from 'data/usaConnections.json';
 import { observer } from 'mobx-react';
 import { Line } from 'react-konva';
-import { UIConstants } from './uiConstants';
+import UIConstants from './uiConstants';
 import { MapStore } from 'stores/mapStore';
 
 const handleKeyInput = (
@@ -55,23 +55,27 @@ export const Connections = observer(
           connectionDrawOpacity = 1;
         }
         if (connectionType.includes('0')) {
-          connectionDrawColor = UIConstants.opponent1PassConnectionColor;
+          connectionDrawColor =
+            mapStore.uiConstants.opponent1PassConnectionColor;
           connectionDrawOpacity = 1;
         }
         if (connectionType.includes('1')) {
-          connectionDrawColor = UIConstants.opponent2PassConnectionColor;
+          connectionDrawColor =
+            mapStore.uiConstants.opponent2PassConnectionColor;
           connectionDrawOpacity = 1;
         }
         if (connectionType.includes('2')) {
-          connectionDrawColor = UIConstants.opponent3PassConnectionColor;
+          connectionDrawColor =
+            mapStore.uiConstants.opponent3PassConnectionColor;
           connectionDrawOpacity = 1;
         }
         if (connectionType.includes('3')) {
-          connectionDrawColor = UIConstants.opponent4PassConnectionColor;
+          connectionDrawColor =
+            mapStore.uiConstants.opponent4PassConnectionColor;
           connectionDrawOpacity = 1;
         }
         if (connectionType.includes('shouldPass')) {
-          connectionDrawColor = UIConstants.establishedConnectionColor;
+          connectionDrawColor = mapStore.uiConstants.establishedConnectionColor;
           connectionDrawOpacity = 1;
         }
       }

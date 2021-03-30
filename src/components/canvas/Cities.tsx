@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { Circle } from 'react-konva';
-import { UIConstants } from './uiConstants';
+import UIConstants from './uiConstants';
 import { MapStore } from 'stores/mapStore';
 import usaCities from 'data/usaCities.json';
 

@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import { useMapStore } from 'providers/MapStoreProvider';
 import Konva from 'konva';
 import Connections from 'components/canvas/Connections';
-import { UIConstants } from 'components/canvas/uiConstants';
+import UIConstants from 'components/canvas/uiConstants';
 import Cities from 'components/canvas/Cities';
 import ConnectionLabelList from './ConnectionLabelList';
 import AnimatedCities from './AnimatedCities';
