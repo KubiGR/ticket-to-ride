@@ -18,14 +18,21 @@ const PlayerInfo = observer(
     const player2ColorButtonRef = useRef<HTMLDivElement>(null);
     const player3ColorButtonRef = useRef<HTMLDivElement>(null);
     const player4ColorButtonRef = useRef<HTMLDivElement>(null);
-    const [button0Pos, setButton0Pos] = useState<DOMRect>();
-    const [button1Pos, setButton1Pos] = useState<DOMRect>();
-    const [button2Pos, setButton2Pos] = useState<DOMRect>();
-    const [button3Pos, setButton3Pos] = useState<DOMRect>();
-    const [button4Pos, setButton4Pos] = useState<DOMRect>();
+    // const buttonPositionsMap = useMemo(
+    //   () =>
+    //     new Map([
+    //       [0, null],
+    //       [1, null],
+    //       [2, null],
+    //       [3, null],
+    //       [4, null],
+    //     ]),
+    //   [],
+    // );
+    // const [buttonPositions, setButtonPositions] = useState<Map<number,DOMRect | null>>(buttonPositionsMap);
     const [showColorPicker, setShowColorPicker] = useState(false);
     const [colorToChange, setColorToChange] = useState(0);
-    const intervalRef = useRef<NodeJS.Timeout>();
+    // const intervalRef = useRef<NodeJS.Timeout>();
     const playerColorBoxesInfo = useMemo(
       () => [
         {
@@ -81,44 +88,56 @@ const PlayerInfo = observer(
       };
     }, [clickListener]);
 
-    useEffect(() => {
-      const timeoutId = setInterval(() => {
-        const pos0 = playerColorBoxesInfo[0].playerColorButtonRef.current?.getBoundingClientRect();
-        const pos1 = playerColorBoxesInfo[1].playerColorButtonRef.current?.getBoundingClientRect();
-        const pos2 = playerColorBoxesInfo[2].playerColorButtonRef.current?.getBoundingClientRect();
-        const pos3 = playerColorBoxesInfo[3].playerColorButtonRef.current?.getBoundingClientRect();
-        const pos4 = playerColorBoxesInfo[4].playerColorButtonRef.current?.getBoundingClientRect();
-        if (JSON.stringify(pos0) !== JSON.stringify(button0Pos)) {
-          setButton0Pos(pos0);
-        }
-        if (JSON.stringify(pos1) !== JSON.stringify(button1Pos)) {
-          setButton1Pos(pos1);
-        }
-        if (JSON.stringify(pos2) !== JSON.stringify(button2Pos)) {
-          setButton2Pos(pos2);
-        }
-        if (JSON.stringify(pos3) !== JSON.stringify(button3Pos)) {
-          setButton3Pos(pos3);
-        }
-        if (JSON.stringify(pos4) !== JSON.stringify(button4Pos)) {
-          setButton4Pos(pos4);
-        }
-      }, 100);
-      intervalRef.current = timeoutId;
+    // useEffect(() => {
+    //   const timeoutId = setInterval(() => {
+    //     const pos0 = playerColorBoxesInfo[0].playerColorButtonRef.current?.getBoundingClientRect();
+    //     const pos1 = playerColorBoxesInfo[1].playerColorButtonRef.current?.getBoundingClientRect();
+    //     const pos2 = playerColorBoxesInfo[2].playerColorButtonRef.current?.getBoundingClientRect();
+    //     const pos3 = playerColorBoxesInfo[3].playerColorButtonRef.current?.getBoundingClientRect();
+    //     const pos4 = playerColorBoxesInfo[4].playerColorButtonRef.current?.getBoundingClientRect();
+    //     if (
+    //       pos0 &&
+    //       JSON.stringify(pos0) !== JSON.stringify(buttonPositions?.get(0))
+    //     ) {
+    //       setButtonPositions((prevState) => {
+    //         prevState.set(0, pos0);
+    //         const arrayTmp = Array.from(prevState).slice();
+    //         return new Map(arrayTmp);
+    //       });
+    //     }
+    //     if (
+    //       pos1 &&
+    //       JSON.stringify(pos1) !== JSON.stringify(buttonPositions?.get(1))
+    //     ) {
+    //       setButtonPositions((prevState) => prevState?.set(1, pos1));
+    //     }
+    //     if (
+    //       pos2 &&
+    //       JSON.stringify(pos2) !== JSON.stringify(buttonPositions?.get(2))
+    //     ) {
+    //       setButtonPositions((prevState) => prevState?.set(2, pos2));
+    //     }
+    //     if (
+    //       pos3 &&
+    //       JSON.stringify(pos3) !== JSON.stringify(buttonPositions?.get(3))
+    //     ) {
+    //       setButtonPositions((prevState) => prevState?.set(3, pos3));
+    //     }
+    //     if (
+    //       pos4 &&
+    //       JSON.stringify(pos4) !== JSON.stringify(buttonPositions?.get(4))
+    //     ) {
+    //       setButtonPositions((prevState) => prevState?.set(4, pos4));
+    //     }
+    //   }, 100);
+    //   intervalRef.current = timeoutId;
 
-      return () => {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-        }
-      };
-    }, [
-      button0Pos,
-      button1Pos,
-      button2Pos,
-      button3Pos,
-      button4Pos,
-      playerColorBoxesInfo,
-    ]);
+    //   return () => {
+    //     if (intervalRef.current) {
+    //       clearInterval(intervalRef.current);
+    //     }
+    //   };
+    // }, [buttonPositions, playerColorBoxesInfo]);
 
     return (
       <>
@@ -146,7 +165,7 @@ const PlayerInfo = observer(
                 position: 'absolute',
                 left: playerColorBoxesInfo[
                   colorToChange
-                ].playerColorButtonRef.current?.getBoundingClientRect().x,
+                ].playerColorButtonRef.current?.getBoundingClientRect().left,
                 top: playerColorBoxesInfo[
                   colorToChange
                 ].playerColorButtonRef.current?.getBoundingClientRect().bottom,
