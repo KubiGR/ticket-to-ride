@@ -51,8 +51,7 @@ class USAMap {
   }
 
   getTicket(from: string, to: string): Ticket {
-    for (let i = 0; i < this.tickets.length; i++) {
-      const ticket = this.tickets[i];
+    for (const ticket of this.tickets) {
       if (
         (ticket.from === from && ticket.to === to) ||
         (ticket.to === from && ticket.from === to)

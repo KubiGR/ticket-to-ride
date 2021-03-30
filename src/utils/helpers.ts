@@ -46,9 +46,9 @@ export function minimumOfArray(numbers: number[]): number {
   if (numbers.length == 0)
     throw new Error('minimumOfArray:  array cannot be empty');
   let minNumber = numbers[0];
-  for (let i = 1; i < numbers.length; i++) {
-    if (numbers[i] < minNumber) {
-      minNumber = numbers[i];
+  for (const number of numbers) {
+    if (number < minNumber) {
+      minNumber = number;
     }
   }
   return minNumber;

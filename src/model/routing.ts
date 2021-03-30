@@ -58,8 +58,7 @@ export class Routing {
   }
 
   getConnection(from: string, to: string): Connection {
-    for (let i = 0; i < this.mapEdges.length; i++) {
-      const connection = this.mapEdges[i];
+    for (const connection of this.mapEdges) {
       if (from != to && connection.contains(from) && connection.contains(to))
         return connection;
     }
