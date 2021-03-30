@@ -4,6 +4,10 @@ import { GameNetwork } from 'model/gameNetwork';
 import { Ticket } from 'model/ticket';
 import { usaMap } from 'model/usaMap';
 
+beforeEach(() => {
+  usaMap.reset();
+});
+
 describe('createOpponent', () => {
   test('returns the index of the opponent', () => {
     const gameNetwork = new GameNetwork();
@@ -124,9 +128,49 @@ test('getConnection  (not found)', () => {
   }).toThrow();
 });
 
+describe('addEstablished/removeEstablished', () => {
+  test('cannot place in both tracks', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const SP = gameNetwork.getRouting().getConnection('Seattle', 'Portland');
+    gameNetwork.addEstablished(SP, 1);
+
+    expect(() => {
+      gameNetwork.addEstablished(SP, 0);
+    }).toThrow();
+  });
+  test('removing a free track throws an error', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const SP = gameNetwork.getRouting().getConnection('Seattle', 'Portland');
+
+    expect(() => {
+      gameNetwork.removeEstablished(SP, 1);
+    }).toThrow();
+  });
+  test('removing other players track throws an error', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const SP = gameNetwork.getRouting().getConnection('Seattle', 'Portland');
+    gameNetwork.addCannotPass(SP, 0, 1);
+
+    expect(() => {
+      gameNetwork.removeEstablished(SP, 1);
+    }).toThrow();
+  });
+  test('adding and removing makes the track available', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const SP = gameNetwork.getRouting().getConnection('Seattle', 'Portland');
+    gameNetwork.addEstablished(SP, 1);
+    gameNetwork.removeEstablished(SP, 1);
+    expect(SP.getTrackPlayer(1)).toBeUndefined();
+  });
+});
 describe('addCannotPass/established restrictions', () => {
   let gameNetwork: GameNetwork;
   let LA_ElPaso: Connection;
+
   beforeEach(() => {
     gameNetwork = new GameNetwork();
     gameNetwork.createOpponent();
@@ -151,6 +195,48 @@ describe('addCannotPass/established restrictions', () => {
     expect(() => {
       gameNetwork.addEstablished(connection);
     }).toThrow();
+  });
+
+  test('addEstablished error when trackNr already established', () => {
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Los Angeles', 'El Paso');
+    gameNetwork.addEstablished(connection);
+
+    expect(() => {
+      gameNetwork.addEstablished(connection);
+    }).toThrow();
+  });
+  test('addEstablished error when trackNr 0 already established by other player', () => {
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Los Angeles', 'El Paso');
+    gameNetwork.addCannotPass(connection);
+
+    expect(() => {
+      gameNetwork.addEstablished(connection);
+    }).toThrow();
+  });
+
+  test('addEstablished error when trackNr 1 already established by other player', () => {
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Seattle', 'Portland');
+    gameNetwork.addCannotPass(connection, 0, 1);
+
+    expect(() => {
+      gameNetwork.addEstablished(connection, 1);
+    }).toThrow();
+  });
+
+  test('addEstablished works when a different track on the same connection is chosen', () => {
+    gameNetwork.createOpponent(); //2nd
+    gameNetwork.createOpponent(); // 3rd
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Seattle', 'Portland');
+    gameNetwork.addCannotPass(connection, 0, 0);
+    gameNetwork.addEstablished(connection, 1);
   });
 
   test('established connections reduce train number', () => {
