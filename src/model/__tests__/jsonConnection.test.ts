@@ -14,8 +14,6 @@ describe('getConnectionFromJson', () => {
       .getRouting()
       .getConnection('Vancouver', 'Calgary');
     const jsonConn = getConnectionFromJson(conn);
-    console.log(conn);
-    console.log(jsonConn);
     expect(jsonConn).toBeDefined();
     expect(jsonConn?.from).toBe('Vancouver');
     expect(jsonConn?.to).toBe('Calgary');

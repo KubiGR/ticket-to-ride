@@ -7,7 +7,7 @@ import { usaMap } from 'model/usaMap';
  */
 const NUMBEROPPS = 3;
 
-test('overlap', () => {
+test.skip('overlap', () => {
   const connections = usaMap.getConnections();
   let overlaps = 0;
   for (let i = 0; i < connections.length; i++) {
