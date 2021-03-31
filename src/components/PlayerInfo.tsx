@@ -177,6 +177,7 @@ const PlayerInfo = observer(
             />
           </div>
         ) : null}
+        <button onClick={() => mapStore.reset()}>Reset</button>
       </>
     );
   },

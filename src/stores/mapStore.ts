@@ -22,12 +22,7 @@ export class MapStore {
 
   constructor() {
     makeAutoObservable(this);
-    for (let i = 1; i < 5; i++) {
-      this.gameNetwork.createOpponent();
-      this.allOpponentsConnections.push([]);
-      this.ticketReports.push([]);
-    }
-    this.gameNetwork.setPointImportance(0.19);
+    this.initMapStore();
 
     reaction(
       () => [
@@ -94,6 +89,25 @@ export class MapStore {
         }
       },
     );
+  }
+
+  private initMapStore() {
+    usaMap.reset();
+    this.gameNetwork = new GameNetwork();
+    this.uiConstants = new UIConstants();
+    this.selectedCities = [];
+    this.selectedTickets = [];
+    this.allOpponentsConnections = [];
+    this.establishedConnections = [];
+    this.connectionsArray = [];
+    this.ticketReports = [[]];
+    this.impConTickets = observable.array<Ticket>();
+    for (let i = 1; i < 5; i++) {
+      this.gameNetwork.createOpponent();
+      this.allOpponentsConnections.push([]);
+      this.ticketReports.push([]);
+    }
+    this.gameNetwork.setPointImportance(0.19);
   }
 
   getImportantConnectionsWithPointsMap(index: number): Map<Connection, number> {
@@ -298,5 +312,9 @@ export class MapStore {
 
   clearImpConTickets(): void {
     this.impConTickets.clear();
+  }
+
+  reset(): void {
+    this.initMapStore();
   }
 }
