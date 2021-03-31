@@ -85,17 +85,87 @@ describe('getRouting().getShortestPath', () => {
     expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
   });
 
-  test('getShortestPath with established (inverse)', () => {
+  test('with cannot pass single line 2 players', () => {
     const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
     const connection = gameNetwork
       .getRouting()
-      .getConnection('El Paso', 'Los Angeles');
-    gameNetwork.addEstablished(connection);
+      .getConnection('Calgary', 'Helena');
 
+    gameNetwork.addCannotPass(connection);
     const path = gameNetwork
       .getRouting()
-      .getShortestPath('Los Angeles', 'Denver');
-    expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
+      .getShortestPath('Calgary', 'Salt Lake City');
+    console.log(path);
+    expect(path).toEqual(['Calgary', 'Seattle', 'Portland', 'Salt Lake City']);
+  });
+
+  test('with cannot pass double line 2 players', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Kansas City', 'Oklahoma City');
+
+    gameNetwork.addCannotPass(connection);
+    const path = gameNetwork
+      .getRouting()
+      .getShortestPath('Kansas City', 'Houston');
+    console.log(path);
+    expect(path.length > 4).toBe(true);
+  });
+
+  test('with double line one track blocked 4 players', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Kansas City', 'Oklahoma City');
+
+    gameNetwork.addCannotPass(connection);
+    const path = gameNetwork
+      .getRouting()
+      .getShortestPath('Kansas City', 'Houston');
+    console.log(path);
+    expect(path).toEqual(['Kansas City', 'Oklahoma City', 'Dallas', 'Houston']);
+  });
+  test('with double line both tracks blocked 4 players', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Kansas City', 'Oklahoma City');
+
+    gameNetwork.addCannotPass(connection, 0, 0);
+    console.log(connection.isAvailable());
+    gameNetwork.addCannotPass(connection, 1, 1);
+    const path = gameNetwork
+      .getRouting()
+      .getShortestPath('Kansas City', 'Houston');
+    console.log(path);
+    const conns = gameNetwork.getRouting().getConnectionsForPath(path);
+    expect(conns.includes(connection)).toBe(false);
+  });
+  test('with cannot pass single line 5 players', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Calgary', 'Helena');
+
+    gameNetwork.addCannotPass(connection);
+    const path = gameNetwork
+      .getRouting()
+      .getShortestPath('Calgary', 'Salt Lake City');
+    console.log(path);
+    expect(path).toEqual(['Calgary', 'Seattle', 'Portland', 'Salt Lake City']);
   });
 });
 

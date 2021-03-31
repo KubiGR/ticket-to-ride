@@ -41,8 +41,11 @@ export class Connection implements Edge<string> {
     }
   }
 
-  isFull(): boolean {
-    return this.player1 !== undefined && this.player2 !== undefined;
+  isAvailable(): boolean {
+    return (
+      this.player1 === undefined ||
+      (this.color2 !== undefined && this.player2 === undefined)
+    );
   }
 
   contains(city: string): boolean {
