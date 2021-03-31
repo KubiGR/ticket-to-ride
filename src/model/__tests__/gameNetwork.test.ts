@@ -2,6 +2,7 @@ import { Connection } from 'model/connection';
 import { Constants } from 'model/constants';
 import { GameNetwork } from 'model/gameNetwork';
 import { Ticket } from 'model/ticket';
+import { TrackColor } from 'model/trackColor';
 import { usaMap } from 'model/usaMap';
 
 beforeEach(() => {
@@ -941,5 +942,90 @@ describe('selectTicketsToKeep', () => {
 
     const kept = gameNetwork.selectTicketsToKeep(tickets);
     expect(kept).toEqual(tickets);
+  });
+});
+
+describe('getDifficulty', () => {
+  test('non-gray connections have difficulty equal to their points', () => {
+    const gn = new GameNetwork();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Black);
+    expect(gn.getDifficulty(connection1)).toBe(connection1.getPoints());
+  });
+  test('gray connections have reduced difficulty', () => {
+    const gn = new GameNetwork();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Gray);
+    expect(gn.getDifficulty(connection1)).toBe(
+      connection1.getPoints() * Constants.GRAY_DIFFICULTY_FACTOR,
+    );
+  });
+
+  test('double empty connections have same difficulty in 2-3p', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Blue);
+    connection1.color2 = TrackColor.Red;
+    expect(gn.getDifficulty(connection1)).toBe(connection1.getPoints());
+  });
+
+  test('double empty connections have reduced difficulty in 4-5p', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Blue);
+    connection1.color2 = TrackColor.Red;
+    expect(gn.getDifficulty(connection1)).toBe(
+      connection1.getPoints() * Constants.DOUBLE_DIFFICULTY_FACTOR,
+    );
+  });
+
+  test('double empty gray connections have extra reduced difficulty in 4-5p', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Gray);
+    connection1.color2 = TrackColor.Gray;
+    expect(gn.getDifficulty(connection1)).toBe(
+      connection1.getPoints() *
+        Constants.DOUBLE_DIFFICULTY_FACTOR *
+        Constants.GRAY_DIFFICULTY_FACTOR,
+    );
+  });
+
+  test('double connections with one track occupied dont have reduced difficulty in 4-5p', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Blue);
+    gn.addCannotPass(connection1);
+    connection1.color2 = TrackColor.Red;
+    expect(gn.getDifficulty(connection1)).toBe(connection1.getPoints());
+  });
+
+  test('CASE NOT IN USA MAP: double empty gray/color connections,  gray occupied normal difficulty in 4-5p', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Gray);
+    connection1.color2 = TrackColor.Red;
+    gn.addCannotPass(connection1, 0, 0);
+    expect(gn.getDifficulty(connection1)).toBe(connection1.getPoints());
+  });
+
+  test('CASE NOT IN USA MAP: double empty gray/color connections,  color occupied reduced difficulty in 4-5p', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Gray);
+    connection1.color2 = TrackColor.Red;
+    gn.addCannotPass(connection1, 0, 1);
+    expect(gn.getDifficulty(connection1)).toBe(
+      connection1.getPoints() * Constants.GRAY_DIFFICULTY_FACTOR,
+    );
   });
 });

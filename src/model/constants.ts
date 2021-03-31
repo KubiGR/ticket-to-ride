@@ -24,4 +24,7 @@ export abstract class Constants {
   static readonly COMPLETION_PERC = 0.5;
 
   static readonly DRAW_TICKETS_SAMPLE_SIZE = 100;
+
+  static readonly GRAY_DIFFICULTY_FACTOR = 0.5;
+  static readonly DOUBLE_DIFFICULTY_FACTOR = 0.4;
 }

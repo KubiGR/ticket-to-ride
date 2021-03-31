@@ -12,6 +12,7 @@ import {
   timeout,
 } from 'utils/helpers';
 import { PlayerInfo } from './playerInfo';
+import { TrackColor } from './trackColor';
 
 export class GameNetwork {
   private routing: Routing = new Routing();
@@ -284,10 +285,10 @@ export class GameNetwork {
     const requiredTrains = this.routing.getRequiredNumOfTrains(ticketConns);
 
     const completedDifficuly = completedConnections
-      .map((conn) => conn.getDifficulty())
+      .map((conn) => this.getDifficulty(conn))
       .reduce((sum, x) => sum + x, 0);
     const totalDifficulty = ticketConns
-      .map((conn) => conn.getDifficulty())
+      .map((conn) => this.getDifficulty(conn))
       .reduce((sum, x) => sum + x, 0);
 
     const ticketReport = new TicketReport(
@@ -447,5 +448,28 @@ export class GameNetwork {
 
   getRouting(): Routing {
     return this.routing;
+  }
+
+  getDifficulty(connection: Connection): number {
+    let factor = 1;
+    if (
+      (!this.hasDoubleTracks &&
+        (connection.color1 === TrackColor.Gray ||
+          connection.color2 === TrackColor.Gray)) ||
+      (connection.color1 === TrackColor.Gray &&
+        connection.getTrackPlayer(0) === undefined) ||
+      (connection.color2 === TrackColor.Gray &&
+        connection.getTrackPlayer(1) === undefined)
+    )
+      factor *= Constants.GRAY_DIFFICULTY_FACTOR;
+    if (
+      this.hasDoubleTracks &&
+      connection.color2 !== undefined &&
+      connection.getTrackPlayer(0) === undefined &&
+      connection.getTrackPlayer(1) === undefined
+    )
+      factor *= Constants.DOUBLE_DIFFICULTY_FACTOR;
+
+    return factor * connection.getPoints();
   }
 }
