@@ -2,7 +2,7 @@ import UIConstants from 'components/canvas/uiConstants';
 import { Connection } from 'model/connection';
 import { Ticket } from 'model/ticket';
 import React from 'react';
-import { Group, Rect, Text } from 'react-konva';
+import { Circle, Group, Rect, Text } from 'react-konva';
 import { MapStore } from 'stores/mapStore';
 import { TicketReport } from 'model/ticketReport';
 import { getConnectionFromJson } from 'model/jsonConnection';
@@ -53,8 +53,9 @@ const ConnectionLabel = observer(
             }
           } else {
             const addToX = previousPlayerPoints.reduce((acc, cur) => {
+              const rectWidthFactor = cur > 9 ? 2.4 : 1.6;
               if (cur) {
-                return (acc += UIConstants.rectWidth * rectWidthFactor);
+                return acc + UIConstants.rectWidth * rectWidthFactor;
               } else {
                 return acc;
               }
@@ -75,6 +76,9 @@ const ConnectionLabel = observer(
                 break;
             }
             if (jsonCon) {
+              const height = UIConstants.rectWidth * 1.8;
+              const x = UIConstants.mapWidth * jsonCon.symbol1[0];
+              const y = UIConstants.mapWidth * jsonCon.symbol1[1];
               labelArray.push(
                 <Group
                   key={con.from + '-' + con.to + 'opponentGroup' + i}
@@ -83,24 +87,24 @@ const ConnectionLabel = observer(
                   }
                   onMouseLeave={() => mapStore.clearImpConTickets()}
                 >
+                  <Circle
+                    x={x}
+                    y={y}
+                    radius={UIConstants.mapWidth * 0.002}
+                    fill={labelFill}
+                  />
+
                   <Rect
-                    x={UIConstants.mapWidth * jsonCon.symbol1[0] + addToX}
-                    y={UIConstants.mapWidth * jsonCon.symbol1[1]}
+                    x={x + addToX}
+                    y={y - height}
                     width={UIConstants.rectWidth * rectWidthFactor}
-                    height={UIConstants.rectWidth * 1.8}
+                    height={height}
                     fill={labelFill}
                     // stroke={'black'}
                   />
                   <Text
-                    x={
-                      UIConstants.mapWidth * jsonCon.symbol1[0] +
-                      UIConstants.rectWidth * 0.4 +
-                      addToX
-                    }
-                    y={
-                      UIConstants.mapWidth * jsonCon.symbol1[1] +
-                      UIConstants.rectWidth * 0.25
-                    }
+                    x={x + UIConstants.rectWidth * 0.4 + addToX}
+                    y={y - height + UIConstants.rectWidth * 0.25}
                     fontFamily={'monospace'}
                     text={points.toString()}
                     fontSize={UIConstants.mapWidth * 0.015}
@@ -127,6 +131,10 @@ const createLabelForPlayer = (
 ): JSX.Element | undefined => {
   const jsonCon = getConnectionFromJson(con);
   if (!jsonCon) return;
+
+  const height = UIConstants.rectWidth * 1.8;
+  const x = UIConstants.mapWidth * jsonCon.symbol1[0];
+  const y = UIConstants.mapWidth * jsonCon.symbol1[1];
   return (
     <Group
       key={con.from + '-' + con.to + 'playerGroup'}
@@ -135,25 +143,24 @@ const createLabelForPlayer = (
       }
       onMouseLeave={() => mapStore.clearImpConTickets()}
     >
+      <Circle
+        x={x}
+        y={y}
+        radius={UIConstants.mapWidth * 0.002}
+        fill={mapStore.uiConstants.establishedConnectionColor}
+      />
       <Rect
-        x={UIConstants.mapWidth * jsonCon.symbol1[0]}
-        y={
-          UIConstants.mapWidth * jsonCon.symbol1[1] + UIConstants.rectWidth * 2
-        }
+        x={x}
+        y={y - height + UIConstants.rectWidth * 2}
         width={UIConstants.rectWidth * rectWidthFactor}
-        height={UIConstants.rectWidth * 1.8}
+        height={height}
         fill={mapStore.uiConstants.establishedConnectionColor}
         // stroke={'black'}
       />
       <Text
-        x={
-          UIConstants.mapWidth * jsonCon.symbol1[0] +
-          UIConstants.rectWidth * 0.4
-        }
+        x={x + UIConstants.rectWidth * 0.4}
         y={
-          UIConstants.mapWidth * jsonCon.symbol1[1] +
-          UIConstants.rectWidth * 0.3 +
-          +UIConstants.rectWidth * 2
+          y - height + UIConstants.rectWidth * 0.3 + +UIConstants.rectWidth * 2
         }
         fontFamily={'monospace'}
         text={points.toString()}
