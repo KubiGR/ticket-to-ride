@@ -30,16 +30,22 @@ export const Connections = observer(
   ({ mapStore }: ConnectionsProps): JSX.Element => {
     const [selectedOpponentIndex, setSelectedOpponentIndex] = useState(0);
     useEffect(() => {
-      document.addEventListener('keydown', (evt) =>
-        handleKeyInput(evt, setSelectedOpponentIndex),
-      );
+      document.addEventListener('keydown', (evt) => {
+        if (Number(evt.key) > mapStore.opponentCount) {
+          return;
+        }
+        handleKeyInput(evt, setSelectedOpponentIndex);
+      });
 
       return () => {
-        document.removeEventListener('keydown', (evt) =>
-          handleKeyInput(evt, setSelectedOpponentIndex),
-        );
+        document.removeEventListener('keydown', (evt) => {
+          if (Number(evt.key) > mapStore.opponentCount) {
+            return;
+          }
+          handleKeyInput(evt, setSelectedOpponentIndex);
+        });
       };
-    }, []);
+    }, [mapStore.opponentCount]);
     const jsxConnectionsArray = usaConnections.flatMap((con) => {
       const connectionId = mapStore.gameNetwork
         .getRouting()

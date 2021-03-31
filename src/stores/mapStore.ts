@@ -19,6 +19,7 @@ export class MapStore {
   connectionsArray: Connection[] = [];
   ticketReports: TicketReport[][] = [[]];
   impConTickets = observable.array<Ticket>();
+  playerCount = 4;
 
   constructor() {
     makeAutoObservable(this);
@@ -70,10 +71,12 @@ export class MapStore {
                 Constants.COMPLETION_PERC,
           );
 
-        for (let i = 1; i < 5; i++) {
-          const opponentNetwork = this.gameNetwork.getOpponentNetwork(i - 1);
+        for (let i = 0; i < this.opponentCount; i++) {
+          const opponentNetwork = this.gameNetwork.getOpponentNetwork(i);
           if (opponentNetwork) {
-            this.ticketReports[i] = opponentNetwork
+            this.ticketReports[
+              i + 1
+            ] = opponentNetwork
               .getTicketReports()
               .filter(
                 (ticketReport) =>
@@ -91,6 +94,10 @@ export class MapStore {
     );
   }
 
+  get opponentCount(): number {
+    return this.playerCount - 1;
+  }
+
   private initMapStore() {
     usaMap.reset();
     this.gameNetwork = new GameNetwork();
@@ -102,7 +109,7 @@ export class MapStore {
     this.connectionsArray = [];
     this.ticketReports = [[]];
     this.impConTickets = observable.array<Ticket>();
-    for (let i = 1; i < 5; i++) {
+    for (let i = 0; i < this.opponentCount; i++) {
       this.gameNetwork.createOpponent();
       this.allOpponentsConnections.push([]);
       this.ticketReports.push([]);
@@ -254,7 +261,7 @@ export class MapStore {
   }
 
   toggleEstablishedConnection(con: Connection): void {
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < this.opponentCount; i++) {
       if (this.allOpponentsConnections[i]?.some((e) => e.hasSameCities(con))) {
         this.removeOpponentConnection(con, i);
       }
@@ -273,7 +280,7 @@ export class MapStore {
     if (
       !this.allOpponentsConnections[index]?.some((e) => e.hasSameCities(con))
     ) {
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < this.opponentCount; i++) {
         if (
           this.allOpponentsConnections[i]?.some((e) => e.hasSameCities(con))
         ) {
@@ -316,5 +323,19 @@ export class MapStore {
 
   reset(): void {
     this.initMapStore();
+  }
+
+  addPlayer(): void {
+    if (this.playerCount < 5) {
+      this.playerCount++;
+      this.reset();
+    }
+  }
+
+  removePlayer(): void {
+    if (this.playerCount > 2) {
+      this.playerCount--;
+      this.reset();
+    }
   }
 }

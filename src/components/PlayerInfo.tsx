@@ -34,34 +34,36 @@ const PlayerInfo = observer(
     const [colorToChange, setColorToChange] = useState(0);
     // const intervalRef = useRef<NodeJS.Timeout>();
     const playerColorBoxesInfo = useMemo(
-      () => [
-        {
-          playerIndex: 0,
-          color: mapStore.uiConstants.establishedConnectionColor,
-          playerColorButtonRef: player0ColorButtonRef,
-        },
-        {
-          playerIndex: 1,
-          color: mapStore.uiConstants.opponent1PassConnectionColor,
-          playerColorButtonRef: player1ColorButtonRef,
-        },
-        {
-          playerIndex: 2,
-          color: mapStore.uiConstants.opponent2PassConnectionColor,
-          playerColorButtonRef: player2ColorButtonRef,
-        },
-        {
-          playerIndex: 3,
-          color: mapStore.uiConstants.opponent3PassConnectionColor,
-          playerColorButtonRef: player3ColorButtonRef,
-        },
-        {
-          playerIndex: 4,
-          color: mapStore.uiConstants.opponent4PassConnectionColor,
-          playerColorButtonRef: player4ColorButtonRef,
-        },
-      ],
+      () =>
+        [
+          {
+            playerIndex: 0,
+            color: mapStore.uiConstants.establishedConnectionColor,
+            playerColorButtonRef: player0ColorButtonRef,
+          },
+          {
+            playerIndex: 1,
+            color: mapStore.uiConstants.opponent1PassConnectionColor,
+            playerColorButtonRef: player1ColorButtonRef,
+          },
+          {
+            playerIndex: 2,
+            color: mapStore.uiConstants.opponent2PassConnectionColor,
+            playerColorButtonRef: player2ColorButtonRef,
+          },
+          {
+            playerIndex: 3,
+            color: mapStore.uiConstants.opponent3PassConnectionColor,
+            playerColorButtonRef: player3ColorButtonRef,
+          },
+          {
+            playerIndex: 4,
+            color: mapStore.uiConstants.opponent4PassConnectionColor,
+            playerColorButtonRef: player4ColorButtonRef,
+          },
+        ].slice(0, mapStore.playerCount),
       [
+        mapStore.playerCount,
         mapStore.uiConstants.establishedConnectionColor,
         mapStore.uiConstants.opponent1PassConnectionColor,
         mapStore.uiConstants.opponent2PassConnectionColor,
@@ -178,6 +180,8 @@ const PlayerInfo = observer(
           </div>
         ) : null}
         <button onClick={() => mapStore.reset()}>Reset</button>
+        <button onClick={() => mapStore.addPlayer()}>Add Player</button>
+        <button onClick={() => mapStore.removePlayer()}>Remove Player</button>
       </>
     );
   },

@@ -22,7 +22,7 @@ const ConnectionLabel = observer(
     const labelArray: JSX.Element[] = [];
     const jsonCon = getConnectionFromJson(con);
     const previousPlayerPoints: number[] = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < mapStore.playerCount; i++) {
       if (Array.from(mapOfPlayersWithTicketsOfConnection.keys()).includes(i)) {
         const ticketsForConnection: Set<Ticket> = new Set();
         const points = mapOfPlayersWithTicketsOfConnection
