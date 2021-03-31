@@ -2,7 +2,12 @@ import { Connection } from 'model/connection';
 import { Constants } from 'model/constants';
 import { GameNetwork } from 'model/gameNetwork';
 import { Ticket } from 'model/ticket';
+import { TrackColor } from 'model/trackColor';
 import { usaMap } from 'model/usaMap';
+
+beforeEach(() => {
+  usaMap.reset();
+});
 
 describe('createOpponent', () => {
   test('returns the index of the opponent', () => {
@@ -81,17 +86,87 @@ describe('getRouting().getShortestPath', () => {
     expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
   });
 
-  test('getShortestPath with established (inverse)', () => {
+  test('with cannot pass single line 2 players', () => {
     const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
     const connection = gameNetwork
       .getRouting()
-      .getConnection('El Paso', 'Los Angeles');
-    gameNetwork.addEstablished(connection);
+      .getConnection('Calgary', 'Helena');
 
+    gameNetwork.addCannotPass(connection);
     const path = gameNetwork
       .getRouting()
-      .getShortestPath('Los Angeles', 'Denver');
-    expect(path).toEqual(['Los Angeles', 'El Paso', 'Santa Fe', 'Denver']);
+      .getShortestPath('Calgary', 'Salt Lake City');
+    console.log(path);
+    expect(path).toEqual(['Calgary', 'Seattle', 'Portland', 'Salt Lake City']);
+  });
+
+  test('with cannot pass double line 2 players', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Kansas City', 'Oklahoma City');
+
+    gameNetwork.addCannotPass(connection);
+    const path = gameNetwork
+      .getRouting()
+      .getShortestPath('Kansas City', 'Houston');
+    console.log(path);
+    expect(path.length > 4).toBe(true);
+  });
+
+  test('with double line one track blocked 4 players', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Kansas City', 'Oklahoma City');
+
+    gameNetwork.addCannotPass(connection);
+    const path = gameNetwork
+      .getRouting()
+      .getShortestPath('Kansas City', 'Houston');
+    console.log(path);
+    expect(path).toEqual(['Kansas City', 'Oklahoma City', 'Dallas', 'Houston']);
+  });
+  test('with double line both tracks blocked 4 players', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Kansas City', 'Oklahoma City');
+
+    gameNetwork.addCannotPass(connection, 0, 0);
+    console.log(connection.isAvailable());
+    gameNetwork.addCannotPass(connection, 1, 1);
+    const path = gameNetwork
+      .getRouting()
+      .getShortestPath('Kansas City', 'Houston');
+    console.log(path);
+    const conns = gameNetwork.getRouting().getConnectionsForPath(path);
+    expect(conns.includes(connection)).toBe(false);
+  });
+  test('with cannot pass single line 5 players', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Calgary', 'Helena');
+
+    gameNetwork.addCannotPass(connection);
+    const path = gameNetwork
+      .getRouting()
+      .getShortestPath('Calgary', 'Salt Lake City');
+    console.log(path);
+    expect(path).toEqual(['Calgary', 'Seattle', 'Portland', 'Salt Lake City']);
   });
 });
 
@@ -124,9 +199,120 @@ test('getConnection  (not found)', () => {
   }).toThrow();
 });
 
+describe('addEstablished/removeEstablished', () => {
+  test('cannot place on a track from another player', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    const SP = gameNetwork.getRouting().getConnection('Seattle', 'Portland');
+    gameNetwork.addCannotPass(SP, 0, 1);
+
+    expect(() => {
+      gameNetwork.addEstablished(SP, 1);
+    }).toThrow();
+  });
+  test('cannot place in both tracks', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const SP = gameNetwork.getRouting().getConnection('Seattle', 'Portland');
+    gameNetwork.addEstablished(SP, 1);
+
+    expect(() => {
+      gameNetwork.addEstablished(SP, 0);
+    }).toThrow();
+  });
+  test('removing a free track throws an error', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const SP = gameNetwork.getRouting().getConnection('Seattle', 'Portland');
+
+    expect(() => {
+      gameNetwork.removeEstablished(SP, 1);
+    }).toThrow();
+  });
+  test('removing other players track throws an error', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const SP = gameNetwork.getRouting().getConnection('Seattle', 'Portland');
+    gameNetwork.addCannotPass(SP, 0, 1);
+
+    expect(() => {
+      gameNetwork.removeEstablished(SP, 1);
+    }).toThrow();
+  });
+  test('adding and removing makes the track available', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const SP = gameNetwork.getRouting().getConnection('Seattle', 'Portland');
+    gameNetwork.addEstablished(SP, 1);
+    gameNetwork.removeEstablished(SP, 1);
+    expect(SP.getTrackPlayer(1)).toBeUndefined();
+  });
+});
+
+describe('addCannotPass/removeCannotPass', () => {
+  test('works', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Seattle', 'Portland');
+    gameNetwork.addCannotPass(connection, 0, 1);
+    expect(connection.getTrackPlayer(1)).toBe(
+      gameNetwork.getOpponentNetwork(0),
+    );
+    gameNetwork.removeCannotPass(connection, 0, 1);
+    expect(connection.getTrackPlayer(1)).toBeUndefined();
+  });
+});
+
+test('works in 4/5', () => {
+  const gameNetwork = new GameNetwork();
+  gameNetwork.createOpponent();
+  gameNetwork.createOpponent();
+  gameNetwork.createOpponent();
+
+  const connection = gameNetwork
+    .getRouting()
+    .getConnection('Seattle', 'Portland');
+  gameNetwork.addCannotPass(connection, 0, 1);
+  expect(connection.getTrackPlayer(1)).toBe(gameNetwork.getOpponentNetwork(0));
+  gameNetwork.removeCannotPass(connection, 0, 1);
+  expect(connection.getTrackPlayer(1)).toBeUndefined();
+});
+
+test('throws error if no player at trackNr', () => {
+  const gameNetwork = new GameNetwork();
+  gameNetwork.createOpponent();
+  gameNetwork.createOpponent();
+  gameNetwork.createOpponent();
+
+  const connection = gameNetwork
+    .getRouting()
+    .getConnection('Seattle', 'Portland');
+  expect(() => {
+    gameNetwork.removeCannotPass(connection, 1, 1);
+  }).toThrow('no player at trackNr');
+});
+test('throws error if track belongs to another opponent', () => {
+  const gameNetwork = new GameNetwork();
+  gameNetwork.createOpponent();
+  gameNetwork.createOpponent();
+  gameNetwork.createOpponent();
+
+  const connection = gameNetwork
+    .getRouting()
+    .getConnection('Seattle', 'Portland');
+  gameNetwork.addCannotPass(connection, 0, 1);
+  expect(() => {
+    gameNetwork.removeCannotPass(connection, 1, 1);
+  }).toThrow('belongs to another opponent');
+});
 describe('addCannotPass/established restrictions', () => {
   let gameNetwork: GameNetwork;
   let LA_ElPaso: Connection;
+
   beforeEach(() => {
     gameNetwork = new GameNetwork();
     gameNetwork.createOpponent();
@@ -141,7 +327,6 @@ describe('addCannotPass/established restrictions', () => {
       gameNetwork.addCannotPass(LA_ElPaso);
     }).toThrow();
   });
-
   test('addEstablished error when in cannot pass', () => {
     const connection = gameNetwork
       .getRouting()
@@ -151,6 +336,60 @@ describe('addCannotPass/established restrictions', () => {
     expect(() => {
       gameNetwork.addEstablished(connection);
     }).toThrow();
+  });
+
+  test('addEstablished error when trackNr already established', () => {
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Los Angeles', 'El Paso');
+    gameNetwork.addEstablished(connection);
+
+    expect(() => {
+      gameNetwork.addEstablished(connection);
+    }).toThrow();
+  });
+  test('addEstablished error when trackNr 0 already established by other player', () => {
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Los Angeles', 'El Paso');
+    gameNetwork.addCannotPass(connection);
+
+    expect(() => {
+      gameNetwork.addEstablished(connection);
+    }).toThrow();
+  });
+
+  test('addEstablished error when trackNr 1 already established by other player', () => {
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Seattle', 'Portland');
+    gameNetwork.addCannotPass(connection, 0, 1);
+
+    expect(() => {
+      gameNetwork.addEstablished(connection, 1);
+    }).toThrow();
+  });
+
+  test('addCannotPass error when trackNr 1 already established by other player', () => {
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Seattle', 'Portland');
+    gameNetwork.addCannotPass(connection, 0, 1);
+
+    expect(() => {
+      gameNetwork.addCannotPass(connection, 1, 1);
+    }).toThrow('TRACKLINE_USED');
+  });
+  test('addEstablished works when a different track on the same connection is chosen', () => {
+    gameNetwork.createOpponent(); //2nd
+    gameNetwork.createOpponent(); // 3rd
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Seattle', 'Portland');
+    gameNetwork.addCannotPass(connection, 0, 0);
+    gameNetwork.addEstablished(connection, 1);
   });
 
   test('established connections reduce train number', () => {
@@ -557,6 +796,18 @@ describe('getExpectedPointsDrawingTickets', () => {
     const points = await gameNetwork.getExpectedPointsDrawingTickets(10);
     expect(points > 0).toBe(true);
   });
+  test('throws an error if called by opponents', async () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const opp = gameNetwork.getOpponentNetwork(0);
+
+    expect.assertions(1);
+    await expect(opp?.getExpectedPointsDrawingTickets(10)).rejects.toEqual(
+      new Error(
+        'getExpectedPointsDrawingTickets: cannot be called by opponents!',
+      ),
+    );
+  });
 });
 
 describe('getExpectedPointsFromTickets', () => {
@@ -691,5 +942,111 @@ describe('selectTicketsToKeep', () => {
 
     const kept = gameNetwork.selectTicketsToKeep(tickets);
     expect(kept).toEqual(tickets);
+  });
+});
+
+describe('getDifficulty', () => {
+  test('non-gray connections have difficulty equal to their points', () => {
+    const gn = new GameNetwork();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Black);
+    expect(gn.getDifficulty(connection1)).toBe(connection1.getPoints());
+  });
+  test('gray connections have reduced difficulty', () => {
+    const gn = new GameNetwork();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Gray);
+    expect(gn.getDifficulty(connection1)).toBe(
+      connection1.getPoints() * Constants.GRAY_DIFFICULTY_FACTOR,
+    );
+  });
+
+  test('double empty connections have same difficulty in 2-3p', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Blue);
+    connection1.color2 = TrackColor.Red;
+    expect(gn.getDifficulty(connection1)).toBe(connection1.getPoints());
+  });
+
+  test('double empty connections have reduced difficulty in 4-5p', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Blue);
+    connection1.color2 = TrackColor.Red;
+    expect(gn.getDifficulty(connection1)).toBe(
+      connection1.getPoints() * Constants.DOUBLE_DIFFICULTY_FACTOR,
+    );
+  });
+
+  test('double empty gray connections have extra reduced difficulty in 4-5p', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Gray);
+    connection1.color2 = TrackColor.Gray;
+    expect(gn.getDifficulty(connection1)).toBe(
+      connection1.getPoints() *
+        Constants.DOUBLE_DIFFICULTY_FACTOR *
+        Constants.GRAY_DIFFICULTY_FACTOR,
+    );
+  });
+
+  test('double connections with one track occupied dont have reduced difficulty in 4-5p', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Blue);
+    gn.addCannotPass(connection1);
+    connection1.color2 = TrackColor.Red;
+    expect(gn.getDifficulty(connection1)).toBe(connection1.getPoints());
+  });
+
+  test('difficulty is greater for 3p games than for 2', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Black);
+    expect(gn.getDifficulty(connection1)).toBe(
+      connection1.getPoints() * Constants.EXTRA_PLAYER_DIFFICULTY_FACTOR,
+    );
+  });
+
+  test('difficulty is greater for 5p games than for 4p', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Black);
+    expect(gn.getDifficulty(connection1)).toBe(
+      connection1.getPoints() * Constants.EXTRA_PLAYER_DIFFICULTY_FACTOR,
+    );
+  });
+
+  test('CASE NOT IN USA MAP: double empty gray/color connections,  gray occupied normal difficulty in 4-5p', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Gray);
+    connection1.color2 = TrackColor.Red;
+    gn.addCannotPass(connection1, 0, 0);
+    expect(gn.getDifficulty(connection1)).toBe(connection1.getPoints());
+  });
+
+  test('CASE NOT IN USA MAP: double empty gray/color connections,  color occupied reduced difficulty in 4-5p', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Gray);
+    connection1.color2 = TrackColor.Red;
+    gn.addCannotPass(connection1, 0, 1);
+    expect(gn.getDifficulty(connection1)).toBe(
+      connection1.getPoints() * Constants.GRAY_DIFFICULTY_FACTOR,
+    );
   });
 });

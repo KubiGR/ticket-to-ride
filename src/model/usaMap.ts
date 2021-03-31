@@ -9,6 +9,10 @@ class USAMap {
   private tickets: Ticket[] = [];
 
   constructor() {
+    this.reset();
+  }
+
+  reset() {
     this.connections = this.getUSAConnectionsFromJSON();
     this.tickets = this.getUSATicketsFromJSON();
   }

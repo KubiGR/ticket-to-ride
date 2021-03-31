@@ -1,6 +1,7 @@
 import { TrackColor } from 'model/trackColor';
 import { Edge } from 'floyd-warshall-shortest';
 import { Constants } from './constants';
+import { GameNetwork } from './gameNetwork';
 
 export class Connection implements Edge<string> {
   from: string;
@@ -9,6 +10,8 @@ export class Connection implements Edge<string> {
   weight: number;
   color1: TrackColor;
   color2: TrackColor | undefined;
+  player1: GameNetwork | undefined;
+  player2: GameNetwork | undefined;
 
   constructor(from: string, to: string, length: number, color1: TrackColor) {
     this.from = from;
@@ -16,6 +19,33 @@ export class Connection implements Edge<string> {
     this.trains = length;
     this.color1 = color1;
     this.weight = length - Constants.POINT_IMPORTANCE * this.getPoints();
+  }
+
+  getTrackPlayer(trackNr: number): GameNetwork | undefined {
+    if (trackNr == 0) return this.player1;
+    if (this.color2 === undefined)
+      throw new Error(
+        'No second track in the connection: ' + this.from + '-' + this.to,
+      );
+    return this.player2;
+  }
+
+  setTrackPlayer(gameNetwork: GameNetwork | undefined, trackNr: number): void {
+    if (trackNr == 0) this.player1 = gameNetwork;
+    else {
+      if (this.color2 === undefined)
+        throw new Error(
+          'No second track in the connection: ' + this.from + '-' + this.to,
+        );
+      this.player2 = gameNetwork;
+    }
+  }
+
+  isAvailable(): boolean {
+    return (
+      this.player1 === undefined ||
+      (this.color2 !== undefined && this.player2 === undefined)
+    );
   }
 
   contains(city: string): boolean {
@@ -73,11 +103,5 @@ export class Connection implements Edge<string> {
     throw new Error(
       'Connection can not have more than 6 trains: ' + this.trains,
     );
-  }
-
-  getDifficulty(): number {
-    let factor = 1;
-    if (this.color1 === TrackColor.Gray) factor = 0.5;
-    return factor * this.getPoints();
   }
 }
