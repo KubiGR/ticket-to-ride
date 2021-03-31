@@ -199,6 +199,18 @@ test('getConnection  (not found)', () => {
 });
 
 describe('addEstablished/removeEstablished', () => {
+  test('cannot place on a track from another player', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    const SP = gameNetwork.getRouting().getConnection('Seattle', 'Portland');
+    gameNetwork.addCannotPass(SP, 0, 1);
+
+    expect(() => {
+      gameNetwork.addEstablished(SP, 1);
+    }).toThrow();
+  });
   test('cannot place in both tracks', () => {
     const gameNetwork = new GameNetwork();
     gameNetwork.createOpponent();
@@ -237,6 +249,65 @@ describe('addEstablished/removeEstablished', () => {
     expect(SP.getTrackPlayer(1)).toBeUndefined();
   });
 });
+
+describe('addCannotPass/removeCannotPass', () => {
+  test('works', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Seattle', 'Portland');
+    gameNetwork.addCannotPass(connection, 0, 1);
+    expect(connection.getTrackPlayer(1)).toBe(
+      gameNetwork.getOpponentNetwork(0),
+    );
+    gameNetwork.removeCannotPass(connection, 0, 1);
+    expect(connection.getTrackPlayer(1)).toBeUndefined();
+  });
+});
+
+test('works in 4/5', () => {
+  const gameNetwork = new GameNetwork();
+  gameNetwork.createOpponent();
+  gameNetwork.createOpponent();
+  gameNetwork.createOpponent();
+
+  const connection = gameNetwork
+    .getRouting()
+    .getConnection('Seattle', 'Portland');
+  gameNetwork.addCannotPass(connection, 0, 1);
+  expect(connection.getTrackPlayer(1)).toBe(gameNetwork.getOpponentNetwork(0));
+  gameNetwork.removeCannotPass(connection, 0, 1);
+  expect(connection.getTrackPlayer(1)).toBeUndefined();
+});
+
+test('throws error if no player at trackNr', () => {
+  const gameNetwork = new GameNetwork();
+  gameNetwork.createOpponent();
+  gameNetwork.createOpponent();
+  gameNetwork.createOpponent();
+
+  const connection = gameNetwork
+    .getRouting()
+    .getConnection('Seattle', 'Portland');
+  expect(() => {
+    gameNetwork.removeCannotPass(connection, 1, 1);
+  }).toThrow('no player at trackNr');
+});
+test('throws error if track belongs to another opponent', () => {
+  const gameNetwork = new GameNetwork();
+  gameNetwork.createOpponent();
+  gameNetwork.createOpponent();
+  gameNetwork.createOpponent();
+
+  const connection = gameNetwork
+    .getRouting()
+    .getConnection('Seattle', 'Portland');
+  gameNetwork.addCannotPass(connection, 0, 1);
+  expect(() => {
+    gameNetwork.removeCannotPass(connection, 1, 1);
+  }).toThrow('belongs to another opponent');
+});
 describe('addCannotPass/established restrictions', () => {
   let gameNetwork: GameNetwork;
   let LA_ElPaso: Connection;
@@ -255,7 +326,6 @@ describe('addCannotPass/established restrictions', () => {
       gameNetwork.addCannotPass(LA_ElPaso);
     }).toThrow();
   });
-
   test('addEstablished error when in cannot pass', () => {
     const connection = gameNetwork
       .getRouting()
@@ -299,6 +369,18 @@ describe('addCannotPass/established restrictions', () => {
     }).toThrow();
   });
 
+  test('addCannotPass error when trackNr 1 already established by other player', () => {
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Seattle', 'Portland');
+    gameNetwork.addCannotPass(connection, 0, 1);
+
+    expect(() => {
+      gameNetwork.addCannotPass(connection, 1, 1);
+    }).toThrow('TRACKLINE_USED');
+  });
   test('addEstablished works when a different track on the same connection is chosen', () => {
     gameNetwork.createOpponent(); //2nd
     gameNetwork.createOpponent(); // 3rd
@@ -712,6 +794,18 @@ describe('getExpectedPointsDrawingTickets', () => {
     );
     const points = await gameNetwork.getExpectedPointsDrawingTickets(10);
     expect(points > 0).toBe(true);
+  });
+  test('throws an error if called by opponents', async () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    const opp = gameNetwork.getOpponentNetwork(0);
+
+    expect.assertions(1);
+    await expect(opp?.getExpectedPointsDrawingTickets(10)).rejects.toEqual(
+      new Error(
+        'getExpectedPointsDrawingTickets: cannot be called by opponents!',
+      ),
+    );
   });
 });
 

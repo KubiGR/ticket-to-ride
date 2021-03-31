@@ -134,6 +134,7 @@ export class GameNetwork {
   }
 
   removeEstablished(edge: Connection, trackNr = 0): void {
+    // console.log(this.name + ' removeEstablished ' + edge + ' nr: ' + trackNr);
     const gn = edge.getTrackPlayer(trackNr);
     if (gn === undefined) {
       throw new Error(
@@ -160,7 +161,16 @@ export class GameNetwork {
   }
 
   addCannotPass(edge: Connection, index = 0, trackNr = 0): void {
-    // console.log(this.name + ' addCannotPass ' + edge + ' nr: ' + trackNr);
+    // console.log(
+    //   this.name +
+    //     ' addCannotPass: ' +
+    //     ' opp: ' +
+    //     index +
+    //     ' edge: ' +
+    //     edge +
+    //     ' nr: ' +
+    //     trackNr,
+    // );
     if (
       this.opponentNetworks !== undefined &&
       index >= this.opponentNetworks.length
@@ -182,7 +192,7 @@ export class GameNetwork {
       if (gn !== undefined) {
         throw new Error(
           this.name +
-            ' :addCannotPass: ' +
+            ' :addCannotPass: TRACKLINE_USED: ' +
             edge +
             ' already has a player: ' +
             gn +
@@ -211,21 +221,36 @@ export class GameNetwork {
   }
 
   removeCannotPass(edge: Connection, index = 0, trackNr = 0): void {
-    if (
-      this.opponentNetworks !== undefined &&
-      index >= this.opponentNetworks.length
-    )
-      throw new Error(
-        this.name + ' :removeCannotPass: no opponent with index: ' + index,
-      );
-    if (!this.cannotPass.has(edge))
-      throw new Error(
-        this.name +
-          ' :removeCannotPass: ' +
-          edge +
-          ' is not in ' +
-          ' cannotPass list',
-      );
+    // console.log(
+    //   this.name +
+    //     ' removeCannotPass: ' +
+    //     ' opp: ' +
+    //     index +
+    //     ' edge: ' +
+    //     edge +
+    //     ' nr: ' +
+    //     trackNr,
+    // );
+    if (this.opponentNetworks !== undefined) {
+      if (index >= this.opponentNetworks.length)
+        throw new Error(
+          this.name + ' :removeCannotPass: no opponent with index: ' + index,
+        );
+      const gn = edge.getTrackPlayer(trackNr);
+      if (gn === undefined) {
+        throw new Error(
+          this.name + ' removeCannotPass: no player at trackNr ' + trackNr,
+        );
+      } else if (gn !== this.getOpponentNetwork(index)) {
+        throw new Error(
+          this.name +
+            ' removeCannotPass: the track ' +
+            trackNr +
+            ' belongs to another opponent:' +
+            gn,
+        );
+      }
+    }
     this.cannotPass.delete(edge);
     if (this.opponentNetworks !== undefined) {
       this.opponentNetworks[index].removeEstablished(edge, trackNr);
