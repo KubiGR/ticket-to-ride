@@ -25,6 +25,12 @@ export abstract class Constants {
 
   static readonly DRAW_TICKETS_SAMPLE_SIZE = 100;
 
-  static readonly GRAY_DIFFICULTY_FACTOR = 0.5;
-  static readonly DOUBLE_DIFFICULTY_FACTOR = 0.4;
+  static readonly GRAY_DIFFICULTY_FACTOR = 0.6;
+  static readonly DOUBLE_DIFFICULTY_FACTOR = 0.5;
+
+  /**
+   * The extra player is the 3rd player in games with single connections (2-3)p,
+   * and the 5th in games with double connections (4-5p).
+   */
+  static readonly EXTRA_PLAYER_DIFFICULTY_FACTOR = 1.2;
 }

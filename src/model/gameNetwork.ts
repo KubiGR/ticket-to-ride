@@ -470,6 +470,12 @@ export class GameNetwork {
     )
       factor *= Constants.DOUBLE_DIFFICULTY_FACTOR;
 
+    if (
+      this.opponentNetworks?.length === 2 ||
+      this.opponentNetworks?.length === 4
+    ) {
+      factor *= Constants.EXTRA_PLAYER_DIFFICULTY_FACTOR;
+    }
     return factor * connection.getPoints();
   }
 }

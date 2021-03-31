@@ -962,7 +962,6 @@ describe('getDifficulty', () => {
   test('double empty connections have same difficulty in 2-3p', () => {
     const gn = new GameNetwork();
     gn.createOpponent();
-    gn.createOpponent();
     const connection1 = new Connection('a', 'b', 3, TrackColor.Blue);
     connection1.color2 = TrackColor.Red;
     expect(gn.getDifficulty(connection1)).toBe(connection1.getPoints());
@@ -1003,6 +1002,28 @@ describe('getDifficulty', () => {
     gn.addCannotPass(connection1);
     connection1.color2 = TrackColor.Red;
     expect(gn.getDifficulty(connection1)).toBe(connection1.getPoints());
+  });
+
+  test('difficulty is greater for 3p games than for 2', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Black);
+    expect(gn.getDifficulty(connection1)).toBe(
+      connection1.getPoints() * Constants.EXTRA_PLAYER_DIFFICULTY_FACTOR,
+    );
+  });
+
+  test('difficulty is greater for 5p games than for 4p', () => {
+    const gn = new GameNetwork();
+    gn.createOpponent();
+    gn.createOpponent();
+    gn.createOpponent();
+    gn.createOpponent();
+    const connection1 = new Connection('a', 'b', 3, TrackColor.Black);
+    expect(gn.getDifficulty(connection1)).toBe(
+      connection1.getPoints() * Constants.EXTRA_PLAYER_DIFFICULTY_FACTOR,
+    );
   });
 
   test('CASE NOT IN USA MAP: double empty gray/color connections,  gray occupied normal difficulty in 4-5p', () => {
