@@ -12,7 +12,7 @@ export const ConnectionLabelList = observer(
       number,
       TicketReport[]
     > = new Map();
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < mapStore.playerCount; i++) {
       Array.from(
         mapStore.getImportantConnectionsWithPointsMap(i).keys(),
       ).forEach((con) => {
