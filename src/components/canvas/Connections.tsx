@@ -1,26 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import usaConnections from 'data/usaConnections.json';
 import { observer } from 'mobx-react';
 import { Line } from 'react-konva';
 import UIConstants from './uiConstants';
 import { MapStore } from 'stores/mapStore';
 
-const handleKeyInput = (
-  evt: KeyboardEvent,
-  setSelectedOpponentIndex: React.Dispatch<React.SetStateAction<number>>,
-) => {
+const handleKeyInput = (evt: KeyboardEvent, mapStore: MapStore) => {
   switch (evt.key) {
     case '1':
-      setSelectedOpponentIndex(0);
+      mapStore.setSelectedOpponentIndex(0);
       break;
     case '2':
-      setSelectedOpponentIndex(1);
+      mapStore.setSelectedOpponentIndex(1);
       break;
     case '3':
-      setSelectedOpponentIndex(2);
+      mapStore.setSelectedOpponentIndex(2);
       break;
     case '4':
-      setSelectedOpponentIndex(3);
+      mapStore.setSelectedOpponentIndex(3);
       break;
   }
 };
@@ -28,13 +25,12 @@ const handleKeyInput = (
 type ConnectionsProps = { mapStore: MapStore };
 export const Connections = observer(
   ({ mapStore }: ConnectionsProps): JSX.Element => {
-    const [selectedOpponentIndex, setSelectedOpponentIndex] = useState(0);
     useEffect(() => {
       document.addEventListener('keydown', (evt) => {
         if (Number(evt.key) > mapStore.opponentCount) {
           return;
         }
-        handleKeyInput(evt, setSelectedOpponentIndex);
+        handleKeyInput(evt, mapStore);
       });
 
       return () => {
@@ -42,10 +38,10 @@ export const Connections = observer(
           if (Number(evt.key) > mapStore.opponentCount) {
             return;
           }
-          handleKeyInput(evt, setSelectedOpponentIndex);
+          handleKeyInput(evt, mapStore);
         });
       };
-    }, [mapStore.opponentCount]);
+    }, [mapStore, mapStore.opponentCount, mapStore.setSelectedOpponentIndex]);
     const jsxConnectionsArray = usaConnections.flatMap((con) => {
       const connectionId = mapStore.gameNetwork
         .getRouting()
@@ -100,7 +96,7 @@ export const Connections = observer(
               if (e.evt.button === 2) {
                 mapStore.toggleOpponentConnection(
                   connectionId,
-                  selectedOpponentIndex,
+                  mapStore.selectedOpponentIndex,
                 );
               } else if (e.evt.button === 0) {
                 mapStore.toggleEstablishedConnection(connectionId);
@@ -122,7 +118,7 @@ export const Connections = observer(
               if (e.evt.button === 2) {
                 mapStore.toggleOpponentConnection(
                   connectionId,
-                  selectedOpponentIndex,
+                  mapStore.selectedOpponentIndex,
                 );
               } else if (e.evt.button === 0) {
                 mapStore.toggleEstablishedConnection(connectionId);
@@ -141,7 +137,7 @@ export const Connections = observer(
               if (e.evt.button === 2) {
                 mapStore.toggleOpponentConnection(
                   connectionId,
-                  selectedOpponentIndex,
+                  mapStore.selectedOpponentIndex,
                 );
               } else if (e.evt.button === 0) {
                 mapStore.toggleEstablishedConnection(connectionId);

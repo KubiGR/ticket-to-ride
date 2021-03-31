@@ -2,7 +2,7 @@ import UIConstants from 'components/canvas/uiConstants';
 import { Connection } from 'model/connection';
 import { Ticket } from 'model/ticket';
 import React from 'react';
-import { Circle, Group, Rect, Text } from 'react-konva';
+import { Group, Rect, Text } from 'react-konva';
 import { MapStore } from 'stores/mapStore';
 import { TicketReport } from 'model/ticketReport';
 import { getConnectionFromJson } from 'model/jsonConnection';
@@ -87,13 +87,6 @@ const ConnectionLabel = observer(
                   }
                   onMouseLeave={() => mapStore.clearImpConTickets()}
                 >
-                  <Circle
-                    x={x}
-                    y={y}
-                    radius={UIConstants.mapWidth * 0.002}
-                    fill={labelFill}
-                  />
-
                   <Rect
                     x={x + addToX}
                     y={y - height}
@@ -143,12 +136,6 @@ const createLabelForPlayer = (
       }
       onMouseLeave={() => mapStore.clearImpConTickets()}
     >
-      <Circle
-        x={x}
-        y={y}
-        radius={UIConstants.mapWidth * 0.002}
-        fill={mapStore.uiConstants.establishedConnectionColor}
-      />
       <Rect
         x={x}
         y={y - height + UIConstants.rectWidth * 2}

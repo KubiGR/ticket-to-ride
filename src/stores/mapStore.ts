@@ -19,6 +19,7 @@ export class MapStore {
   connectionsArray: Connection[] = [];
   ticketReports: TicketReport[][] = [[]];
   impConTickets = observable.array<Ticket>();
+  selectedOpponentIndex = 0;
   playerCount = 4;
 
   constructor() {
@@ -109,6 +110,7 @@ export class MapStore {
     this.connectionsArray = [];
     this.ticketReports = [[]];
     this.impConTickets = observable.array<Ticket>();
+    this.selectedOpponentIndex = 0;
     for (let i = 0; i < this.opponentCount; i++) {
       this.gameNetwork.createOpponent();
       this.allOpponentsConnections.push([]);
@@ -337,5 +339,9 @@ export class MapStore {
       this.playerCount--;
       this.reset();
     }
+  }
+
+  setSelectedOpponentIndex(value: number): void {
+    this.selectedOpponentIndex = value;
   }
 }
