@@ -8,6 +8,7 @@ import { TicketReport } from '../model/ticketReport';
 import { Constants } from 'model/constants';
 import { CardReport } from 'model/cardReport';
 import UIConstants from 'components/canvas/uiConstants';
+import CanvasConnection from './canvasConnection';
 
 export class MapStore {
   gameNetwork = new GameNetwork();
@@ -151,31 +152,41 @@ export class MapStore {
       .flat();
   }
 
-  get connectionTypeSelectionMap(): Map<Connection, string[]> {
-    const connectionTypeSelectionMap = this.connectionsArray.reduce(
-      (acc, cur) => {
-        acc.set(cur, ['selected']);
-        return acc;
-      },
-      new Map(),
-    );
+  get connectionTypeSelectionMap(): Map<Connection, CanvasConnection> {
+    const connectionTypeSelectionMap = new Map();
+    this.connectionsArray.forEach((con) => {
+      const canvasConnection = new CanvasConnection();
+      if (!con.player1) {
+        canvasConnection.track1 = 'selected';
+      }
+      if (!con.player2) {
+        canvasConnection.track2 = 'selected';
+      }
+      connectionTypeSelectionMap.set(con, canvasConnection);
+    });
 
     this.allOpponentsConnections.forEach((cannotPassConnections, index) => {
       cannotPassConnections.forEach((con) => {
-        if (connectionTypeSelectionMap.get(con)) {
-          connectionTypeSelectionMap.get(con).push(index.toString());
-        } else {
-          connectionTypeSelectionMap.set(con, [index.toString()]);
+        const canvasConnection = new CanvasConnection();
+        if (con.player1) {
+          canvasConnection.track1 = (index + 1).toString();
         }
+        if (con.player2) {
+          canvasConnection.track2 = (index + 1).toString();
+        }
+        connectionTypeSelectionMap.set(con, canvasConnection);
       });
     });
 
-    this.establishedConnections.forEach((shouldPassConnection) => {
-      if (connectionTypeSelectionMap.get(shouldPassConnection)) {
-        connectionTypeSelectionMap.get(shouldPassConnection).push('shouldPass');
-      } else {
-        connectionTypeSelectionMap.set(shouldPassConnection, ['shouldPass']);
+    this.establishedConnections.forEach((con) => {
+      const canvasConnection = new CanvasConnection();
+      if (con.player1) {
+        canvasConnection.track1 = '0';
       }
+      if (con.player2) {
+        canvasConnection.track2 = '0';
+      }
+      connectionTypeSelectionMap.set(con, canvasConnection);
     });
     return connectionTypeSelectionMap;
   }
@@ -262,57 +273,142 @@ export class MapStore {
     }
   }
 
-  toggleEstablishedConnection(con: Connection): void {
-    for (let i = 0; i < this.opponentCount; i++) {
-      if (this.allOpponentsConnections[i]?.some((e) => e.hasSameCities(con))) {
-        this.removeOpponentConnection(con, i);
+  toggleEstablishedConnection(con: Connection, trackNr = 0): void {
+    if (this.playerCount <= 3) {
+      if (!con.player1 && !con.player2) {
+        this.addEstablishedConnection(con, trackNr);
       }
-    }
-    if (!this.establishedConnections?.some((e) => e.hasSameCities(con))) {
-      this.addEstablishedConnection(con);
-    } else {
-      this.removeEstablishedConnection(con);
-    }
-  }
-
-  toggleOpponentConnection(con: Connection, index: number): void {
-    if (this.establishedConnections?.some((e) => e.hasSameCities(con))) {
-      this.removeEstablishedConnection(con);
-    }
-    if (
-      !this.allOpponentsConnections[index]?.some((e) => e.hasSameCities(con))
-    ) {
-      for (let i = 0; i < this.opponentCount; i++) {
-        if (
-          this.allOpponentsConnections[i]?.some((e) => e.hasSameCities(con))
-        ) {
-          this.removeOpponentConnection(con, i);
+      if ((con.player1 && trackNr === 0) || (con.player2 && trackNr === 1)) {
+        if (this.establishedConnections.some((e) => e.hasSameCities(con))) {
+          this.removeConnection(con, trackNr);
+        } else {
+          this.removeConnection(con, trackNr);
+          this.addEstablishedConnection(con, trackNr);
         }
       }
-      this.addOpponentConnection(con, index);
+      if ((con.player2 && trackNr === 0) || (con.player1 && trackNr === 1))
+        return;
     } else {
-      this.removeOpponentConnection(con, index);
+      if (!con.player1 && !con.player2) {
+        this.addEstablishedConnection(con, trackNr);
+      } else if (
+        (!con.player1 && trackNr === 0) ||
+        (!con.player2 && trackNr === 1)
+      ) {
+        if (this.establishedConnections.some((e) => e.hasSameCities(con))) {
+          return;
+        } else {
+          this.addEstablishedConnection(con, trackNr);
+        }
+      } else if (
+        (con.player1 && trackNr === 0) ||
+        (con.player2 && trackNr === 1)
+      ) {
+        if (this.establishedConnections.some((e) => e.hasSameCities(con))) {
+          if (
+            this.establishedConnections
+              ?.filter((e) => (trackNr === 0 ? !e.player1 : !e.player2))
+              .some((e) => e.hasSameCities(con))
+          )
+            return;
+          this.removeConnection(con, trackNr);
+        } else {
+          this.removeConnection(con, trackNr);
+          this.addEstablishedConnection(con, trackNr);
+        }
+      }
     }
   }
 
-  removeEstablishedConnection(con: Connection): void {
+  toggleOpponentConnection(con: Connection, index: number, trackNr = 0): void {
+    if (this.playerCount <= 3) {
+      if (!con.player1 && !con.player2) {
+        this.addOpponentConnection(con, index, trackNr);
+      }
+      if ((con.player1 && trackNr === 0) || (con.player2 && trackNr === 1)) {
+        if (
+          this.allOpponentsConnections[index].some((e) => e.hasSameCities(con))
+        ) {
+          this.removeConnection(con, trackNr);
+        } else {
+          this.removeConnection(con, trackNr);
+          this.addOpponentConnection(con, index, trackNr);
+        }
+      }
+      if ((con.player2 && trackNr === 0) || (con.player1 && trackNr === 1))
+        return;
+    } else {
+      if (!con.player1 && !con.player2) {
+        this.addOpponentConnection(con, index, trackNr);
+      } else if (
+        (!con.player1 && trackNr === 0) ||
+        (!con.player2 && trackNr === 1)
+      ) {
+        if (
+          this.allOpponentsConnections[index].some((e) => e.hasSameCities(con))
+        ) {
+          return;
+        } else {
+          this.addOpponentConnection(con, index, trackNr);
+        }
+      } else if (
+        (con.player1 && trackNr === 0) ||
+        (con.player2 && trackNr === 1)
+      ) {
+        if (
+          this.allOpponentsConnections[index].some((e) => e.hasSameCities(con))
+        ) {
+          if (
+            this.allOpponentsConnections[index]
+              ?.filter((e) => (trackNr === 0 ? !e.player1 : !e.player2))
+              .some((e) => e.hasSameCities(con))
+          )
+            return;
+          this.removeConnection(con, trackNr);
+        } else {
+          this.removeConnection(con, trackNr);
+          this.addOpponentConnection(con, index, trackNr);
+        }
+      }
+    }
+  }
+
+  removeConnection(con: Connection, trackNr: number): void {
+    console.log(this.establishedConnections);
+    console.log('removeConnection: ', con, trackNr);
+    if (this.establishedConnections.includes(con)) {
+      this.removeEstablishedConnection(con, trackNr);
+    } else {
+      for (let i = 0; i < this.opponentCount; i++) {
+        if (
+          this.allOpponentsConnections[i] &&
+          this.allOpponentsConnections[i].includes(con)
+        ) {
+          this.removeOpponentConnection(con, i, trackNr);
+        }
+      }
+    }
+  }
+
+  removeEstablishedConnection(con: Connection, trackNr = 0): void {
     removeItemOnce(this.establishedConnections, con);
-    this.gameNetwork.removeEstablished(con);
+    this.gameNetwork.removeEstablished(con, trackNr);
   }
 
-  addEstablishedConnection(con: Connection): void {
+  addEstablishedConnection(con: Connection, trackNr = 0): void {
+    console.log('addEst');
     this.establishedConnections.push(con);
-    this.gameNetwork.addEstablished(con);
+    this.gameNetwork.addEstablished(con, trackNr);
   }
 
-  removeOpponentConnection(con: Connection, index: number): void {
+  removeOpponentConnection(con: Connection, index: number, trackNr = 0): void {
     removeItemOnce(this.allOpponentsConnections[index], con);
-    this.gameNetwork.removeCannotPass(con, index);
+    this.gameNetwork.removeCannotPass(con, index, trackNr);
   }
 
-  addOpponentConnection(con: Connection, index: number): void {
+  addOpponentConnection(con: Connection, index: number, trackNr = 0): void {
     this.allOpponentsConnections[index].push(con);
-    this.gameNetwork.addCannotPass(con, index);
+    this.gameNetwork.addCannotPass(con, index, trackNr);
   }
 
   setImpConTickets(tickets: Ticket[]): void {
