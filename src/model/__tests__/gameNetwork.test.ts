@@ -259,6 +259,46 @@ describe('addCannotPass/removeCannotPass', () => {
     gameNetwork.removeCannotPass(connection, 0, 1);
     expect(connection.getTrackPlayer(1)).toBeUndefined();
   });
+  test('bug1?', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Seattle', 'Portland');
+
+    gameNetwork.addCannotPass(connection, 1, 1);
+    gameNetwork.addCannotPass(connection, 0, 0);
+  });
+
+  test('add established and cannot pass on the same connection works', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Seattle', 'Portland');
+
+    gameNetwork.addEstablished(connection, 0);
+    gameNetwork.addCannotPass(connection, 0, 1);
+  });
+
+  test('addCannotPass addCannotPass(other) removeCannotPass addCannotPass sequence', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Seattle', 'Portland');
+
+    gameNetwork.addCannotPass(connection, 0, 0);
+    gameNetwork.addCannotPass(connection, 1, 1);
+    gameNetwork.removeCannotPass(connection, 0, 0);
+    gameNetwork.addCannotPass(connection, 0, 0);
+  });
 });
 
 test('works in 4/5', () => {
