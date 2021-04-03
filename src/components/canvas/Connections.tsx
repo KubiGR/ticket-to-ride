@@ -46,106 +46,96 @@ export const Connections = observer(
       const connectionId = mapStore.gameNetwork
         .getRouting()
         .getConnection(con.from, con.to);
-      let connectionDrawColor = 'white';
-      let connectionDrawOpacity = 0.0;
-      const connectionType = mapStore.connectionTypeSelectionMap.get(
+      const connectionDrawColor = ['green', 'green'];
+      const connectionDrawOpacity = [0.4, 0.4];
+
+      const canvasConnection = mapStore.connectionTypeSelectionMap.get(
         connectionId,
       );
-      if (connectionType) {
-        if (connectionType.includes('selected')) {
-          connectionDrawColor = UIConstants.bestRouteConnectionColor;
-          connectionDrawOpacity = 1;
-        }
-        if (connectionType.includes('0')) {
-          connectionDrawColor =
-            mapStore.uiConstants.opponent1PassConnectionColor;
-          connectionDrawOpacity = 1;
-        }
-        if (connectionType.includes('1')) {
-          connectionDrawColor =
-            mapStore.uiConstants.opponent2PassConnectionColor;
-          connectionDrawOpacity = 1;
-        }
-        if (connectionType.includes('2')) {
-          connectionDrawColor =
-            mapStore.uiConstants.opponent3PassConnectionColor;
-          connectionDrawOpacity = 1;
-        }
-        if (connectionType.includes('3')) {
-          connectionDrawColor =
-            mapStore.uiConstants.opponent4PassConnectionColor;
-          connectionDrawOpacity = 1;
-        }
-        if (connectionType.includes('shouldPass')) {
-          connectionDrawColor = mapStore.uiConstants.establishedConnectionColor;
-          connectionDrawOpacity = 1;
-        }
+      if (canvasConnection) {
+        [canvasConnection.track1, canvasConnection.track2].forEach(
+          (trackType, index) => {
+            switch (trackType) {
+              case 'selected':
+                connectionDrawColor[index] =
+                  UIConstants.bestRouteConnectionColor;
+                connectionDrawOpacity[index] = 1;
+                break;
+              case '0':
+                connectionDrawColor[index] =
+                  mapStore.uiConstants.establishedConnectionColor;
+                connectionDrawOpacity[index] = 1;
+                break;
+              case '1':
+                connectionDrawColor[index] =
+                  mapStore.uiConstants.opponent1PassConnectionColor;
+                connectionDrawOpacity[index] = 1;
+                break;
+              case '2':
+                connectionDrawColor[index] =
+                  mapStore.uiConstants.opponent2PassConnectionColor;
+                connectionDrawOpacity[index] = 1;
+                break;
+              case '3':
+                connectionDrawColor[index] =
+                  mapStore.uiConstants.opponent3PassConnectionColor;
+                connectionDrawOpacity[index] = 1;
+                break;
+              case '4':
+                connectionDrawColor[index] =
+                  mapStore.uiConstants.opponent4PassConnectionColor;
+                connectionDrawOpacity[index] = 1;
+                break;
+            }
+          },
+        );
       }
 
-      if (!con.graphPoints2) {
-        return [
-          <Line
-            key={con.from + '-' + con.to + '1'}
-            points={con.graphPoints1.map(
-              (point) => UIConstants.mapWidth * point,
-            )}
-            strokeWidth={UIConstants.lineStrokeSize}
-            stroke={connectionDrawColor}
-            opacity={connectionDrawOpacity}
-            onClick={(e) => {
-              if (e.evt.button === 2) {
-                mapStore.toggleOpponentConnection(
-                  connectionId,
-                  mapStore.selectedOpponentIndex,
-                );
-              } else if (e.evt.button === 0) {
-                mapStore.toggleEstablishedConnection(connectionId);
-              }
-            }}
-          />,
-        ];
-      } else {
-        return [
-          <Line
-            key={con.from + '-' + con.to + '1'}
-            points={con.graphPoints1.map(
-              (point) => UIConstants.mapWidth * point,
-            )}
-            strokeWidth={UIConstants.lineStrokeSize}
-            stroke={connectionDrawColor}
-            opacity={connectionDrawOpacity}
-            onClick={(e) => {
-              if (e.evt.button === 2) {
-                mapStore.toggleOpponentConnection(
-                  connectionId,
-                  mapStore.selectedOpponentIndex,
-                );
-              } else if (e.evt.button === 0) {
-                mapStore.toggleEstablishedConnection(connectionId);
-              }
-            }}
-          />,
+      const jsxLinesForConnection = [];
+      jsxLinesForConnection.push(
+        <Line
+          key={con.from + '-' + con.to + '1'}
+          points={con.graphPoints1.map((point) => UIConstants.mapWidth * point)}
+          strokeWidth={UIConstants.lineStrokeSize}
+          stroke={connectionDrawColor[0]}
+          opacity={connectionDrawOpacity[0]}
+          onClick={(e) => {
+            if (e.evt.button === 2) {
+              mapStore.toggleOpponentConnection(
+                connectionId,
+                mapStore.selectedOpponentIndex,
+              );
+            } else if (e.evt.button === 0) {
+              mapStore.toggleEstablishedConnection(connectionId);
+            }
+          }}
+        />,
+      );
+      if (con.graphPoints2) {
+        jsxLinesForConnection.push(
           <Line
             key={con.from + '-' + con.to + '2'}
             points={con.graphPoints2.map(
               (point) => UIConstants.mapWidth * point,
             )}
             strokeWidth={UIConstants.lineStrokeSize}
-            stroke={connectionDrawColor}
-            opacity={connectionDrawOpacity}
+            stroke={connectionDrawColor[1]}
+            opacity={connectionDrawOpacity[1]}
             onClick={(e) => {
               if (e.evt.button === 2) {
                 mapStore.toggleOpponentConnection(
                   connectionId,
                   mapStore.selectedOpponentIndex,
+                  1,
                 );
               } else if (e.evt.button === 0) {
-                mapStore.toggleEstablishedConnection(connectionId);
+                mapStore.toggleEstablishedConnection(connectionId, 1);
               }
             }}
           />,
-        ];
+        );
       }
+      return jsxLinesForConnection;
     });
 
     return <>{jsxConnectionsArray}</>;

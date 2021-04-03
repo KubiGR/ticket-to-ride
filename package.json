@@ -8,7 +8,7 @@
     "start": "webpack serve --config webpack.dev.config.ts",
     "build": "webpack --config webpack.prod.config.ts",
     "test": "jest",
-    "lint": "tsc --noEmit && eslint . --ext js,ts,json --quiet --fix"
+    "lint": "tsc --noEmit && eslint . --ext js,ts,json --quiet --fix && prettier -w ."
   },
   "dependencies": {
     "mobx": "^6.1.8",

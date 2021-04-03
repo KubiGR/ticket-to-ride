@@ -35,6 +35,10 @@ export class GameNetwork {
     this.routing.setEdges(usaMap.getConnections());
   }
 
+  get playerName(): string {
+    return this.name;
+  }
+
   getTicketReports(): TicketReport[] {
     return this.ticketReports;
   }
