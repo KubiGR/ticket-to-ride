@@ -9,7 +9,6 @@ import { Constants } from 'model/constants';
 import { CardReport } from 'model/cardReport';
 import UIConstants from 'components/canvas/uiConstants';
 import CanvasConnection from './canvasConnection';
-import connectionsData from 'data/usaConnections.json';
 
 export class MapStore {
   gameNetwork = new GameNetwork();
@@ -290,8 +289,6 @@ export class MapStore {
           : e.player2 === this.gameNetwork,
       )
       .some((e) => e.hasSameCities(con));
-    console.log(conIsEstablished);
-    console.log(conIsEstablishedAtClick);
     let conIsOpponentsAtClick = false;
     this.allOpponentsConnections.forEach((oppConns) => {
       if (
@@ -314,12 +311,10 @@ export class MapStore {
     }
 
     if (conIsEstablished && !conIsEstablishedAtClick) {
-      console.log('hi');
       return;
     }
 
     if (conIsOpponentsAtClick) {
-      console.log('conIsOpponentsAtClick');
       this.removeConnection(con, trackNr);
       this.addEstablishedConnection(con, trackNr);
       return;
@@ -329,9 +324,6 @@ export class MapStore {
   }
 
   toggleOpponentConnection(con: Connection, index: number, trackNr = 0): void {
-    const conIsEstablished = this.establishedConnections.some((e) =>
-      e.hasSameCities(con),
-    );
     const conIsEmpty = !con.player1 && !con.player2;
     const conIsEstablishedAtClick = this.establishedConnections
       ?.filter((e) =>
@@ -341,20 +333,8 @@ export class MapStore {
       )
       .some((e) => e.hasSameCities(con));
 
-    let conIsOtherOpponents = false;
-    for (let i = 0; i < this.opponentCount; i++) {
-      if (
-        i !== index &&
-        this.allOpponentsConnections[i].some((e) => e.hasSameCities(con))
-      ) {
-        conIsOtherOpponents = true;
-      }
-    }
-    console.log(conIsOtherOpponents);
-
     let conIsOtherOpponentsAtClick = false;
     for (let i = 0; i < this.opponentCount; i++) {
-      console.log(this.allOpponentsConnections[i].slice());
       if (
         i !== index &&
         this.allOpponentsConnections[i]
@@ -368,7 +348,6 @@ export class MapStore {
         conIsOtherOpponentsAtClick = true;
       }
     }
-    console.log(conIsOtherOpponentsAtClick);
 
     const conIsThisIndexOpponents = this.allOpponentsConnections[
       index
@@ -406,8 +385,15 @@ export class MapStore {
   }
 
   removeConnection(con: Connection, trackNr: number): void {
-    console.log('removeConnection: ', con, trackNr);
-    if (this.establishedConnections.includes(con)) {
+    if (
+      this.establishedConnections
+        ?.filter((e) =>
+          trackNr === 0
+            ? e.player1 === this.gameNetwork
+            : e.player2 === this.gameNetwork,
+        )
+        .some((e) => e.hasSameCities(con))
+    ) {
       this.removeEstablishedConnection(con, trackNr);
     } else {
       for (let i = 0; i < this.opponentCount; i++) {
@@ -421,7 +407,6 @@ export class MapStore {
             )
             .includes(con)
         ) {
-          console.log(i);
           this.removeOpponentConnection(con, i, trackNr);
         }
       }
@@ -429,26 +414,21 @@ export class MapStore {
   }
 
   removeEstablishedConnection(con: Connection, trackNr = 0): void {
-    console.log('removeEstablishedConnection');
-
     removeItemOnce(this.establishedConnections, con);
     this.gameNetwork.removeEstablished(con, trackNr);
   }
 
   addEstablishedConnection(con: Connection, trackNr = 0): void {
-    console.log('addEstablishedConnection', con, trackNr);
     this.establishedConnections.push(con);
     this.gameNetwork.addEstablished(con, trackNr);
   }
 
   removeOpponentConnection(con: Connection, index: number, trackNr = 0): void {
-    console.log('removeOpponentConnection: ', con, index, trackNr);
     removeItemOnce(this.allOpponentsConnections[index], con);
     this.gameNetwork.removeCannotPass(con, index, trackNr);
   }
 
   addOpponentConnection(con: Connection, index: number, trackNr = 0): void {
-    console.log('addOpponentConnection');
     this.allOpponentsConnections[index].push(con);
     this.gameNetwork.addCannotPass(con, index, trackNr);
   }
