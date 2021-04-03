@@ -259,7 +259,7 @@ describe('addCannotPass/removeCannotPass', () => {
     gameNetwork.removeCannotPass(connection, 0, 1);
     expect(connection.getTrackPlayer(1)).toBeUndefined();
   });
-  test('bug1?', () => {
+  test('two opponents on the same conection works', () => {
     const gameNetwork = new GameNetwork();
     gameNetwork.createOpponent();
     gameNetwork.createOpponent();
@@ -283,6 +283,21 @@ describe('addCannotPass/removeCannotPass', () => {
 
     gameNetwork.addEstablished(connection, 0);
     gameNetwork.addCannotPass(connection, 0, 1);
+  });
+
+  test('add established and cannot pass on the same connection, then removeEstablished and addEstablished works', () => {
+    const gameNetwork = new GameNetwork();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    gameNetwork.createOpponent();
+    const connection = gameNetwork
+      .getRouting()
+      .getConnection('Seattle', 'Portland');
+
+    gameNetwork.addEstablished(connection, 0);
+    gameNetwork.addCannotPass(connection, 0, 1);
+    gameNetwork.removeEstablished(connection, 0);
+    gameNetwork.addEstablished(connection, 0);
   });
 
   test('addCannotPass addCannotPass(other) removeCannotPass addCannotPass sequence', () => {

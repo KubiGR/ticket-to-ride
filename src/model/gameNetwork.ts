@@ -219,7 +219,8 @@ export class GameNetwork {
       }
     }
 
-    if (!this.isConnectionAvailable(edge)) {
+    if (!this.established.has(edge) && !this.isConnectionAvailable(edge)) {
+      // console.log(this.name + ' this.cannotPass.add: ' + ' edge: ');
       this.cannotPass.add(edge);
     }
     this.updateRoutingAndReports();
@@ -261,6 +262,7 @@ export class GameNetwork {
       }
     }
 
+    // console.log(this.name + ' this.cannotPass.delete: ' + ' edge: ');
     this.cannotPass.delete(edge);
     if (this.opponentNetworks !== undefined) {
       this.opponentNetworks[index].removeEstablished(edge, trackNr);
