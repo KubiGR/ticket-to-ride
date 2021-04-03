@@ -97,7 +97,7 @@ export class GameNetwork {
   }
 
   addEstablished(edge: Connection, trackNr = 0): void {
-    // console.log(this.name + ' addEstablished ' + edge + ' nr: ' + trackNr);
+    console.log(this.name + ' addEstablished ' + edge + ' nr: ' + trackNr);
     if (this.cannotPass.has(edge))
       throw new Error(
         this.name + ' :addEstablished: ' + edge + ' is in cannot pass list',
@@ -127,15 +127,17 @@ export class GameNetwork {
 
     edge.setTrackPlayer(this, trackNr);
 
-    this.opponentNetworks?.forEach((opp) => {
-      opp.addCannotPass(edge, -1, trackNr); // -1 ??
-    });
+    this.opponentNetworks
+      ?.filter((opp) => !opp.established.has(edge))
+      .forEach((opp) => {
+        opp.addCannotPass(edge, -1, trackNr); // -1 ??
+      });
 
     this.updateRoutingAndReports();
   }
 
   removeEstablished(edge: Connection, trackNr = 0): void {
-    // console.log(this.name + ' removeEstablished ' + edge + ' nr: ' + trackNr);
+    console.log(this.name + ' removeEstablished ' + edge + ' nr: ' + trackNr);
     const gn = edge.getTrackPlayer(trackNr);
     if (gn === undefined) {
       throw new Error(
@@ -155,23 +157,25 @@ export class GameNetwork {
     this.established.delete(edge);
     this.availableTrains += edge.trains;
     this.establishedPoints -= edge.getPoints();
-    this.opponentNetworks?.forEach((opp) => {
-      opp.removeCannotPass(edge, -1, trackNr);
-    });
+    this.opponentNetworks
+      ?.filter((opp) => !opp.established.has(edge))
+      .forEach((opp) => {
+        opp.removeCannotPass(edge, -1, trackNr);
+      });
     this.updateRoutingAndReports();
   }
 
   addCannotPass(edge: Connection, index = 0, trackNr = 0): void {
-    // console.log(
-    //   this.name +
-    //     ' addCannotPass: ' +
-    //     ' opp: ' +
-    //     index +
-    //     ' edge: ' +
-    //     edge +
-    //     ' nr: ' +
-    //     trackNr,
-    // );
+    console.log(
+      this.name +
+        ' addCannotPass: ' +
+        ' opp: ' +
+        index +
+        ' edge: ' +
+        edge +
+        ' nr: ' +
+        trackNr,
+    );
     if (
       this.opponentNetworks !== undefined &&
       index >= this.opponentNetworks.length
@@ -181,7 +185,7 @@ export class GameNetwork {
       );
 
     if (this.opponentNetworks !== undefined) {
-      if (this.established.has(edge))
+      if (!this.hasDoubleTracks && this.established.has(edge))
         throw new Error(
           this.name +
             ' :addCannotPass: ' +
@@ -206,12 +210,13 @@ export class GameNetwork {
 
       this.opponentNetworks[index].addEstablished(edge, trackNr);
       for (let opp = 0; opp < this.opponentNetworks.length; opp++) {
-        if (opp !== index)
+        if (opp !== index || !this.opponentNetworks[opp].established.has(edge))
           this.opponentNetworks[opp].addCannotPass(edge, -1, trackNr); // -1 ??
       }
     }
 
     if (!this.isConnectionAvailable(edge)) {
+      console.log(this.name + ' this.cannotPass.add: ' + ' edge: ');
       this.cannotPass.add(edge);
     }
     this.updateRoutingAndReports();
@@ -222,16 +227,16 @@ export class GameNetwork {
   }
 
   removeCannotPass(edge: Connection, index = 0, trackNr = 0): void {
-    // console.log(
-    //   this.name +
-    //     ' removeCannotPass: ' +
-    //     ' opp: ' +
-    //     index +
-    //     ' edge: ' +
-    //     edge +
-    //     ' nr: ' +
-    //     trackNr,
-    // );
+    console.log(
+      this.name +
+        ' removeCannotPass: ' +
+        ' opp: ' +
+        index +
+        ' edge: ' +
+        edge +
+        ' nr: ' +
+        trackNr,
+    );
     if (this.opponentNetworks !== undefined) {
       if (index >= this.opponentNetworks.length)
         throw new Error(
@@ -252,11 +257,13 @@ export class GameNetwork {
         );
       }
     }
+
+    console.log(this.name + ' this.cannotPass.delete: ' + ' edge: ');
     this.cannotPass.delete(edge);
     if (this.opponentNetworks !== undefined) {
       this.opponentNetworks[index].removeEstablished(edge, trackNr);
       for (let opp = 0; opp < this.opponentNetworks.length; opp++) {
-        if (opp !== index)
+        if (opp !== index || !this.opponentNetworks[opp].established.has(edge))
           this.opponentNetworks[opp].removeCannotPass(edge, -1, trackNr);
       }
     }
