@@ -143,6 +143,7 @@ const PlayerInfo = observer(
 
     return (
       <>
+        <h4>{`Expected Points: ${mapStore.expectedPoints.toFixed(2)}`}</h4>
         <h4>{`Available Trains: ${mapStore.availableTrainsCount}`}</h4>
         <h4>{`Total Points: ${mapStore.totalPoints}`}</h4>
         {playerColorBoxesInfo.map((playerInfo) => (

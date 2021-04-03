@@ -20,6 +20,7 @@ export class MapStore {
   connectionsArray: Connection[] = [];
   ticketReports: TicketReport[][] = [[]];
   impConTickets: Ticket[] = [];
+  expectedPoints = 0;
   selectedOpponentIndex = 0;
   playerCount = 4;
 
@@ -57,7 +58,7 @@ export class MapStore {
         this.gameNetwork
           .getExpectedPointsDrawingTickets(Constants.DRAW_TICKETS_SAMPLE_SIZE)
           .then((value) => {
-            console.log('EXP POINTS', value);
+            this.setExpectedPoints(value);
           });
 
         this.ticketReports[0] = this.gameNetwork
@@ -117,6 +118,7 @@ export class MapStore {
       this.allOpponentsConnections.push([]);
       this.ticketReports.push([]);
     }
+    this.expectedPoints = 0;
     this.gameNetwork.setPointImportance(0.19);
   }
 
@@ -461,5 +463,9 @@ export class MapStore {
 
   setSelectedOpponentIndex(value: number): void {
     this.selectedOpponentIndex = value;
+  }
+
+  setExpectedPoints(value: number): void {
+    this.expectedPoints = value;
   }
 }
