@@ -9,6 +9,7 @@ import { Constants } from 'model/constants';
 import { CardReport } from 'model/cardReport';
 import UIConstants from 'components/canvas/uiConstants';
 import CanvasConnection from './canvasConnection';
+import connectionsData from 'data/usaConnections.json';
 
 export class MapStore {
   gameNetwork = new GameNetwork();
@@ -167,11 +168,13 @@ export class MapStore {
 
     this.allOpponentsConnections.forEach((cannotPassConnections, index) => {
       cannotPassConnections.forEach((con) => {
-        const canvasConnection = new CanvasConnection();
-        if (con.player1) {
+        const canvasConnection = connectionTypeSelectionMap.get(con)
+          ? connectionTypeSelectionMap.get(con)
+          : new CanvasConnection();
+        if (con.player1 === this.gameNetwork.getOpponentNetwork(index)) {
           canvasConnection.track1 = (index + 1).toString();
         }
-        if (con.player2) {
+        if (con.player2 === this.gameNetwork.getOpponentNetwork(index)) {
           canvasConnection.track2 = (index + 1).toString();
         }
         connectionTypeSelectionMap.set(con, canvasConnection);
@@ -179,11 +182,13 @@ export class MapStore {
     });
 
     this.establishedConnections.forEach((con) => {
-      const canvasConnection = new CanvasConnection();
-      if (con.player1) {
+      const canvasConnection = connectionTypeSelectionMap.get(con)
+        ? connectionTypeSelectionMap.get(con)
+        : new CanvasConnection();
+      if (con.player1 === this.gameNetwork) {
         canvasConnection.track1 = '0';
       }
-      if (con.player2) {
+      if (con.player2 === this.gameNetwork) {
         canvasConnection.track2 = '0';
       }
       connectionTypeSelectionMap.set(con, canvasConnection);
@@ -274,107 +279,133 @@ export class MapStore {
   }
 
   toggleEstablishedConnection(con: Connection, trackNr = 0): void {
-    if (this.playerCount <= 3) {
-      if (!con.player1 && !con.player2) {
-        this.addEstablishedConnection(con, trackNr);
-      }
-      if ((con.player1 && trackNr === 0) || (con.player2 && trackNr === 1)) {
-        if (this.establishedConnections.some((e) => e.hasSameCities(con))) {
-          this.removeConnection(con, trackNr);
-        } else {
-          this.removeConnection(con, trackNr);
-          this.addEstablishedConnection(con, trackNr);
-        }
-      }
-      if ((con.player2 && trackNr === 0) || (con.player1 && trackNr === 1))
-        return;
-    } else {
-      if (!con.player1 && !con.player2) {
-        this.addEstablishedConnection(con, trackNr);
-      } else if (
-        (!con.player1 && trackNr === 0) ||
-        (!con.player2 && trackNr === 1)
+    const conIsEstablished = this.establishedConnections.some((e) =>
+      e.hasSameCities(con),
+    );
+    const conIsEmpty = !con.player1 && !con.player2;
+    const conIsEstablishedAtClick = this.establishedConnections
+      ?.filter((e) =>
+        trackNr === 0
+          ? e.player1 === this.gameNetwork
+          : e.player2 === this.gameNetwork,
+      )
+      .some((e) => e.hasSameCities(con));
+    console.log(conIsEstablished);
+    console.log(conIsEstablishedAtClick);
+    let conIsOpponentsAtClick = false;
+    this.allOpponentsConnections.forEach((oppConns) => {
+      if (
+        oppConns
+          .filter((e) => (trackNr === 0 ? e.player1 : e.player2))
+          .some((e) => e.hasSameCities(con))
       ) {
-        if (this.establishedConnections.some((e) => e.hasSameCities(con))) {
-          return;
-        } else {
-          this.addEstablishedConnection(con, trackNr);
-        }
-      } else if (
-        (con.player1 && trackNr === 0) ||
-        (con.player2 && trackNr === 1)
-      ) {
-        if (this.establishedConnections.some((e) => e.hasSameCities(con))) {
-          if (
-            this.establishedConnections
-              ?.filter((e) => (trackNr === 0 ? !e.player1 : !e.player2))
-              .some((e) => e.hasSameCities(con))
-          )
-            return;
-          this.removeConnection(con, trackNr);
-        } else {
-          this.removeConnection(con, trackNr);
-          this.addEstablishedConnection(con, trackNr);
-        }
+        conIsOpponentsAtClick = true;
       }
+    });
+
+    if (conIsEmpty) {
+      this.addEstablishedConnection(con, trackNr);
+      return;
     }
+
+    if (conIsEstablishedAtClick) {
+      this.removeConnection(con, trackNr);
+      return;
+    }
+
+    if (conIsEstablished && !conIsEstablishedAtClick) {
+      console.log('hi');
+      return;
+    }
+
+    if (conIsOpponentsAtClick) {
+      console.log('conIsOpponentsAtClick');
+      this.removeConnection(con, trackNr);
+      this.addEstablishedConnection(con, trackNr);
+      return;
+    }
+
+    this.addEstablishedConnection(con, trackNr);
   }
 
   toggleOpponentConnection(con: Connection, index: number, trackNr = 0): void {
-    if (this.playerCount <= 3) {
-      if (!con.player1 && !con.player2) {
-        this.addOpponentConnection(con, index, trackNr);
-      }
-      if ((con.player1 && trackNr === 0) || (con.player2 && trackNr === 1)) {
-        if (
-          this.allOpponentsConnections[index].some((e) => e.hasSameCities(con))
-        ) {
-          this.removeConnection(con, trackNr);
-        } else {
-          this.removeConnection(con, trackNr);
-          this.addOpponentConnection(con, index, trackNr);
-        }
-      }
-      if ((con.player2 && trackNr === 0) || (con.player1 && trackNr === 1))
-        return;
-    } else {
-      if (!con.player1 && !con.player2) {
-        this.addOpponentConnection(con, index, trackNr);
-      } else if (
-        (!con.player1 && trackNr === 0) ||
-        (!con.player2 && trackNr === 1)
+    const conIsEstablished = this.establishedConnections.some((e) =>
+      e.hasSameCities(con),
+    );
+    const conIsEmpty = !con.player1 && !con.player2;
+    const conIsEstablishedAtClick = this.establishedConnections
+      ?.filter((e) =>
+        trackNr === 0
+          ? e.player1 === this.gameNetwork
+          : e.player2 === this.gameNetwork,
+      )
+      .some((e) => e.hasSameCities(con));
+
+    let conIsOtherOpponents = false;
+    for (let i = 0; i < this.opponentCount; i++) {
+      if (
+        i !== index &&
+        this.allOpponentsConnections[i].some((e) => e.hasSameCities(con))
       ) {
-        if (
-          this.allOpponentsConnections[index].some((e) => e.hasSameCities(con))
-        ) {
-          return;
-        } else {
-          this.addOpponentConnection(con, index, trackNr);
-        }
-      } else if (
-        (con.player1 && trackNr === 0) ||
-        (con.player2 && trackNr === 1)
-      ) {
-        if (
-          this.allOpponentsConnections[index].some((e) => e.hasSameCities(con))
-        ) {
-          if (
-            this.allOpponentsConnections[index]
-              ?.filter((e) => (trackNr === 0 ? !e.player1 : !e.player2))
-              .some((e) => e.hasSameCities(con))
-          )
-            return;
-          this.removeConnection(con, trackNr);
-        } else {
-          this.removeConnection(con, trackNr);
-          this.addOpponentConnection(con, index, trackNr);
-        }
+        conIsOtherOpponents = true;
       }
     }
+    console.log(conIsOtherOpponents);
+
+    let conIsOtherOpponentsAtClick = false;
+    for (let i = 0; i < this.opponentCount; i++) {
+      console.log(this.allOpponentsConnections[i].slice());
+      if (
+        i !== index &&
+        this.allOpponentsConnections[i]
+          .filter((e) =>
+            trackNr === 0
+              ? e.player1 === this.gameNetwork.getOpponentNetwork(i)
+              : e.player2 === this.gameNetwork.getOpponentNetwork(i),
+          )
+          .some((e) => e.hasSameCities(con))
+      ) {
+        conIsOtherOpponentsAtClick = true;
+      }
+    }
+    console.log(conIsOtherOpponentsAtClick);
+
+    const conIsThisIndexOpponents = this.allOpponentsConnections[
+      index
+    ].some((e) => e.hasSameCities(con));
+
+    const conIsThisIndexOpponentsAtClick = this.allOpponentsConnections[index]
+      .filter((e) =>
+        trackNr === 0
+          ? e.player1 === this.gameNetwork.getOpponentNetwork(index)
+          : e.player2 === this.gameNetwork.getOpponentNetwork(index),
+      )
+      .some((e) => e.hasSameCities(con));
+
+    if (conIsEmpty) {
+      this.addOpponentConnection(con, index, trackNr);
+      return;
+    }
+
+    if (conIsThisIndexOpponentsAtClick) {
+      this.removeConnection(con, trackNr);
+      return;
+    }
+
+    if (conIsThisIndexOpponents && !conIsThisIndexOpponentsAtClick) {
+      return;
+    }
+
+    if (conIsEstablishedAtClick || conIsOtherOpponentsAtClick) {
+      this.removeConnection(con, trackNr);
+      this.addOpponentConnection(con, index, trackNr);
+      return;
+    }
+
+    this.addOpponentConnection(con, index, trackNr);
   }
 
   removeConnection(con: Connection, trackNr: number): void {
-    console.log(this.establishedConnections);
     console.log('removeConnection: ', con, trackNr);
     if (this.establishedConnections.includes(con)) {
       this.removeEstablishedConnection(con, trackNr);
@@ -382,8 +413,15 @@ export class MapStore {
       for (let i = 0; i < this.opponentCount; i++) {
         if (
           this.allOpponentsConnections[i] &&
-          this.allOpponentsConnections[i].includes(con)
+          this.allOpponentsConnections[i]
+            .filter((e) =>
+              trackNr === 0
+                ? e.player1 === this.gameNetwork.getOpponentNetwork(i)
+                : e.player2 === this.gameNetwork.getOpponentNetwork(i),
+            )
+            .includes(con)
         ) {
+          console.log(i);
           this.removeOpponentConnection(con, i, trackNr);
         }
       }
@@ -391,22 +429,26 @@ export class MapStore {
   }
 
   removeEstablishedConnection(con: Connection, trackNr = 0): void {
+    console.log('removeEstablishedConnection');
+
     removeItemOnce(this.establishedConnections, con);
     this.gameNetwork.removeEstablished(con, trackNr);
   }
 
   addEstablishedConnection(con: Connection, trackNr = 0): void {
-    console.log('addEst');
+    console.log('addEstablishedConnection', con, trackNr);
     this.establishedConnections.push(con);
     this.gameNetwork.addEstablished(con, trackNr);
   }
 
   removeOpponentConnection(con: Connection, index: number, trackNr = 0): void {
+    console.log('removeOpponentConnection: ', con, index, trackNr);
     removeItemOnce(this.allOpponentsConnections[index], con);
     this.gameNetwork.removeCannotPass(con, index, trackNr);
   }
 
   addOpponentConnection(con: Connection, index: number, trackNr = 0): void {
+    console.log('addOpponentConnection');
     this.allOpponentsConnections[index].push(con);
     this.gameNetwork.addCannotPass(con, index, trackNr);
   }

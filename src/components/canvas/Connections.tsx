@@ -25,7 +25,6 @@ const handleKeyInput = (evt: KeyboardEvent, mapStore: MapStore) => {
 type ConnectionsProps = { mapStore: MapStore };
 export const Connections = observer(
   ({ mapStore }: ConnectionsProps): JSX.Element => {
-    console.log(mapStore.connectionTypeSelectionMap);
     useEffect(() => {
       document.addEventListener('keydown', (evt) => {
         if (Number(evt.key) > mapStore.opponentCount) {
@@ -50,12 +49,11 @@ export const Connections = observer(
       const connectionDrawColor = ['green', 'green'];
       const connectionDrawOpacity = [0.4, 0.4];
 
-      const connectionType = mapStore.connectionTypeSelectionMap.get(
+      const canvasConnection = mapStore.connectionTypeSelectionMap.get(
         connectionId,
       );
-
-      if (connectionType) {
-        [connectionType.track1, connectionType.track2].forEach(
+      if (canvasConnection) {
+        [canvasConnection.track1, canvasConnection.track2].forEach(
           (trackType, index) => {
             switch (trackType) {
               case 'selected':
