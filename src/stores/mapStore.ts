@@ -19,7 +19,7 @@ export class MapStore {
   establishedConnections: Connection[] = [];
   connectionsArray: Connection[] = [];
   ticketReports: TicketReport[][] = [[]];
-  impConTickets = observable.array<Ticket>();
+  impConTickets: Ticket[] = [];
   selectedOpponentIndex = 0;
   playerCount = 4;
 
@@ -434,11 +434,11 @@ export class MapStore {
   }
 
   setImpConTickets(tickets: Ticket[]): void {
-    this.impConTickets.replace(tickets);
+    this.impConTickets = tickets;
   }
 
   clearImpConTickets(): void {
-    this.impConTickets.clear();
+    this.impConTickets = [];
   }
 
   reset(): void {
