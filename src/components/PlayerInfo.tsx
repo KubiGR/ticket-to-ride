@@ -8,6 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { HexColorPicker } from 'react-colorful';
+import './PlayerInfo.css';
 
 const PlayerInfo = observer(
   (): JSX.Element => {
@@ -146,6 +147,18 @@ const PlayerInfo = observer(
         <h4>{`Expected Points: ${mapStore.expectedPoints.toFixed(2)}`}</h4>
         <h4>{`Available Trains: ${mapStore.availableTrainsCount}`}</h4>
         <h4>{`Total Points: ${mapStore.totalPoints}`}</h4>
+        <h4>Card Colors Needed:</h4>
+        <ul>
+          {Array.from(mapStore.cardReport.getSummary()).map((e) => {
+            if (e[1].min === e[1].max) {
+              if (e[1].min !== 0) {
+                return <li key={e[0]}>{`${e[0]}: ${e[1].min}`}</li>;
+              }
+            } else {
+              return <li key={e[0]}>{`${e[0]}: ${e[1].min} - ${e[1].max}`}</li>;
+            }
+          })}
+        </ul>
         {playerColorBoxesInfo.map((playerInfo) => (
           <div
             key={playerInfo.playerIndex}

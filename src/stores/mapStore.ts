@@ -23,6 +23,10 @@ export class MapStore {
   expectedPoints = 0;
   selectedOpponentIndex = 0;
   playerCount = 4;
+  cardReport = new CardReport(
+    this.connectionsArray,
+    this.establishedConnections,
+  );
 
   constructor() {
     makeAutoObservable(this);
@@ -40,12 +44,10 @@ export class MapStore {
           .getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(
             this.selectedTickets,
           );
-        console.log('CARDS NEEDED');
-        const cr = new CardReport(
+        this.cardReport = new CardReport(
           this.connectionsArray,
           this.establishedConnections,
         );
-        console.log(cr.summaryString());
       },
     );
 

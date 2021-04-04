@@ -59,7 +59,6 @@ export const Connections = observer(
               case 'selected':
                 connectionDrawColor[index] =
                   UIConstants.bestRouteConnectionColor;
-                connectionDrawOpacity[index] = 1;
                 break;
               case '0':
                 connectionDrawColor[index] =
