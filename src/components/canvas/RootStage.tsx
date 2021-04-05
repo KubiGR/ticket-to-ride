@@ -22,6 +22,7 @@ const getPointerPosition = (evt: any) => {
 export const RootStage = observer(() => {
   const mapStore = useMapStore();
   const animationLayerRef = useRef<Konva.Layer>(null);
+  mapStore.setAnimationLayerRef(animationLayerRef);
 
   return (
     <Stage
@@ -32,15 +33,20 @@ export const RootStage = observer(() => {
     >
       <Layer>
         <MapImage width={UIConstants.mapWidth} height={UIConstants.mapHeight} />
-        <Connections mapStore={mapStore} />
         <Cities mapStore={mapStore} />
-        <ConnectionLabelList mapStore={mapStore} />
       </Layer>
       <Layer ref={animationLayerRef}>
+        <Connections
+          mapStore={mapStore}
+          animationLayerRef={animationLayerRef}
+        />
         <AnimatedCities
           impConTickets={mapStore.impConTickets.slice()}
           animationLayerRef={animationLayerRef}
         />
+      </Layer>
+      <Layer>
+        <ConnectionLabelList mapStore={mapStore} />
       </Layer>
     </Stage>
   );

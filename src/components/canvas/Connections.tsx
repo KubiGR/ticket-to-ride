@@ -1,47 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { RefObject } from 'react';
 import usaConnections from 'data/usaConnections.json';
 import { observer } from 'mobx-react';
 import { Line } from 'react-konva';
 import UIConstants from './uiConstants';
 import { MapStore } from 'stores/mapStore';
+import AnimatedLine from 'components/canvas/AnimatedLine';
+import Konva from 'konva';
 
-const handleKeyInput = (evt: KeyboardEvent, mapStore: MapStore) => {
-  switch (evt.key) {
-    case '1':
-      mapStore.setSelectedOpponentIndex(0);
-      break;
-    case '2':
-      mapStore.setSelectedOpponentIndex(1);
-      break;
-    case '3':
-      mapStore.setSelectedOpponentIndex(2);
-      break;
-    case '4':
-      mapStore.setSelectedOpponentIndex(3);
-      break;
-  }
+type ConnectionsProps = {
+  mapStore: MapStore;
+  animationLayerRef: RefObject<Konva.Layer>;
 };
-
-type ConnectionsProps = { mapStore: MapStore };
 export const Connections = observer(
-  ({ mapStore }: ConnectionsProps): JSX.Element => {
-    useEffect(() => {
-      document.addEventListener('keydown', (evt) => {
-        if (Number(evt.key) > mapStore.opponentCount) {
-          return;
-        }
-        handleKeyInput(evt, mapStore);
-      });
-
-      return () => {
-        document.removeEventListener('keydown', (evt) => {
-          if (Number(evt.key) > mapStore.opponentCount) {
-            return;
-          }
-          handleKeyInput(evt, mapStore);
-        });
-      };
-    }, [mapStore, mapStore.opponentCount, mapStore.setSelectedOpponentIndex]);
+  ({ mapStore, animationLayerRef }: ConnectionsProps): JSX.Element => {
     const jsxConnectionsArray = usaConnections.flatMap((con) => {
       const connectionId = mapStore.gameNetwork
         .getRouting()
@@ -59,6 +30,7 @@ export const Connections = observer(
               case 'selected':
                 connectionDrawColor[index] =
                   UIConstants.bestRouteConnectionColor;
+                connectionDrawOpacity[index] = 0.6;
                 break;
               case '0':
                 connectionDrawColor[index] =
@@ -91,48 +63,87 @@ export const Connections = observer(
       }
 
       const jsxLinesForConnection = [];
-      jsxLinesForConnection.push(
-        <Line
-          key={con.from + '-' + con.to + '1'}
-          points={con.graphPoints1.map((point) => UIConstants.mapWidth * point)}
-          strokeWidth={UIConstants.lineStrokeSize}
-          stroke={connectionDrawColor[0]}
-          opacity={connectionDrawOpacity[0]}
-          onClick={(e) => {
-            if (e.evt.button === 2) {
-              mapStore.toggleOpponentConnection(
-                connectionId,
-                mapStore.selectedOpponentIndex,
-              );
-            } else if (e.evt.button === 0) {
-              mapStore.toggleEstablishedConnection(connectionId);
-            }
-          }}
-        />,
-      );
-      if (con.graphPoints2) {
+      if (connectionDrawColor[0] === UIConstants.bestRouteConnectionColor) {
+        jsxLinesForConnection.push(
+          <AnimatedLine
+            animationLayerRef={animationLayerRef}
+            key={con.from + '-' + con.to + '1'}
+            mapStore={mapStore}
+            stroke={connectionDrawColor[0]}
+            keyKey={con.from + '-' + con.to + '1'}
+            opacity={connectionDrawOpacity[0]}
+            points={con.graphPoints1.map(
+              (point) => UIConstants.mapWidth * point,
+            )}
+            connection={connectionId}
+            trackNr={0}
+          />,
+        );
+      } else {
         jsxLinesForConnection.push(
           <Line
-            key={con.from + '-' + con.to + '2'}
-            points={con.graphPoints2.map(
+            key={con.from + '-' + con.to + '1'}
+            points={con.graphPoints1.map(
               (point) => UIConstants.mapWidth * point,
             )}
             strokeWidth={UIConstants.lineStrokeSize}
-            stroke={connectionDrawColor[1]}
-            opacity={connectionDrawOpacity[1]}
+            stroke={connectionDrawColor[0]}
+            opacity={connectionDrawOpacity[0]}
             onClick={(e) => {
               if (e.evt.button === 2) {
                 mapStore.toggleOpponentConnection(
                   connectionId,
                   mapStore.selectedOpponentIndex,
-                  1,
                 );
               } else if (e.evt.button === 0) {
-                mapStore.toggleEstablishedConnection(connectionId, 1);
+                mapStore.toggleEstablishedConnection(connectionId);
               }
             }}
           />,
         );
+      }
+
+      if (con.graphPoints2) {
+        if (connectionDrawColor[1] === UIConstants.bestRouteConnectionColor) {
+          jsxLinesForConnection.push(
+            <AnimatedLine
+              animationLayerRef={animationLayerRef}
+              key={con.from + '-' + con.to + '2'}
+              mapStore={mapStore}
+              stroke={connectionDrawColor[1]}
+              keyKey={con.from + '-' + con.to + '2'}
+              opacity={connectionDrawOpacity[1]}
+              points={con.graphPoints2.map(
+                (point) => UIConstants.mapWidth * point,
+              )}
+              connection={connectionId}
+              trackNr={1}
+            />,
+          );
+        } else {
+          jsxLinesForConnection.push(
+            <Line
+              key={con.from + '-' + con.to + '2'}
+              points={con.graphPoints2.map(
+                (point) => UIConstants.mapWidth * point,
+              )}
+              strokeWidth={UIConstants.lineStrokeSize}
+              stroke={connectionDrawColor[1]}
+              opacity={connectionDrawOpacity[1]}
+              onClick={(e) => {
+                if (e.evt.button === 2) {
+                  mapStore.toggleOpponentConnection(
+                    connectionId,
+                    mapStore.selectedOpponentIndex,
+                    1,
+                  );
+                } else if (e.evt.button === 0) {
+                  mapStore.toggleEstablishedConnection(connectionId, 1);
+                }
+              }}
+            />,
+          );
+        }
       }
       return jsxLinesForConnection;
     });

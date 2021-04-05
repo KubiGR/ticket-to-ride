@@ -9,6 +9,8 @@ import { Constants } from 'model/constants';
 import { CardReport } from 'model/cardReport';
 import UIConstants from 'components/canvas/uiConstants';
 import CanvasConnection from './canvasConnection';
+import { RefObject } from 'react';
+import Konva from 'konva';
 
 export class MapStore {
   gameNetwork = new GameNetwork();
@@ -27,6 +29,7 @@ export class MapStore {
     this.connectionsArray,
     this.establishedConnections,
   );
+  animationlayerRef: RefObject<Konva.Layer> | undefined;
 
   constructor() {
     makeAutoObservable(this);
@@ -469,5 +472,9 @@ export class MapStore {
 
   setExpectedPoints(value: number): void {
     this.expectedPoints = value;
+  }
+
+  setAnimationLayerRef(value: RefObject<Konva.Layer>): void {
+    this.animationlayerRef = value;
   }
 }
