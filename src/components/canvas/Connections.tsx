@@ -17,8 +17,8 @@ export const Connections = observer(
       const connectionId = mapStore.gameNetwork
         .getRouting()
         .getConnection(con.from, con.to);
-      const connectionDrawColor = ['green', 'green'];
-      const connectionDrawOpacity = [0.4, 0.4];
+      const connectionDrawColor = ['white', 'white'];
+      const connectionDrawOpacity = [0, 0];
 
       const canvasConnection = mapStore.connectionTypeSelectionMap.get(
         connectionId,

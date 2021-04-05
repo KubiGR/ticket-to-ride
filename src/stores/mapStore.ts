@@ -46,7 +46,9 @@ export class MapStore {
           .getRouting()
           .getOptConnectionsOfMinSpanningTreeOfShortestRoutesForTickets(
             this.selectedTickets,
-          );
+          )
+          .filter((el) => !this.establishedConnections.includes(el));
+        console.log(this.connectionsArray);
         this.cardReport = new CardReport(
           this.connectionsArray,
           this.establishedConnections,
